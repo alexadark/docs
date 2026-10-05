@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ClickUp Cleanup Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Linear-style dark document: one reading column, square corners, mono caps labels, colour only as accent. */
+:root {
+  --bg: #0B0B0D; --surface: #131316; --fg: #EDEDF0; --muted: #8A8F98; --line: #2C2D30;
+  --accent: #7C8CFF; --warn: #FFB224; --ok: #3DD68C; --alert: #FF4D4F; --info: #22D3EE;
+  --code-bg: #18181C;
+  --font-body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+    --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+    --code-bg: #F0F0F3; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+  --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+  --code-bg: #F0F0F3; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; padding: 48px 16px 96px; }
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.45rem; font-weight: 650; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+header, section { display: flex; flex-direction: column; gap: 16px; }
+.eyebrow, .caps { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.eyebrow { color: var(--muted); }
+.lede { font-size: 1.15rem; color: var(--muted); }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); padding: 0.1em 0.35em; }
+pre { font-family: var(--font-mono); font-size: 0.82rem; background: var(--code-bg); border: 1px solid var(--line); padding: 16px; margin: 0; overflow-x: auto; }
+ul, ol { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 65ch; }
+.note { border-left: 3px solid var(--info); background: var(--surface); padding: 14px 16px; }
+.note.warn { border-left-color: var(--warn); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { border: 1px solid var(--line); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.stat .n { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.stat p { font-size: 0.85rem; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 18px; }
+.steps > li { counter-increment: s; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; }
+.steps > li > h3::before { content: "Step " counter(s) " · "; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
+.c-accent { color: var(--accent); } .c-warn { color: var(--warn); } .c-ok { color: var(--ok); } .c-alert { color: var(--alert); } .c-info { color: var(--info); }
+footer { color: var(--muted); font-size: 0.88rem; border-top: 1px solid var(--line); padding-top: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="eyebrow">TAMOS · ClickUp · October 5, 2026</span>
+  <h1>ClickUp cleanup proposal</h1>
+  <p class="lede">I went through the whole VideoCaseStory workspace (read only, nothing changed). Here's what's there today, the setup I'd move to, and the four decisions I need from you.</p>
+</header>
+
+<section>
+  <span class="eyebrow">Why now</span>
+  <h2>Your assistant will read ClickUp</h2>
+  <p>The assistant we're building pulls your day from ClickUp: today's task and the next three. Right now it would drown. Most tasks that look open are actually finished, and the same client lives in several places, so any count or summary comes out wrong.</p>
+</section>
+
+<section>
+  <span class="eyebrow">What's there today</span>
+  <h2>Mostly template copies and finished work</h2>
+  <div class="stats">
+    <div class="stat"><span class="n">~1,270</span><p>top-level tasks that ClickUp counts as open</p></div>
+    <div class="stat"><span class="n">6,000+</span><p>items with subtasks, almost all copied from templates</p></div>
+    <div class="stat"><span class="n">11</span><p>Spaces, two of them private with no name</p></div>
+    <div class="stat"><span class="n">6+</span><p>different sets of statuses</p></div>
+  </div>
+  <ul>
+    <li><strong>"Closed" isn't closed.</strong> In Delivery, Case Story Clients and 7-Figure, the "Closed" status is set up as an active status, so ClickUp still counts those tasks as open. That's why the numbers look huge.</li>
+    <li><strong>Dead areas.</strong> Mission Control (2 tasks from Dec 2025), Hosting and Maintenance (about 70 folders, zero tasks), Test Space, most of the 44 hosting lists in Delivery, Case Story Clients (quiet since 2024-2025), the empty internal-project lists in your space, and 11 identical Podcast lists with untouched template tasks.</li>
+    <li><strong>One client, many homes.</strong> Several clients appear in three to five places (a Delivery folder, a hosting list, a StoryCollector list, a hosting folder). The required "Client" field adds a 53-value dropdown on top, with typos and duplicates.</li>
+    <li><strong>Reference notes stored as tasks.</strong> In AI Interviewer, 14 of 18 tasks are notes ("Decisions Pending", "Critical Bugs") sitting in to do with no owner.</li>
+    <li><strong>TAMOS work is hidden.</strong> The "Active Areas" folder (TAMOS Verticals, Marketing, Sales System, SaaS Roadmap) sits in a private space. Your account doesn't have access to it and Vishal only sees the tasks shared with him, so I couldn't assign you a task there.</li>
+    <li><strong>Loose ends.</strong> 18 support form tickets with no owner, one ticket "in progress" since April 2025, and 14 outbound tasks from Sept 15 with no owner, two of them urgent (StoryCrews SPF/DMARC and a warm-up domain).</li>
+  </ul>
+</section>
+
+<section>
+  <span class="eyebrow">Proposed setup</span>
+  <h2>One space per function, never per client</h2>
+  <p>This is what ClickUp's agency partners recommend, and it fits how the team actually works. A client becomes a record, not a location.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Space</th><th>What goes in it</th><th>Comes from</th></tr></thead>
+    <tbody>
+      <tr><td><span class="caps c-accent">Clients</span></td><td>One list where each client is a single record: offer tier, services, contact, Slack channel, StoryCollector and Authentic.Video status. Contracts too.</td><td>Mission Control, the "Client" field</td></tr>
+      <tr><td><span class="caps c-accent">Delivery</span></td><td>A folder per active client, a list per project made from a template. The tier (Case Story, 7-Figure) becomes a field.</td><td>Delivery, Case Story Clients, 7-Figure</td></tr>
+      <tr><td><span class="caps c-accent">Support</span></td><td>Client and hosting tickets in one queue.</td><td>Ticketing, Vishal's hosting lists</td></tr>
+      <tr><td><span class="caps c-accent">TAMOS</span></td><td>StoryCollector, TackleBox, Authentic.Video, the WordPress plugin, BackTax and StoryCrews sites, outbound.</td><td>Active Areas, your internal projects, TAMOS Listing Outbound, StoryCollector App</td></tr>
+      <tr><td><span class="caps c-accent">Growth</span></td><td>Agency marketing and sales.</td><td>Growth</td></tr>
+      <tr><td><span class="caps">Archive</span></td><td>Everything dead. Archived, never deleted, so history stays searchable.</td><td>Hosting and Maintenance, Test Space, empty lists, old Podcast lists</td></tr>
+    </tbody>
+  </table></div>
+  <h3>House rules</h3>
+  <ul>
+    <li>One shared set of statuses: Inbox, Ready, In Progress, Waiting, Review, Done, Parked. Done really closes the task.</li>
+    <li>Reference material goes in Docs, not tasks.</li>
+    <li>An active task has an owner, a due date (or a deliberate "no date") and a "done when".</li>
+    <li>Nothing TAMOS lives in a private space.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="eyebrow">How we'd get there</span>
+  <h2>Four steps, you approve each one</h2>
+  <ol class="steps">
+    <li><h3>Safe cleanup</h3><p>Fix access issues, give the orphan tickets an owner, archive Test Space, Hosting and Maintenance and the empty lists. Nothing is deleted.</p></li>
+    <li><h3>TAMOS space</h3><p>Create it and move Active Areas, your internal projects and outbound into it. Tasks keep their history when they move.</p></li>
+    <li><h3>Real "Done"</h3><p>Turn "Closed" into a status that actually closes tasks, then merge the status sets. After this, the open count becomes real.</p></li>
+    <li><h3>Clients list</h3><p>Create the Clients records, clean the "Client" field, and fold Case Story Clients and 7-Figure into Delivery.</p></li>
+  </ol>
+  <p>I'd do the clicking with the API. What I need from you is the yes or no on each step, because it changes where the team finds things.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Your call</span>
+  <h2>Four quick answers</h2>
+  <ol>
+    <li>Does this setup work for you, or would you change a space?</li>
+    <li>Can I archive the dead areas listed above?</li>
+    <li>Whose private space holds "Active Areas", and is "Info VideoCaseStory" the account you use day to day? Your Gmail account can't see some lists.</li>
+    <li>OK to make "Closed" a real closed status in Delivery, Case Story Clients and 7-Figure?</li>
+  </ol>
+</section>
+
+<footer>Prepared by Alexandra Spalato · October 5, 2026 · Based on a read-only audit of the ClickUp workspace</footer>
+</div>
+</body>
+</html>
