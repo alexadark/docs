@@ -1,0 +1,1018 @@
+<!doctype html>
+<html lang="en">
+<head>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Systems Review · Sample deliverable</title>
+<style>
+/* ============ Tokens (skin inherited from deck v3, boardroom) ============ */
+:root{
+  --font-head:"Space Grotesk","Helvetica Neue",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --cover-bg:#2E2013; --cover-ink:#F7F5F0;
+  --bg:#F7F5F0; --ink:#1C2430; --ink-2:#5A6472; --rule:#D9D4C8;
+  --accent:#8A5E16; --accent-ink:#F7F5F0; --card:#FFFFFF;
+  --ch-base:#2F6FB5; --ch-reco:#178A50; --ch-avail:#7B5FC0; --ch-cond:#C0611F;
+  --risk:#B3261E; --aside:#8A8578;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-snap-type:y proximity}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-head);font-size:18px;line-height:1.38}
+b,strong{font-weight:700}
+
+/* ============ Slide shell ============ */
+.slide{min-height:100vh;width:100%;padding:44px 60px 26px;display:flex;flex-direction:column;
+  border-bottom:2px solid var(--rule);position:relative;background:var(--bg);scroll-snap-align:start}
+.slide.cover{background:var(--cover-bg);color:var(--cover-ink);border-bottom:none}
+.slide.divider{background:var(--cover-bg);color:var(--cover-ink);justify-content:center}
+.inner{max-width:1320px;width:100%;margin:0 auto;display:flex;flex-direction:column;flex:1;gap:16px}
+.kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-2)}
+.cover .kicker,.divider .kicker{color:var(--cover-ink);opacity:.92}
+h1{font-weight:800;letter-spacing:-.032em;font-size:clamp(1.9rem,3.3vw,2.9rem);line-height:1.05;max-width:27ch}
+h1 .accent{color:var(--accent)}
+.cover h1{font-size:clamp(2.6rem,5.4vw,4.6rem);max-width:18ch}
+.divider h1{font-size:clamp(2.4rem,5vw,4rem)}
+h2{font-weight:800;letter-spacing:-.02em;font-size:1.5rem;line-height:1.1}
+h3{font-weight:800;letter-spacing:-.015em;font-size:1.02rem}
+.lead{font-size:1.08rem;max-width:74ch}
+.small{font-size:.9rem;color:var(--ink-2);line-height:1.4}
+.grow{flex:1}
+.mono{font-family:var(--font-mono)}
+
+/* ============ Components ============ */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.tile{background:var(--card);border:2px solid var(--ink);border-top:5px solid var(--accent);padding:13px 14px}
+.tile .v{font-family:var(--font-mono);font-weight:700;font-size:clamp(1.2rem,1.9vw,1.7rem);letter-spacing:-.03em}
+.tile .l{font-size:.85rem;color:var(--ink-2);margin-top:6px;line-height:1.3}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.cards.c2{grid-template-columns:repeat(2,1fr)}
+.cards.c3{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--card);border:2px solid var(--ink);border-top:5px solid var(--accent);padding:14px}
+.card p{margin-top:8px}
+.card.dark{background:var(--cover-bg);color:var(--cover-ink);border-color:var(--cover-bg)}
+.card.dark .small{color:rgba(255,255,255,.92)}
+.card.risk{border-top-color:var(--risk)}
+.card.scenario{border-top-color:var(--ch-cond)}
+.card.reco{border-top-color:var(--ch-reco)}
+.badge{display:inline-block;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  border:2px solid var(--ink);padding:3px 8px;font-weight:700}
+.badge.acc{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.badge.reco{background:var(--ch-reco);color:#fff;border-color:var(--ch-reco)}
+.badge.cond{background:var(--ch-cond);color:#fff;border-color:var(--ch-cond)}
+.badge.risk{background:var(--risk);color:#fff;border-color:var(--risk)}
+.badge.ghost{border-style:dashed;color:var(--ink-2);font-weight:400}
+.price{font-family:var(--font-mono);font-weight:700;font-size:1.35rem;letter-spacing:-.02em}
+.card ul.blist{list-style:none;margin-top:10px;font-size:.76rem;line-height:1.5;color:var(--ink-2)}
+.card ul.blist li{padding:1px 0 1px 13px;position:relative}
+.card ul.blist li::before{content:"\00b7";position:absolute;left:0;color:var(--accent);font-weight:700}
+.card ul.blist li b{color:var(--ink);font-weight:600}
+.card ul.blist li.add{font-style:italic;color:var(--ink-2);padding-left:0}
+.quote{border-left:5px solid var(--accent);padding:6px 16px;font-size:1.02rem;font-style:italic;max-width:72ch}
+.quote .who{display:block;font-style:normal;font-family:var(--font-mono);font-size:12px;color:var(--ink-2);margin-top:6px}
+.cover .quote .who,.divider .quote .who{color:rgba(255,255,255,.92)}
+table{border-collapse:collapse;width:100%;background:var(--card);border:2px solid var(--ink);font-size:.87rem}
+th{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;text-align:left;
+  background:var(--ink);color:var(--bg);padding:8px 12px}
+td{padding:6px 11px;border-top:1px solid var(--rule);vertical-align:top}
+td.num{font-family:var(--font-mono);white-space:nowrap}
+tr.group td{background:var(--ink);color:var(--bg);font-family:var(--font-mono);font-size:11px;
+  letter-spacing:.09em;text-transform:uppercase;font-weight:700}
+tr.dim td{color:var(--ink-2)}
+ul.plain{list-style:none}
+ul.plain li{padding:5px 0 5px 24px;position:relative;max-width:80ch}
+ul.plain li::before{content:"■";position:absolute;left:0;color:var(--accent);font-size:10px;top:11px}
+ul.xlist li::before{content:"✗";color:var(--risk);font-size:14px;top:6px}
+ol.steps{list-style:none;counter-reset:s}
+ol.steps li{counter-increment:s;padding:6px 0 6px 42px;position:relative;max-width:80ch}
+ol.steps li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:6px;
+  font-family:var(--font-mono);font-weight:700;color:var(--accent)}
+.callout{background:var(--card);border:2px solid var(--ink);border-left:6px solid var(--ch-cond);padding:10px 14px;font-size:.9rem}
+.callout.risk{border-left-color:var(--risk)}
+.strip{display:flex;flex-wrap:wrap;gap:10px}
+.strip .chip{font-family:var(--font-mono);font-size:11.5px;border:2px solid var(--ink);padding:5px 9px;background:var(--card)}
+.story p{font-size:clamp(1rem,1.35vw,1.2rem);max-width:66ch;line-height:1.34;margin-bottom:10px}
+.story p.beat{font-weight:700}
+.story .said{color:var(--accent);font-style:italic}
+
+/* ============ Diagrams ============ */
+.diagram{background:var(--card);border:2px solid var(--ink);padding:14px}
+.diagram svg{display:block;width:100%;height:auto;max-height:40vh}
+.diagram .cap{font-family:var(--font-mono);font-size:11px;color:var(--ink-2);margin-top:8px;
+  text-transform:uppercase;letter-spacing:.08em}
+
+/* ============ Live version: hero visual ============ */
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.hero.diagram svg{max-height:68vh;width:auto;max-width:100%;margin:0 auto}
+.hero-tiles{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.hero-tiles .tiles{gap:24px}
+.hero-tiles .tile{padding:22px 22px}
+.hero-tiles .tile .v{font-size:clamp(1.5rem,2.4vw,2.2rem);line-height:1.15}
+.hero-tiles .tile .l{font-size:.92rem;margin-top:8px}
+.scqa{display:flex;flex-direction:column;gap:3px;margin-top:16px;max-width:82ch}
+.scqa div{font-size:.92rem;line-height:1.3}
+.scqa .tag{display:inline-block;width:108px;font-family:var(--font-mono);font-weight:700;font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);vertical-align:top}
+.hero-num{font-family:var(--font-mono);font-weight:700;font-size:clamp(2.6rem,5vw,4.2rem);letter-spacing:-.03em}
+.hero-num .l{font-size:1rem;color:var(--ink-2);font-family:var(--font-head);font-weight:400;margin-top:6px}
+.foot.slim{gap:0}
+.foot.slim .pg{margin-left:auto}
+.do-list{list-style:none;margin-top:2px}
+.do-list li{padding:3px 0 3px 24px;position:relative;font-size:.98rem;max-width:88ch}
+.do-list li::before{content:"→";position:absolute;left:0;color:var(--accent);font-weight:700}
+.do-list li.problem{font-weight:400;font-size:.86rem;color:var(--ink-2);padding-bottom:6px;margin-bottom:4px;border-bottom:1px solid var(--rule)}
+.do-list li.problem::before{content:"!";color:var(--risk)}
+.do-list li.outcome{margin-top:8px;padding-top:8px;padding-left:24px;border-top:1px solid var(--rule);font-weight:700}
+.do-list li.outcome::before{content:"✓";color:var(--ch-reco)}
+.outcome-hero{margin-top:12px;background:var(--accent);color:var(--accent-ink);padding:14px 20px}
+.outcome-hero .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;opacity:.85;display:block;margin-bottom:4px;font-weight:700}
+.outcome-hero .msg{font-size:1.3rem;font-weight:800;line-height:1.22}
+.checklist{columns:2;column-gap:36px;flex:1}
+.checklist .grp{break-inside:avoid;margin-bottom:10px}
+.checklist .grp-h{font-family:var(--font-mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.checklist ul{list-style:none}
+.checklist li{padding:2.5px 0 2.5px 24px;position:relative;font-size:.85rem;line-height:1.28}
+.checklist li::before{content:"";position:absolute;left:0;top:3.5px;width:12px;height:12px;border:2px solid var(--ink);background:var(--card)}
+svg text{font-family:var(--font-head);fill:var(--ink)}
+svg .t-lab{font-size:14px;font-weight:700}
+svg .t-sub{font-size:12px;fill:var(--ink-2)}
+svg .t-val{font-family:var(--font-mono);font-size:13px;font-weight:700}
+svg .t-tiny{font-family:var(--font-mono);font-size:10.5px;fill:var(--ink-2);letter-spacing:.06em;text-transform:uppercase}
+svg .box{fill:var(--card);stroke:var(--ink);stroke-width:2}
+svg .box-acc{fill:var(--card);stroke:var(--accent);stroke-width:3}
+svg .box-dark{fill:var(--cover-bg);stroke:var(--cover-bg);stroke-width:2}
+svg .box-ghost{fill:none;stroke:var(--ink-2);stroke-width:2;stroke-dasharray:7 6}
+svg .fill-acc{fill:var(--accent)}
+svg .fill-reco{fill:var(--ch-reco)}
+svg .fill-risk{fill:var(--risk)}
+svg .link{stroke:var(--ink);stroke-width:2;fill:none}
+svg .link-acc{stroke:var(--accent);stroke-width:3;fill:none}
+svg .link-ghost{stroke:var(--ink-2);stroke-width:2;fill:none;stroke-dasharray:6 5}
+svg .on-dark{fill:var(--cover-ink)}
+
+/* ============ Footer ============ */
+.foot{margin-top:auto;padding-top:14px;display:flex;flex-wrap:wrap;gap:6px 22px;align-items:center;
+  font-family:var(--font-mono);font-size:10px;color:var(--ink-2);border-top:1px solid var(--rule)}
+.foot .pg{margin-left:auto}
+.cover .foot,.divider .foot{border-top-color:rgba(255,255,255,.2);color:var(--cover-ink);opacity:.92}
+.logo{height:38px;width:auto;display:block;fill:var(--ink)}
+.cover .logo,.divider .logo{height:58px;fill:var(--cover-ink)}
+.foot .logo{height:15px;opacity:.65}
+
+/* ============ Counter ============ */
+#counter{position:fixed;right:16px;bottom:14px;z-index:60;font-family:var(--font-mono);font-size:12px;
+  letter-spacing:.1em;color:var(--ink-2);background:var(--bg);border:2px solid var(--rule);padding:5px 10px}
+.tbd{background:var(--risk);color:#fff;font-family:var(--font-mono);font-size:.78em;padding:1px 6px;font-weight:700}
+.pend{font-family:var(--font-mono);font-size:.78em;border:2px dashed var(--ink-2);color:var(--ink-2);padding:1px 7px;
+  text-transform:uppercase;letter-spacing:.07em}
+
+a{color:var(--accent);text-decoration:underline}
+a:visited{color:var(--accent)}
+a.linkbtn{display:inline-block;background:var(--accent);color:var(--accent-ink)!important;font-family:var(--font-mono);font-size:12.5px;letter-spacing:.04em;padding:8px 14px;text-decoration:none;font-weight:700;border:2px solid var(--accent);margin-top:6px}
+
+/* ============ Per-slide density (viewport fit at 1600x1000) ============ */
+#s14 .inner{gap:6px}
+#s16 .inner{gap:10px}
+#s14 table{font-size:1.02rem}
+#s14 td{padding:9px 14px}
+#s14 tr.group td{padding:7px 14px}
+#s14 .tile{padding:8px 14px}
+#s14 .callout{padding:8px 14px}
+#s09 .inner{gap:12px}
+#s12 .inner{gap:12px}
+
+/* ============ Opportunity matrix (slide 14) ============ */
+#s-matrix .matrix-wrap{display:grid;grid-template-columns:26px 1fr;grid-template-rows:1fr 26px;gap:8px;flex:1;min-height:0}
+#s-matrix .y-axis{grid-area:1/1;writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);text-align:center}
+#s-matrix .x-axis{grid-area:2/2;display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+#s-matrix .quads{grid-area:1/2;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;min-height:0}
+#s-matrix .quad{border:2px solid var(--ink);padding:12px 16px;background:var(--card);display:flex;flex-direction:column;gap:6px}
+#s-matrix .quad.q-win{border-top:5px solid var(--ch-reco)}
+#s-matrix .quad.q-swing{border-top:5px solid var(--accent)}
+#s-matrix .quad.q-extra{border-top:5px solid var(--ink-2)}
+#s-matrix .quad.q-empty{border-style:dashed;background:transparent}
+#s-matrix .q-h{font-weight:700;font-size:.92rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#s-matrix .quad ul.plain li{padding:3px 0 3px 20px;max-width:none}
+#s-matrix .quad ul.plain li .mono{font-weight:700}
+#s-matrix .quad .co{margin-left:6px;color:var(--ch-cond);font-family:var(--font-mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}
+
+/* ============ Print ============ */
+@media print{
+  @page{size:A4 landscape;margin:0}
+  html{scroll-snap-type:none}
+  #counter{display:none!important}
+  .slide{min-height:auto;height:100vh;page-break-after:always;break-after:page;border-bottom:none;
+    padding:32px 44px 20px;overflow:hidden}
+  body{font-size:16px}
+  a[href]::after{content:""}
+}
+@media (max-width:900px){.slide{padding:40px 22px 24px}.cards.c2,.cards.c3{grid-template-columns:1fr}}
+#s17 .inner{gap:8px}#s17 .callout{padding:8px 14px}
+#s17b .checklist li{font-size:1.08rem;padding:7px 0 7px 30px;line-height:1.35}#s17b .checklist .grp{margin-bottom:26px}#s17b .checklist .grp-h{font-size:13px;margin-bottom:8px}#s17b .checklist li::before{top:11px;width:14px;height:14px}#s13 .diagram{flex:0 0 auto}#s13 .inner{justify-content:center;gap:40px}#s17b .inner{justify-content:center}#s17b .checklist{flex:0 0 auto}
+
+/* ============ Sample tag ============ */
+.sample-tag{display:inline-block;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid rgba(255,255,255,.35);padding:4px 9px;color:var(--cover-ink);opacity:.8}
+</style>
+</head>
+<body>
+<div id="counter">01 / 17</div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 350 89.616"><text x="0" y="66" textLength="350" lengthAdjust="spacingAndGlyphs" font-family="Space Grotesk, Arial, sans-serif" font-weight="800" font-size="58" letter-spacing="-2" fill="currentColor">Sample Client</text></symbol>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1C2430"/>
+    </marker>
+    <marker id="ar-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#8A5E16"/>
+    </marker>
+    <marker id="ar-gh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5A6472"/>
+    </marker>
+  </defs>
+</svg>
+
+<!-- ==================== 01 · COVER ==================== -->
+<section id="s01" class="slide cover" data-num="1" data-title="Cover">
+  <div class="inner">
+    <svg class="logo" viewBox="0 0 350 89.616" role="img" aria-label="Sample Client" style="height:90px"><use href="#logo"/></svg>
+    <div class="grow"></div>
+    <div class="kicker">AI Systems Review · Sample deliverable</div>
+    <h1>Findings &amp; Roadmap</h1>
+    <p class="lead" style="opacity:.92">A premium people-services agency · Prepared by Alexandra Spalato</p>
+    <p><span class="sample-tag">Illustrative sample. Client details changed.</span></p>
+    <div class="grow"></div>
+    <div class="foot"><span>Illustrative sample. Client details changed.</span><span class="pg">01</span></div>
+  </div>
+</section>
+
+<!-- ==================== 02 · EXECUTIVE SUMMARY ==================== -->
+<section id="s02" class="slide" data-num="2" data-title="Executive summary">
+  <div class="inner">
+    <div class="kicker">Executive summary</div>
+    <h1>Demand <span class="accent">ran out of time</span></h1>
+    <div class="hero-tiles">
+      <div class="tiles">
+        <div class="tile"><div class="v">Founder at capacity</div><div class="l">premium founder-led requests turned away</div></div>
+        <div class="tile"><div class="v">"Ask the founder"</div><div class="l">the most common fix in the team survey</div></div>
+        <div class="tile"><div class="v">Hours to win back</div><div class="l">manual work the team wants automated</div></div>
+        <div class="tile"><div class="v">Foundation first</div><div class="l">everything else stands on it</div></div>
+      </div>
+      <div class="scqa">
+        <div><span class="tag">Situation</span> A premium people-services agency, full of demand.</div>
+        <div><span class="tag">Complication</span> Time is the constraint. Not demand.</div>
+        <div><span class="tag">Question</span> Where does AI return time, relationship untouched?</div>
+        <div><span class="tag">Answer</span> Behind the meeting line: trusted automations, one CRM.</div>
+      </div>
+    </div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">02</span></div>
+  </div>
+</section>
+
+<!-- ==================== 03 · CAPACITY ==================== -->
+<section id="s03" class="slide" data-num="3" data-title="The capacity finding">
+  <div class="inner">
+    <div class="kicker">The capacity finding</div>
+    <h1>Demand is not the constraint. <span class="accent">Time is</span></h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1180 300" role="img" aria-label="Capacity in use against capacity available">
+        <text class="t-tiny" x="0" y="16">Capacity in use</text>
+        <text class="t-tiny" x="330" y="16">Capacity available</text>
+        <text class="t-lab" x="0" y="66">Founder-led engagements</text>
+        <text class="t-sub" x="0" y="86">past a handful at once, the business stalls</text>
+        <rect class="box-ghost" x="330" y="46" width="800" height="46"/>
+        <rect class="fill-acc" x="330" y="46" width="300" height="46"/>
+        <text class="t-val on-dark" x="350" y="76" style="fill:#F7F5F0">at capacity</text>
+        <text class="t-val" x="648" y="76">more asked, past capacity · turned away to the team</text>
+        <text class="t-lab" x="0" y="156">Clients per consultant</text>
+        <text class="t-sub" x="0" y="176">Senior Consultant</text>
+        <rect class="box-ghost" x="330" y="136" width="800" height="46"/>
+        <rect class="fill-acc" x="330" y="136" width="533" height="46"/>
+        <text class="t-val on-dark" x="350" y="166" fill="#F7F5F0">today</text>
+        <text class="t-val" x="883" y="166">possible</text>
+        <text class="t-lab" x="0" y="246">Leads contacted, one covered day</text>
+        <text class="t-sub" x="0" y="266">a colleague covering the desk</text>
+        <rect class="box-ghost" x="330" y="226" width="800" height="46"/>
+        <rect class="fill-acc" x="330" y="226" width="192" height="46"/>
+        <text class="t-val" x="538" y="256">contacted, against the backlog to contact</text>
+      </svg>
+      <div class="cap">The gap between the bars is business already waiting</div>
+    </div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">03</span></div>
+  </div>
+</section>
+
+<!-- ==================== 04 · ROOT CAUSE ==================== -->
+<section id="s04" class="slide" data-num="4" data-title="Root cause">
+  <div class="inner">
+    <div class="kicker">Root cause</div>
+    <h1>The knowledge lives in <span class="accent">heads and in phones</span></h1>
+    <div class="diagram hero">
+        <svg viewBox="0 0 1100 400" role="img" aria-label="The manual capture loop feeds itself">
+          <ellipse cx="550" cy="200" rx="350" ry="160" fill="none" stroke="#8A5E16" stroke-width="2.5" stroke-dasharray="8 7"/>
+          <g class="fill-acc">
+            <path d="M -9 -7 L 9 0 L -9 7 Z" transform="translate(725,61) rotate(15)"/>
+            <path d="M -9 -7 L 9 0 L -9 7 Z" transform="translate(900,200) rotate(90)"/>
+            <path d="M -9 -7 L 9 0 L -9 7 Z" transform="translate(725,339) rotate(165)"/>
+            <path d="M -9 -7 L 9 0 L -9 7 Z" transform="translate(375,339) rotate(195)"/>
+            <path d="M -9 -7 L 9 0 L -9 7 Z" transform="translate(200,200) rotate(270)"/>
+            <path d="M -9 -7 L 9 0 L -9 7 Z" transform="translate(375,61) rotate(345)"/>
+          </g>
+          <g>
+            <rect class="box" x="420" y="12" width="260" height="56"/><text class="t-lab" x="550" y="46" text-anchor="middle">Captured by hand</text>
+            <rect class="box" x="723" y="92" width="260" height="56"/><text class="t-lab" x="853" y="118" text-anchor="middle">Data scattered</text><text class="t-sub" x="853" y="136" text-anchor="middle">several platforms and chat channels</text>
+            <rect class="box" x="723" y="252" width="260" height="56"/><text class="t-lab" x="853" y="286" text-anchor="middle">Nobody can query it</text>
+            <rect class="box" x="420" y="332" width="260" height="56"/><text class="t-lab" x="550" y="366" text-anchor="middle">People re-ask and re-type</text>
+            <rect class="box" x="117" y="252" width="260" height="56"/><text class="t-lab" x="247" y="278" text-anchor="middle">Workarounds appear</text><text class="t-sub" x="247" y="296" text-anchor="middle">personal AI chats, notebooks, spreadsheets</text>
+            <rect class="box" x="117" y="92" width="260" height="56"/><text class="t-lab" x="247" y="118" text-anchor="middle">More uncaptured data</text><text class="t-sub" x="247" y="136" text-anchor="middle">and back to the start</text>
+          </g>
+        </svg>
+        <div class="cap">The loop feeds itself until capture is fixed</div>
+    </div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">04</span></div>
+  </div>
+</section>
+
+<!-- ==================== 05 · THE STORY ==================== -->
+<section id="s05" class="slide" data-num="5" data-title="Tuesday morning">
+  <div class="inner">
+    <div class="kicker">What this looks like on a Tuesday</div>
+    <h1>One message becomes <span class="accent">company memory</span></h1>
+    <div class="diagram hero">
+          <svg viewBox="0 0 1160 480" role="img" aria-label="The message, from phone to answer">
+            <rect class="box" x="10" y="170" width="230" height="140"/>
+            <text class="t-tiny" x="30" y="200">Tuesday morning</text>
+            <text class="t-lab" x="30" y="236" style="font-size:17px">Chat reply,</text>
+            <text class="t-lab" x="30" y="260" style="font-size:17px">one phone</text>
+            <path class="link-acc" d="M240 240 L278 240" marker-end="url(#ar-acc)"/>
+
+            <rect class="box-acc" x="284" y="110" width="290" height="260"/>
+            <text class="t-tiny" x="306" y="146" fill="#8A5E16">Stored</text>
+            <text x="306" y="196" style="font-size:26px;font-weight:800">Your company</text>
+            <text x="306" y="228" style="font-size:26px;font-weight:800">memory</text>
+            <text class="t-sub" x="306" y="264">next to the email</text>
+            <text class="t-sub" x="306" y="286">and the call notes</text>
+
+            <path class="link-acc" d="M574 175 C 600 175, 600 90, 620 90" marker-end="url(#ar-acc)"/>
+            <path class="link-acc" d="M574 305 C 600 305, 600 400, 620 400" marker-end="url(#ar-acc)"/>
+
+            <rect class="box" x="626" y="34" width="200" height="112"/>
+            <text class="t-lab" x="644" y="66">CRM copy</text>
+            <text class="t-sub" x="644" y="90">non-sensitive</text>
+            <text class="t-sub" x="644" y="112">timeline for sales</text>
+
+            <rect class="box" x="626" y="344" width="200" height="112"/>
+            <text class="t-lab" x="644" y="376">Team AI app</text>
+            <text class="t-sub" x="644" y="400">the team asks,</text>
+            <text class="t-sub" x="644" y="422">answers are cited</text>
+
+            <path class="link-acc" d="M826 90 C 850 90, 850 200, 870 200" marker-end="url(#ar-acc)"/>
+            <path class="link-acc" d="M826 400 C 850 400, 850 290, 870 290" marker-end="url(#ar-acc)"/>
+
+            <rect class="box-dark" x="876" y="150" width="250" height="190"/>
+            <text class="t-tiny" x="898" y="186" style="fill:#F7F5F0">Same morning</text>
+            <text class="t-lab on-dark" x="898" y="228" style="font-size:21px">Revised plan</text>
+            <text class="t-lab on-dark" x="898" y="256" style="font-size:21px">in minutes</text>
+            <text class="t-sub" x="898" y="288" style="fill:#F7F5F0">instead of hours</text>
+          </svg>
+          <div class="cap">One message, minutes of machine work</div>
+    </div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">05</span></div>
+  </div>
+</section>
+
+<!-- ==================== 06 · THE ARCHITECTURE ==================== -->
+<section id="s06" class="slide" data-num="6" data-title="One architecture">
+  <div class="inner">
+    <div class="kicker">One architecture</div>
+    <h1>The memory is <span class="accent">the durable asset</span></h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1240 470" role="img" aria-label="Channels feed your company memory, which copies to the CRM and answers the team's questions">
+        <text class="t-tiny" x="10" y="18">Your channels</text>
+        <rect class="box" x="10" y="34" width="250" height="58"/>
+        <text class="t-lab" x="26" y="60">Chat app</text><text class="t-sub" x="26" y="80">official business rail</text>
+        <rect class="box" x="10" y="106" width="250" height="58"/>
+        <text class="t-lab" x="26" y="132">Email</text><text class="t-sub" x="26" y="152">every mailbox, one connector</text>
+        <rect class="box" x="10" y="178" width="250" height="58"/>
+        <text class="t-lab" x="26" y="204">Phone calls</text><text class="t-sub" x="26" y="224">discreet recorder, to test</text>
+        <rect class="box" x="10" y="250" width="250" height="58"/>
+        <text class="t-lab" x="26" y="276">Video calls</text><text class="t-sub" x="26" y="296">native, server side</text>
+        <rect class="box" x="10" y="356" width="250" height="70"/>
+        <text class="t-tiny" x="26" y="380">System of record</text>
+        <text class="t-lab" x="26" y="404">Records database</text><text class="t-sub" x="26" y="420">client records, live feed</text>
+
+        <path class="link" d="M260 63 C 340 63, 360 150, 440 190" marker-end="url(#ar)"/>
+        <path class="link" d="M260 135 C 340 135, 370 180, 440 205" marker-end="url(#ar)"/>
+        <path class="link-ghost" d="M260 207 C 340 207, 370 215, 440 220" marker-end="url(#ar-gh)"/>
+        <path class="link-ghost" d="M260 279 C 340 279, 370 250, 440 235" marker-end="url(#ar-gh)"/>
+        <path class="link" d="M260 391 C 350 391, 380 300, 440 262" marker-end="url(#ar)"/>
+
+        <rect class="box-acc" x="445" y="120" width="300" height="200"/>
+        <text class="t-tiny" x="470" y="152" fill="#8A5E16">Yours, hosted where you choose</text>
+        <text x="470" y="190" style="font-size:24px;font-weight:800">Your company</text>
+        <text x="470" y="218" style="font-size:24px;font-weight:800">memory</text>
+        <text class="t-sub" x="470" y="250">one timeline per person</text>
+        <text class="t-sub" x="470" y="272">conversations, notes, files</text>
+        <text class="t-sub" x="470" y="294">searchable by meaning, not keywords</text>
+
+        <path class="link-acc" d="M745 170 C 830 170, 850 120, 930 105" marker-end="url(#ar-acc)"/>
+        <text class="t-sub" x="770" y="130">non-sensitive copy</text>
+        <path class="link-ghost" d="M930 145 C 850 165, 830 200, 748 200" marker-end="url(#ar-gh)"/>
+        <text class="t-sub" x="790" y="185">activity back</text>
+        <path class="link-acc" d="M930 340 C 850 330, 810 300, 748 285" marker-end="url(#ar-acc)"/>
+        <text class="t-sub" x="768" y="330">questions and cited answers</text>
+
+        <rect class="box" x="935" y="60" width="255" height="90"/>
+        <text class="t-lab" x="952" y="88">Your CRM</text>
+        <text class="t-sub" x="952" y="110">the timeline sales works from</text>
+        <text class="t-sub" x="952" y="130">replaceable, the history stays yours</text>
+
+        <rect class="box-dark" x="935" y="290" width="255" height="106"/>
+        <text class="t-tiny" x="952" y="312" style="fill:#F7F5F0">How the team talks to it</text>
+        <text class="t-lab on-dark" x="952" y="334" style="font-size:17px">Team AI workspace</text>
+        <text class="t-lab on-dark" x="952" y="354" style="font-size:17px">two options compared</text>
+        <text class="t-sub" x="952" y="374" style="fill:#F7F5F0">your team picks in a short pilot</text>
+        <text class="t-sub" x="952" y="392" style="fill:#F7F5F0">named accounts, access by role</text>
+      </svg>
+      <div class="cap">The durable asset is the memory. Every tool around it stays replaceable</div>
+    </div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">06</span></div>
+  </div>
+</section>
+
+<!-- ==================== 07 · FOUNDATION 1 ==================== -->
+<section id="s07" class="slide" data-num="7" data-title="Foundation 1">
+  <div class="inner">
+    <div class="kicker">Foundation 1 of 3 · Observability and the automation-tool exit</div>
+    <h1>Your automations fail <span class="accent">in silence</span></h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1230 290" role="img" aria-label="Silent failures today, one alert hub after">
+        <text class="t-tiny" x="0" y="16">Today</text>
+        <rect class="box" x="0" y="30" width="215" height="44"/><text class="t-lab" x="16" y="58">Project board</text><text class="t-sub" x="150" y="58">no alert</text>
+        <rect class="box" x="0" y="84" width="215" height="44"/><text class="t-lab" x="16" y="112">Automation tool</text><text class="t-sub" x="150" y="112">no alert</text>
+        <rect class="box" x="0" y="138" width="215" height="44"/><text class="t-lab" x="16" y="166">Chat bots</text><text class="t-sub" x="150" y="166">no alert</text>
+        <rect class="box" x="0" y="192" width="215" height="44"/><text class="t-lab" x="16" y="220">Email tool</text><text class="t-sub" x="150" y="220">no alert</text>
+        <text class="t-sub" x="0" y="262">several platforms, no alerting</text>
+
+        <path class="link" d="M215 52 C 300 52, 320 120, 400 132" marker-end="url(#ar)"/>
+        <path class="link" d="M215 106 C 300 106, 320 128, 400 138" marker-end="url(#ar)"/>
+        <path class="link" d="M215 160 C 300 160, 320 152, 400 146" marker-end="url(#ar)"/>
+        <path class="link" d="M215 214 C 300 214, 320 172, 400 154" marker-end="url(#ar)"/>
+
+        <rect class="box-acc" x="405" y="90" width="310" height="106"/>
+        <text class="t-tiny" x="425" y="118" fill="#8A5E16">Built first</text>
+        <text class="t-lab" x="425" y="146" style="font-size:19px">A status check on every</text>
+        <text class="t-lab" x="425" y="170" style="font-size:19px">automation, every platform</text>
+
+        <path class="link-acc" d="M715 120 C 800 120, 830 100, 910 92" marker-end="url(#ar-acc)"/>
+        <path class="link-acc" d="M715 166 C 800 166, 830 190, 910 198" marker-end="url(#ar-acc)"/>
+        <rect class="box" x="915" y="56" width="265" height="72"/>
+        <text class="t-lab" x="932" y="84">One team-chat alert channel</text><text class="t-sub" x="932" y="108">any incident, within minutes</text>
+        <rect class="box" x="915" y="162" width="265" height="72"/>
+        <text class="t-lab" x="932" y="190">Red / green dashboard</text><text class="t-sub" x="932" y="214">everything listed and watched</text>
+        <text class="t-sub" x="915" y="262">live flows rebuilt with native alerting</text>
+      </svg>
+    </div>
+    <ul class="do-list">
+      <li class="problem">Problem: broken automations fail silently</li>
+      <li>Watch every automation on every platform</li>
+      <li>Send every failure to one team-chat alert</li>
+      <li>Rebuild the live automation flows so they self-report</li>
+    </ul>
+    <div class="outcome-hero"><span class="tag">Outcome</span><span class="msg">Every automation failure visible within minutes</span></div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">07</span></div>
+  </div>
+</section>
+
+<!-- ==================== 08 · FOUNDATION 2 ==================== -->
+<section id="s08" class="slide" data-num="8" data-title="Foundation 2">
+  <div class="inner">
+    <div class="kicker">Foundation 2 of 3 · Capture and the governed AI layer</div>
+    <h1>Conversations <span class="accent">vanish</span> after they happen</h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1230 300" role="img" aria-label="Every channel lands in one governed place">
+        <text class="t-tiny" x="0" y="16">Captured, channel by channel</text>
+        <rect class="box" x="0" y="28" width="250" height="42"/><text class="t-lab" x="16" y="55">Video calls · native, server side</text>
+        <rect class="box" x="0" y="78" width="250" height="42"/><text class="t-lab" x="16" y="105">Phone · discreet recorder app</text>
+        <rect class="box" x="0" y="128" width="250" height="42"/><text class="t-lab" x="16" y="155">Chat · official business rail</text>
+        <rect class="box" x="0" y="178" width="250" height="42"/><text class="t-lab" x="16" y="205">Email · every mailbox</text>
+        <rect class="box" x="0" y="228" width="250" height="42"/><text class="t-lab" x="16" y="255">Weekly team workshops</text>
+
+        <path class="link" d="M250 49 C 340 49, 370 130, 450 145" marker-end="url(#ar)"/>
+        <path class="link" d="M250 99 C 340 99, 370 140, 450 150" marker-end="url(#ar)"/>
+        <path class="link" d="M250 149 C 340 149, 370 152, 450 154" marker-end="url(#ar)"/>
+        <path class="link" d="M250 199 C 340 199, 370 168, 450 160" marker-end="url(#ar)"/>
+        <path class="link" d="M250 249 C 340 249, 370 180, 450 166" marker-end="url(#ar)"/>
+
+        <rect class="box-dark" x="455" y="80" width="330" height="150"/>
+        <text class="t-tiny" x="478" y="104" style="fill:#F7F5F0">Built once, everything inherits it</text>
+        <text x="478" y="134" style="font-size:22px;font-weight:800;fill:#F7F5F0">One governed AI layer</text>
+        <text class="t-sub" x="478" y="160" style="fill:#F7F5F0;font-weight:700">your company memory</text>
+        <text class="t-sub" x="478" y="182" style="fill:#F7F5F0">base for the Company Brain, later</text>
+        <text class="t-sub" x="478" y="208" style="fill:#F7F5F0">versioned prompts · full traceability</text>
+
+        <path class="link-acc" d="M785 120 C 870 120, 890 96, 960 88" marker-end="url(#ar-acc)"/>
+        <path class="link-acc" d="M785 155 C 870 155, 890 155, 960 155" marker-end="url(#ar-acc)"/>
+        <path class="link-acc" d="M785 190 C 870 190, 890 214, 960 222" marker-end="url(#ar-acc)"/>
+        <rect class="box" x="965" y="62" width="215" height="52"/><text class="t-lab" x="982" y="94">Your CRM</text>
+        <rect class="box" x="965" y="129" width="215" height="52"/><text class="t-lab" x="982" y="161">Records database</text>
+        <rect class="box" x="965" y="196" width="215" height="52"/><text class="t-lab" x="982" y="228">E-sign tool</text>
+      </svg>
+    </div>
+    <ul class="do-list">
+      <li class="problem">Problem: AI used everywhere, captured nowhere</li>
+      <li>Move chat lines to the official business rail, no bot in sight</li>
+      <li>Connect every mailbox with one sign-off</li>
+      <li>Give the team one shared, watched AI workspace</li>
+    </ul>
+    <div class="outcome-hero"><span class="tag">Outcome</span><span class="msg">Every conversation captured, clients never see a bot</span></div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">08</span></div>
+  </div>
+</section>
+
+<!-- ==================== 09 · FOUNDATION 3 ==================== -->
+<section id="s09" class="slide" data-num="9" data-title="Foundation 3">
+  <div class="inner">
+    <div class="kicker">Foundation 3 of 3 · Consolidate onto one CRM, guardrails included</div>
+    <h1>One CRM <span class="accent">reads the conversation back</span></h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1180 340" role="img" aria-label="Monthly cost of each CRM option against the replaceable tool pool today">
+        <text class="t-tiny" x="0" y="20" style="font-size:14px">Monthly cost</text>
+        <line class="link-ghost" x1="500" y1="34" x2="500" y2="320" stroke-width="3"/>
+        <text class="t-sub" x="510" y="30" style="font-size:15px">replaceable pool today</text>
+
+        <text class="t-lab" x="0" y="90" style="font-size:22px">Option A · direct</text>
+        <rect class="fill-acc" x="200" y="58" width="105" height="46"/><rect class="box-ghost" x="305" y="58" width="48" height="46"/>
+        <text class="t-val" x="700" y="90" style="font-size:19px">Research conclusion · saves money</text>
+
+        <text class="t-lab" x="0" y="197" style="font-size:22px">Option B · reseller</text>
+        <rect class="fill-acc" x="200" y="165" width="77" height="46"/><rect class="box-ghost" x="277" y="165" width="48" height="46"/>
+        <text class="t-val" x="700" y="197" style="font-size:19px">Cheapest sticker · conditions pending</text>
+
+        <text class="t-lab" x="0" y="304" style="font-size:22px">Option C · suite</text>
+        <rect class="fill-risk" x="200" y="272" width="299" height="46"/><rect class="box-ghost" x="499" y="272" width="169" height="46"/>
+        <text class="t-val" x="700" y="304" style="font-size:19px">Costs more than today</text>
+      </svg>
+      <div class="cap" style="font-size:1.05rem;letter-spacing:.03em">Replaceable pool today: email, messaging, booking and e-sign tools</div>
+    </div>
+    <ul class="do-list">
+      <li class="problem">Problem: contacts synced unfiltered, no oversight</li>
+      <li>Purge the synced contacts with proof</li>
+      <li>Lock the sync field by field</li>
+      <li>Migrate to the new CRM, old and new running in parallel</li>
+    </ul>
+    <div class="outcome-hero"><span class="tag">Outcome</span><span class="msg">One CRM that reads and writes the conversation timeline</span></div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">09</span></div>
+  </div>
+</section>
+
+<!-- ==================== 10 · COMPANY MEMORY ==================== -->
+<section id="s10" class="slide" data-num="10" data-title="Your company memory">
+  <div class="inner">
+    <div class="kicker">The asset the foundation creates</div>
+    <h1>Every question waits for <span class="accent">the founder</span></h1>
+    <div class="diagram hero">
+        <svg viewBox="0 0 1210 430" role="img" aria-label="A question goes to your company memory and comes back cited">
+          <rect class="box" x="10" y="10" width="1160" height="70"/>
+          <text class="t-tiny" x="30" y="36">Anyone on the team asks</text>
+          <text class="t-lab" x="30" y="64" style="font-size:19px">"What is blocking this client?"</text>
+          <path class="link-acc" d="M590 80 L590 110" marker-end="url(#ar-acc)"/>
+          <rect class="box-acc" x="10" y="114" width="1160" height="90"/>
+          <text x="30" y="152" style="font-size:26px;font-weight:800">Your company memory</text>
+          <text class="t-sub" x="30" y="182">access by role, checked on every question</text>
+          <path class="link" d="M590 204 C 590 214, 160 214, 160 220" marker-end="url(#ar)"/>
+          <path class="link" d="M590 204 C 590 214, 440 214, 440 220" marker-end="url(#ar)"/>
+          <path class="link" d="M590 204 C 590 214, 720 214, 720 220" marker-end="url(#ar)"/>
+          <path class="link" d="M590 204 C 590 214, 1000 214, 1000 220" marker-end="url(#ar)"/>
+          <rect class="box" x="30" y="224" width="260" height="70"/><text class="t-lab" x="48" y="252">Doctrine</text><text class="t-sub" x="48" y="274">weekly workshops</text>
+          <rect class="box" x="310" y="224" width="260" height="70"/><text class="t-lab" x="328" y="252">SOPs</text><text class="t-sub" x="328" y="274">and training material</text>
+          <rect class="box" x="590" y="224" width="260" height="70"/><text class="t-lab" x="608" y="252">CRM</text><text class="t-sub" x="608" y="274">and records database</text>
+          <rect class="box" x="870" y="224" width="260" height="70"/><text class="t-lab" x="888" y="252">Conversations</text><text class="t-sub" x="888" y="274">calls, chat, email</text>
+          <path class="link-acc" d="M160 294 C 160 312, 590 312, 590 328" marker-end="url(#ar-acc)"/>
+          <path class="link-acc" d="M440 294 C 440 312, 590 312, 590 328" marker-end="url(#ar-acc)"/>
+          <path class="link-acc" d="M720 294 C 720 312, 590 312, 590 328" marker-end="url(#ar-acc)"/>
+          <path class="link-acc" d="M1000 294 C 1000 312, 590 312, 590 328" marker-end="url(#ar-acc)"/>
+          <rect class="box-dark" x="10" y="330" width="1160" height="90"/>
+          <text class="t-lab on-dark" x="30" y="366" style="font-size:20px">The answer comes back with its sources</text>
+          <text class="t-sub" x="30" y="394" style="fill:#F7F5F0">every claim links to the message, note or record it came from</text>
+        </svg>
+        <div class="cap">The knowledge stops living in two heads</div>
+    </div>
+    <ul class="do-list">
+      <li>Feed the memory: doctrine, SOPs, CRM, records database, conversations</li>
+      <li>Let anyone ask in plain language, get a cited answer back</li>
+      <li>Announce it now, build it next</li>
+    </ul>
+    <div class="outcome-hero"><span class="tag">Outcome</span><span class="msg">The team gets answers without asking the founder</span></div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">10</span></div>
+  </div>
+</section>
+
+<!-- ==================== 11 · CAPTURE TO PROPOSAL ==================== -->
+<section id="s11" class="slide" data-num="11" data-title="Capture to proposal">
+  <div class="inner">
+    <div class="kicker">Sales Director · Capture notes to proposal ⭐</div>
+    <h1>Proposals are written <span class="accent">by hand</span>, every week</h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1180 250" role="img" aria-label="Six manual steps today, three steps with human review after">
+        <text class="t-tiny" x="0" y="16">Today · slow, manual, for every proposal</text>
+        <rect class="box" x="0" y="28" width="172" height="52"/><text class="t-lab" x="14" y="52" style="font-size:13px">Handwritten</text><text class="t-lab" x="14" y="70" style="font-size:13px">notes</text>
+        <rect class="box" x="182" y="28" width="172" height="52"/><text class="t-lab" x="196" y="52" style="font-size:13px">Photo of</text><text class="t-lab" x="196" y="70" style="font-size:13px">the page</text>
+        <rect class="box" x="364" y="28" width="172" height="52"/><text class="t-lab" x="378" y="52" style="font-size:13px">Personal</text><text class="t-lab" x="378" y="70" style="font-size:13px">AI chat</text>
+        <rect class="box" x="546" y="28" width="172" height="52"/><text class="t-lab" x="560" y="52" style="font-size:13px">Rewrite to</text><text class="t-lab" x="560" y="70" style="font-size:13px">house format</text>
+        <rect class="box" x="728" y="28" width="172" height="52"/><text class="t-lab" x="742" y="52" style="font-size:13px">Retype into</text><text class="t-lab" x="742" y="70" style="font-size:13px">e-sign tool</text>
+        <rect class="box" x="910" y="28" width="172" height="52"/><text class="t-lab" x="924" y="52" style="font-size:13px">Copy into</text><text class="t-lab" x="924" y="70" style="font-size:13px">project board</text>
+        <path class="link" d="M172 54 L178 54" marker-end="url(#ar)"/><path class="link" d="M354 54 L360 54" marker-end="url(#ar)"/>
+        <path class="link" d="M536 54 L542 54" marker-end="url(#ar)"/><path class="link" d="M718 54 L724 54" marker-end="url(#ar)"/>
+        <path class="link" d="M900 54 L906 54" marker-end="url(#ar)"/>
+        <text class="t-val fill-risk" x="1100" y="60">slow</text>
+
+        <text class="t-tiny" x="0" y="146">After · minutes, with human review</text>
+        <rect class="box-acc" x="0" y="158" width="354" height="60"/>
+        <text class="t-lab" x="18" y="184">Conversation captured</text><text class="t-sub" x="18" y="206">on the foundation, call and video</text>
+        <rect class="box-acc" x="376" y="158" width="354" height="60"/>
+        <text class="t-lab" x="394" y="184">House-format notes drafted</text><text class="t-sub" x="394" y="206">in the Sales Director's own format</text>
+        <rect class="box-acc" x="752" y="158" width="328" height="60"/>
+        <text class="t-lab" x="770" y="184">Proposal draft, human review</text><text class="t-sub" x="770" y="206">pushed to the chosen systems</text>
+        <path class="link-acc" d="M354 188 L370 188" marker-end="url(#ar-acc)"/><path class="link-acc" d="M730 188 L746 188" marker-end="url(#ar-acc)"/>
+        <text class="t-val fill-reco" x="1100" y="192">fast</text>
+      </svg>
+    </div>
+    <ul class="do-list">
+      <li class="problem">Problem: every proposal written by hand</li>
+      <li>Capture the conversation automatically, no re-typing</li>
+      <li>Draft the notes in the Sales Director's own format</li>
+      <li>Push a reviewed proposal into the existing tools</li>
+    </ul>
+    <div class="outcome-hero"><span class="tag">Outcome</span><span class="msg">A proposal drafted in minutes, not hours</span></div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">11</span></div>
+  </div>
+</section>
+
+<!-- ==================== 12 · SEARCH AND SHORTLIST ==================== -->
+<section id="s12" class="slide" data-num="12" data-title="Search and shortlist">
+  <div class="inner">
+    <div class="kicker">Senior Consultant · Search and shortlist on the client records database</div>
+    <h1>Consultants are <span class="accent">searching by hand</span></h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1180 280" role="img" aria-label="Slow search and long waits today, minutes and human review after">
+        <text class="t-tiny" x="0" y="16">Today</text>
+        <rect class="box" x="0" y="28" width="250" height="56"/><text class="t-lab" x="16" y="52">Search on two basic fields</text>
+        <rect class="box" x="266" y="28" width="250" height="56"/><text class="t-lab" x="282" y="52">Records scanned by hand</text><text class="t-sub" x="282" y="72">Ctrl-F over long lists</text>
+        <rect class="box" x="532" y="28" width="250" height="56"/><text class="t-lab" x="548" y="52">Slow search, every time</text>
+        <rect class="box" x="798" y="28" width="250" height="56"/><text class="t-lab" x="814" y="52">Client waits weeks</text>
+        <path class="link" d="M250 56 L262 56" marker-end="url(#ar)"/><path class="link" d="M516 56 L528 56" marker-end="url(#ar)"/><path class="link" d="M782 56 L794 56" marker-end="url(#ar)"/>
+
+        <text class="t-tiny" x="0" y="136">After</text>
+        <rect class="box-acc" x="0" y="148" width="340" height="56"/><text class="t-lab" x="18" y="172">Shortlist generated on the base</text><text class="t-sub" x="18" y="192">by meaning, not fields</text>
+        <rect class="box-acc" x="360" y="148" width="340" height="56"/><text class="t-lab" x="378" y="172">The consultant reviews and chooses</text>
+        <rect class="box-acc" x="720" y="148" width="328" height="56"/><text class="t-lab" x="738" y="172">Proposal to the client in days</text>
+        <path class="link-acc" d="M340 176 L354 176" marker-end="url(#ar-acc)"/><path class="link-acc" d="M700 176 L714 176" marker-end="url(#ar-acc)"/>
+        <text class="t-val fill-reco" x="1064" y="180">minutes</text>
+
+        <text class="t-tiny" x="0" y="240">Clients served per consultant</text>
+        <rect class="box-ghost" x="330" y="222" width="718" height="34"/>
+        <rect class="fill-acc" x="330" y="222" width="479" height="34"/>
+        <text class="t-val" x="346" y="245" style="fill:#F7F5F0">today</text>
+        <text class="t-val" x="829" y="245">possible</text>
+      </svg>
+    </div>
+    <ul class="do-list">
+      <li class="problem">Problem: slow search, client waits weeks</li>
+      <li>Make the whole records database searchable in plain English</li>
+      <li>Hand the consultant a shortlist to review and choose from</li>
+      <li>Flag a dormant record the moment it fits</li>
+    </ul>
+    <div class="outcome-hero"><span class="tag">Outcome</span><span class="msg">More clients per consultant, from the database you already own</span></div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">12</span></div>
+  </div>
+</section>
+
+<!-- ==================== 13 · LEAD GEN ==================== -->
+<section id="s13" class="slide" data-num="13" data-title="Lead gen">
+  <div class="inner">
+    <div class="kicker">Sales Director · Lead vetting, research and sequences</div>
+    <h1>Lead research <span class="accent">eats the week</span></h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1215 300" role="img" aria-label="Three leaks on one lead flow, and the same flow closed">
+        <text class="t-tiny" x="0" y="16">The three leaks</text>
+        <rect class="box" x="0" y="30" width="200" height="64"/><text class="t-lab" x="16" y="56">Steady inbound</text><text class="t-sub" x="16" y="78">demand, every month</text>
+        <path class="link" d="M200 62 L246 62" marker-end="url(#ar)"/>
+        <rect class="box" x="252" y="30" width="240" height="64"/><text class="t-lab" x="268" y="56">Triage by hand</text><text class="t-sub" x="268" y="78">a backlog to contact</text>
+        <path class="link" d="M492 62 L538 62" marker-end="url(#ar)"/>
+        <rect class="box" x="544" y="30" width="240" height="64"/><text class="t-lab" x="560" y="56">Research by hand</text><text class="t-sub" x="560" y="78">slow, lead by lead</text>
+        <path class="link" d="M784 62 L830 62" marker-end="url(#ar)"/>
+        <rect class="box" x="836" y="30" width="240" height="64"/><text class="t-lab" x="852" y="56">Social outreach</text><text class="t-sub" x="852" y="78">paid seats, unsteered</text>
+        <g class="fill-risk">
+          <path d="M -9 -7 L 9 0 L -9 7 Z" transform="translate(372,120) rotate(90)"/>
+          <path d="M -9 -7 L 9 0 L -9 7 Z" transform="translate(664,120) rotate(90)"/>
+          <path d="M -9 -7 L 9 0 L -9 7 Z" transform="translate(956,120) rotate(90)"/>
+        </g>
+        <text class="t-sub fill-risk" x="252" y="150">most leads untouched on a covered day</text>
+        <text class="t-sub fill-risk" x="836" y="150">results falling</text>
+
+        <text class="t-tiny" x="0" y="200">What fixed looks like</text>
+        <rect class="box-acc" x="0" y="212" width="360" height="68"/><text class="t-lab" x="18" y="238">Enriched vetting, automated</text><text class="t-sub" x="18" y="258">scoring, identity and fit checks</text>
+        <path class="link-acc" d="M360 246 L400 246" marker-end="url(#ar-acc)"/>
+        <rect class="box-acc" x="406" y="212" width="360" height="68"/><text class="t-lab" x="424" y="238">Sequences below the meeting line</text><text class="t-sub" x="424" y="258">plus a dormant-lead revive</text>
+        <path class="link-acc" d="M766 246 L806 246" marker-end="url(#ar-acc)"/>
+        <rect class="box-acc" x="812" y="212" width="360" height="68"/><text class="t-lab" x="830" y="238">Seats audited, not automated</text><text class="t-sub" x="830" y="258">cancel the surplus, drafting assist</text>
+      </svg>
+    </div>
+    <div class="kicker" style="margin-top:2px">How we fix it</div>
+    <ul class="do-list">
+      <li>Score and check every lead automatically</li>
+      <li>Queue outreach sequences, revive the dormant leads</li>
+      <li>Audit the social-selling seats, cancel what's unused</li>
+    </ul>
+    <div class="outcome-hero"><span class="tag">Outcome</span><span class="msg">Every lead vetted and sequenced, hours back every week</span></div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">13</span></div>
+  </div>
+</section>
+
+<!-- ==================== 14 · OPPORTUNITY MATRIX ==================== -->
+<section id="s-matrix" class="slide" data-num="14" data-title="Opportunity matrix">
+  <div class="inner">
+    <div class="kicker">The opportunity matrix</div>
+    <h1>What we build first, <span class="accent">and why</span></h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1180 560" role="img" aria-label="Opportunity matrix: return per year against effort to build, four quadrants">
+        <text class="t-tiny" x="20" y="260" transform="rotate(-90 20 260)" text-anchor="middle" style="letter-spacing:.1em">RETURN PER YEAR ↑</text>
+        <text class="t-tiny" x="610" y="548" text-anchor="middle" style="letter-spacing:.1em">EFFORT TO BUILD (TIME AND DEPENDENCIES) →</text>
+
+        <rect class="box-ghost" x="60" y="20" width="1100" height="480" fill="none"/>
+        <line x1="610" y1="20" x2="610" y2="500" stroke="#D9D4C8" stroke-width="2"/>
+        <line x1="60" y1="260" x2="1160" y2="260" stroke="#D9D4C8" stroke-width="2"/>
+
+        <text class="t-tiny fill-reco" x="80" y="42">QUICK WINS</text>
+        <text class="t-tiny" x="630" y="42" fill="#8A5E16">BIG SWINGS</text>
+        <text class="t-tiny" x="80" y="282" fill="#8A8578">SMALL EXTRAS</text>
+        <text class="t-tiny" x="630" y="282" fill="#8A8578">NOTHING HERE</text>
+
+        <circle cx="160" cy="130" r="34" class="fill-reco" opacity=".88"/>
+        <text class="t-lab" x="160" y="180" text-anchor="middle" style="font-size:12px">Capture → proposal ⭐</text>
+        <circle cx="330" cy="180" r="27" class="fill-reco" opacity=".88"/>
+        <text class="t-lab" x="330" y="223" text-anchor="middle" style="font-size:12px">Stalled-record recovery</text>
+        <circle cx="480" cy="110" r="21" class="fill-reco" opacity=".88"/>
+        <text class="t-lab" x="480" y="147" text-anchor="middle" style="font-size:12px">Task handover</text>
+        <circle cx="430" cy="225" r="25" class="fill-reco" opacity=".88"/>
+        <text class="t-lab" x="470" y="266" text-anchor="middle" style="font-size:12px">Intake dedup</text>
+
+        <circle cx="720" cy="170" r="29" class="fill-acc" opacity=".9"/>
+        <text class="t-lab" x="720" y="215" text-anchor="middle" style="font-size:12px">Search &amp; shortlist</text>
+        <circle cx="890" cy="110" r="33" class="fill-acc" opacity=".9"/>
+        <text class="t-lab" x="890" y="159" text-anchor="middle" style="font-size:12px">Lead vetting</text>
+        <circle cx="1030" cy="200" r="40" class="fill-acc" opacity=".9"/>
+        <text class="t-val on-dark" x="1030" y="196" text-anchor="middle" style="fill:#fff;font-size:12px">Company</text>
+        <text class="t-val on-dark" x="1030" y="212" text-anchor="middle" style="fill:#fff;font-size:12px">memory</text>
+
+        <circle cx="180" cy="380" r="20" fill="#8A8578"/>
+        <text class="t-lab" x="180" y="416" text-anchor="middle" style="font-size:12px">Seat audit</text>
+
+        <rect x="610" y="260" width="550" height="240" fill="none" stroke="#8A8578" stroke-width="2" stroke-dasharray="7 6"/>
+        <text class="t-sub" x="885" y="385" text-anchor="middle">scored, kept empty</text>
+      </svg>
+      <div class="cap">Bubble size = return</div>
+    </div>
+    <p class="small" style="text-align:center;max-width:none">Position shows effort and return.</p>
+    <div class="callout"><b>The foundation is the base under all of it.</b> Set aside: field logistics, and enrichment without opt-in.</div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">14</span></div>
+  </div>
+</section>
+
+
+
+<!-- ==================== 17 · THE LONG GAME ==================== -->
+<section id="s15" class="slide" data-num="15" data-title="The long game">
+  <div class="inner">
+    <div class="kicker">The long game</div>
+    <h1>There is far more here than <span class="accent">one project</span></h1>
+    <div class="hero-tiles">
+      <div class="cards c3" style="gap:20px">
+        <div class="card" style="display:flex;align-items:center;justify-content:center;min-height:110px;text-align:center"><h3 style="font-size:1.15rem">Data-erasure tooling</h3></div>
+        <div class="card" style="display:flex;align-items:center;justify-content:center;min-height:110px;text-align:center"><h3 style="font-size:1.15rem">Client summaries &amp; back-office reporting</h3></div>
+        <div class="card" style="display:flex;align-items:center;justify-content:center;min-height:110px;text-align:center"><h3 style="font-size:1.15rem">Chat automation</h3></div>
+        <div class="card" style="display:flex;align-items:center;justify-content:center;min-height:110px;text-align:center"><h3 style="font-size:1.15rem">Seasonal ops &amp; consultant notifications</h3></div>
+        <div class="card" style="display:flex;align-items:center;justify-content:center;min-height:110px;text-align:center"><h3 style="font-size:1.15rem">Note freshness &amp; the admin audit</h3></div>
+        <div class="card" style="display:flex;align-items:center;justify-content:center;min-height:110px;text-align:center"><h3 style="font-size:1.15rem">Content engine</h3></div>
+      </div>
+    </div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">15</span></div>
+  </div>
+</section>
+
+<!-- ==================== 18 · ROADMAP ==================== -->
+<section id="s16" class="slide" data-num="16" data-title="Roadmap">
+  <div class="inner">
+    <div class="kicker">Roadmap</div>
+    <h1>Foundation first, <span class="accent">company memory next</span></h1>
+    <div class="diagram hero">
+      <svg viewBox="0 0 1215 320" role="img" aria-label="Roadmap by phase">
+        <g class="t-tiny">
+          <text x="242" y="18">FIRST</text><text x="475" y="18">THEN</text><text x="707" y="18">LATER</text>
+        </g>
+        <g class="gridline">
+          <line x1="230" y1="26" x2="230" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="307" y1="26" x2="307" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="385" y1="26" x2="385" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="462" y1="26" x2="462" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="540" y1="26" x2="540" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="617" y1="26" x2="617" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="695" y1="26" x2="695" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="772" y1="26" x2="772" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="850" y1="26" x2="850" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="927" y1="26" x2="927" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="1005" y1="26" x2="1005" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="1082" y1="26" x2="1082" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+          <line x1="1160" y1="26" x2="1160" y2="274" stroke="#D9D4C8" stroke-width="1"/>
+        </g>
+        <text class="t-lab" x="0" y="58">Phase 1</text><text class="t-sub" x="0" y="76">the foundation</text>
+        <rect class="box-dark" x="230" y="40" width="232" height="44"/>
+        <path class="fill-acc" d="M0 -13 L13 0 L0 13 L-13 0 Z" transform="translate(307,62)"/>
+        <text class="t-sub" x="478" y="58">first &#183; handover-gated slice</text>
+        <text class="t-val fill-reco" x="478" y="76">Outcome: every failure visible within minutes</text>
+
+        <text class="t-lab" x="0" y="122">Phase 2</text>
+        <rect class="fill-acc" x="462" y="104" width="233" height="44"/>
+        <text class="t-sub" x="710" y="122">company memory: SOPs, doctrine, conversations</text>
+        <text class="t-val fill-reco" x="710" y="140">Outcome: every question answered, cited, no more "ask the founder"</text>
+
+        <text class="t-lab" x="0" y="186">Builds you pick</text>
+        <rect class="fill-acc" x="385" y="168" width="310" height="44"/>
+        <text class="t-sub" x="714" y="196">capture to proposal ⭐, stalled records, search &amp; shortlist</text>
+
+        <text class="t-lab" x="0" y="250">Rest of catalogue</text>
+        <rect class="box-ghost" x="617" y="232" width="543" height="44"/>
+        <text class="t-sub" x="636" y="260">lead gen, chat automation, content, seasonal ops, note freshness</text>
+
+        <path class="fill-risk" d="M0 -13 L13 0 L0 13 L-13 0 Z" transform="translate(345,298)"/>
+        <text class="t-sub fill-risk" x="362" y="303">Key-person handover &#183; that knowledge enters the memory first</text>
+      </svg>
+    </div>
+    <div class="quote">"The tech can grow behind the curtain. What clients meet is still us."<span class="who">Founder (paraphrased)</span></div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">16</span></div>
+  </div>
+</section>
+
+<!-- ==================== 19 · THE FULL CHECKLIST ==================== -->
+<section id="s17b" class="slide" data-num="17" data-title="Everything that has to happen">
+  <div class="inner">
+    <div class="kicker">The full checklist</div>
+    <h1>Everything that has to happen</h1>
+    <div class="checklist">
+      <div class="grp">
+        <div class="grp-h">Guardrails &amp; CRM</div>
+        <ul>
+          <li>Purge the synced contacts</li>
+          <li>Sign vendor agreements</li>
+          <li>Move onto one CRM</li>
+        </ul>
+      </div>
+      <div class="grp">
+        <div class="grp-h">Capture &rarr; proposal</div>
+        <ul>
+          <li>Standardise the note format</li>
+          <li>Write down how the sales team phrases things</li>
+          <li>Wire notes into the e-sign tool and project board</li>
+        </ul>
+      </div>
+      <div class="grp">
+        <div class="grp-h">Stalled-record recovery</div>
+        <ul>
+          <li>Audit the stuck records</li>
+          <li>Rebuild the follow-up messages</li>
+        </ul>
+      </div>
+      <div class="grp">
+        <div class="grp-h">Task handover</div>
+        <ul>
+          <li>Document the ops processes</li>
+          <li>Assign each task an owner</li>
+        </ul>
+      </div>
+      <div class="grp">
+        <div class="grp-h">Intake dedup</div>
+        <ul>
+          <li>Add duplicate checks</li>
+          <li>Review duplicates by hand</li>
+        </ul>
+      </div>
+      <div class="grp">
+        <div class="grp-h">Search &amp; shortlist</div>
+        <ul>
+          <li>Connect directly into the records database</li>
+          <li>Build a local search layer</li>
+        </ul>
+      </div>
+      <div class="grp">
+        <div class="grp-h">Lead vetting</div>
+        <ul>
+          <li>Score every lead</li>
+          <li>Write outreach sequences</li>
+          <li>Revive the dormant leads</li>
+        </ul>
+      </div>
+      <div class="grp">
+        <div class="grp-h">Company memory</div>
+        <ul>
+          <li>Transcribe every workshop</li>
+          <li>Make the doctrine searchable</li>
+        </ul>
+      </div>
+      <div class="grp">
+        <div class="grp-h">Social-selling seats</div>
+        <ul>
+          <li>Audit the seats</li>
+          <li>Draft messages by hand</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span class="pg">17</span></div>
+  </div>
+</section>
+
+
+<!-- ==================== APPENDIX DIVIDER ==================== -->
+<section id="ap-appendix" class="slide divider" data-app="Appendix" data-title="Appendix">
+  <div class="inner">
+    <svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg>
+    <div class="grow"></div>
+    <div class="kicker">Reference, not presented</div>
+    <h1>Appendix</h1>
+    <p class="lead" style="opacity:.92">The CRM consolidation, step by step.</p>
+    <div class="grow"></div>
+    <div class="foot"><span>Sample client × Alexandra Spalato</span><span>Illustrative sample. Client details changed.</span><span class="pg">Appendix</span></div>
+  </div>
+</section>
+
+
+<!-- ==================== A2 · CRM MIGRATION DETAIL ==================== -->
+<section id="ap-a1" class="slide" data-app="A1" data-title="CRM migration">
+  <div class="inner">
+    <div class="kicker">Appendix A1</div>
+    <h1>The CRM consolidation, <span class="accent">step by step</span></h1>
+    <p class="lead">The CRM consolidation, in order. Some steps are yours, marked so.</p>
+    <table>
+      <thead><tr><th style="width:20%">Step</th><th style="width:56%">What happens</th><th style="width:24%">Who does it</th></tr></thead>
+      <tbody>
+        <tr><td><b>Guardrails</b></td><td>Purge the already-synced contacts with proof. Lock the sync field by field, so sensitive data never passes.</td><td>Us</td></tr>
+        <tr><td><b>Setup</b></td><td>CRM account, custom objects, the pipelines your team works from.</td><td>Us</td></tr>
+        <tr><td><b>Contacts</b></td><td>Import the contacts, deduplicated. Volume cap agreed in writing.</td><td>Us · you clean the data first</td></tr>
+        <tr><td><b>Journeys</b></td><td>Rebuild the email journeys from the current email tool. Scope agreed up front.</td><td>Us · you list them</td></tr>
+        <tr><td><b>Integrations</b></td><td>Reconnect the booking and e-sign tools. Set the e-sign templates.</td><td>Us · you provide the templates</td></tr>
+        <tr><td><b>Double-run</b></td><td>Old and new systems run side by side for a few weeks. Counts reconciled.</td><td>Us · you validate samples</td></tr>
+        <tr><td><b>Cutover</b></td><td>Switch to the new CRM. Train the team.</td><td>Us · your team attends</td></tr>
+        <tr><td><b>Data contract</b></td><td>A written rule of which fields may pass, with a test proving the sensitive ones cannot.</td><td>Us</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><b>Agreed in writing up front.</b> A contact cap, a journey count, a time-boxed double-run. Heavier discovery changes the scope, agreed before any work.</div>
+    <div class="foot"><svg class="logo" viewBox="0 0 350 89.616" aria-hidden="true"><use href="#logo"/></svg><span>Not legal advice. Vendor statements as reported, unverified.</span><span class="pg">A1</span></div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var counter = document.getElementById('counter');
+  var total = slides.filter(function(s){return s.dataset.num;}).length;
+  var current = 0;
+
+  function label(i){
+    var s = slides[i];
+    if (s.dataset.num) return ('0'+s.dataset.num).slice(-2) + ' / ' + total;
+    return s.dataset.app;
+  }
+  function setCurrent(i){
+    current = i;
+    counter.textContent = label(i);
+  }
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting) setCurrent(slides.indexOf(e.target));
+      });
+    }, {rootMargin:'-45% 0px -45% 0px', threshold:0});
+    slides.forEach(function(s){io.observe(s);});
+  }
+  function go(delta){
+    var next = Math.min(slides.length-1, Math.max(0, current + delta));
+    slides[next].scrollIntoView({behavior:'smooth', block:'start'});
+    setCurrent(next);
+  }
+  document.addEventListener('keydown', function(e){
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    switch(e.key){
+      case 'ArrowRight': case 'ArrowDown': case 'PageDown': e.preventDefault(); go(1); break;
+      case 'ArrowLeft': case 'ArrowUp': case 'PageUp': e.preventDefault(); go(-1); break;
+      case ' ': e.preventDefault(); go(e.shiftKey ? -1 : 1); break;
+      case 'Home': e.preventDefault(); slides[0].scrollIntoView(); setCurrent(0); break;
+      case 'End': e.preventDefault(); slides[slides.length-1].scrollIntoView(); setCurrent(slides.length-1); break;
+    }
+  });
+  setCurrent(0);
+})();
+</script>
+
+</body>
+</html>

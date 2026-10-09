@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Ship the Audit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap">
+<style>
+:root {
+  --bg: #F2EEE6; --ink: #0A0A0A; --paper: #FFFFFF; --muted: #55524B;
+  --hl: #FFE14D; --no: #E8452C; --yes: #1F8A4C;
+  --font-head: "Space Grotesk", "Arial Black", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--ink); color: var(--ink); font-family: var(--font-head); overflow: hidden; }
+.deck { position: fixed; inset: 0; display: grid; place-items: center; }
+.slide {
+  position: absolute; width: min(100vw, calc(100vh * 16 / 9)); height: min(100vh, calc(100vw * 9 / 16));
+  padding: 5% 6.5%; display: none; flex-direction: column; gap: 2.4vmin; background: var(--bg);
+  background-image: radial-gradient(var(--ink) 0.6px, transparent 0.6px); background-size: 2.4vmin 2.4vmin; background-position: -1px -1px;
+}
+.slide::before { content: ""; position: absolute; inset: 0; background: linear-gradient(var(--bg) 0 0); opacity: 0.9; z-index: 0; }
+.slide > * { position: relative; z-index: 1; }
+.slide.active { display: flex; }
+.eyebrow { align-self: flex-start; font-family: var(--font-mono); font-size: 1.6vmin; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; background: var(--ink); color: var(--bg); padding: 0.5vmin 1.1vmin; }
+h1 { font-size: 11vmin; line-height: 0.92; letter-spacing: -0.045em; margin: 0; font-weight: 800; text-transform: uppercase; }
+h2 { font-size: 5.6vmin; line-height: 1.14; letter-spacing: -0.035em; margin: 0; font-weight: 800; max-width: 26ch; }
+h2 em, h1 em, .lede em { font-style: normal; background: linear-gradient(to bottom, transparent 0.2em, var(--hl) 0.2em, var(--hl) 1.02em, transparent 1.02em); padding: 0 0.12em; margin: 0 -0.06em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+p, li { font-size: 2.6vmin; line-height: 1.4; }
+p { margin: 0; max-width: 62ch; }
+.lede { font-family: var(--font-mono); font-size: 2.3vmin; font-weight: 500; max-width: 60ch; border-left: 1vmin solid var(--ink); padding-left: 1.8vmin; }
+.grid { display: grid; gap: 2vmin; margin-top: 0.6vmin; }
+.g2 { grid-template-columns: 1fr 1fr; } .g3 { grid-template-columns: repeat(3, 1fr); } .g4 { grid-template-columns: repeat(4, 1fr); }
+.card { border: 0.4vmin solid var(--ink); background: var(--paper); padding: 2vmin 2.2vmin; display: flex; flex-direction: column; gap: 0.8vmin; box-shadow: 0.9vmin 0.9vmin 0 var(--ink); }
+.card .k { align-self: flex-start; font-family: var(--font-mono); font-size: 1.6vmin; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: 0.3vmin solid var(--ink); padding: 0.2vmin 0.8vmin; }
+.card h3 { margin: 0; font-size: 2.8vmin; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+.card p { font-family: var(--font-mono); font-size: 2.2vmin; color: var(--muted); line-height: 1.4; }
+.card.hl { background: var(--hl); }
+.card.hl p { color: var(--ink); }
+.big { font-size: 9vmin; font-weight: 800; letter-spacing: -0.05em; line-height: 0.9; }
+.alert { color: var(--no); } .ok { color: var(--yes); } .accent { color: var(--ink); }
+.card h3.alert::before { content: "✕ "; } .card h3.ok::before { content: "✓ "; }
+ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 1.2vmin; }
+ul li { font-family: var(--font-mono); font-size: 2.3vmin; padding-left: 3.2vmin; position: relative; }
+ul li::before { content: "→"; position: absolute; left: 0; font-weight: 700; }
+.flow { display: flex; gap: 1.4vmin; align-items: stretch; margin-top: 1vmin; }
+.flow .step { flex: 1; border: 0.4vmin solid var(--ink); background: var(--paper); padding: 1.6vmin; display: flex; flex-direction: column; gap: 0.8vmin; box-shadow: 0.7vmin 0.7vmin 0 var(--ink); }
+.flow .step:nth-child(odd) { margin-top: 2.4vmin; }
+.flow .step .n { font-family: var(--font-mono); font-size: 3.4vmin; font-weight: 700; line-height: 1; }
+.flow .step h3 { margin: 0; font-size: 2.4vmin; font-weight: 800; line-height: 1.1; }
+.flow .step p { font-family: var(--font-mono); font-size: 1.75vmin; color: var(--muted); line-height: 1.35; }
+.formula { font-family: var(--font-mono); font-size: 3vmin; font-weight: 700; border: 0.4vmin solid var(--ink); background: var(--hl); padding: 2.4vmin; box-shadow: 0.9vmin 0.9vmin 0 var(--ink); }
+.muted { color: var(--muted); font-size: 0.7em; font-weight: 500; }
+.loop { display: flex; align-items: center; gap: 1.2vmin; flex-wrap: wrap; font-family: var(--font-mono); font-size: 2.2vmin; font-weight: 700; }
+.loop span.box { border: 0.4vmin solid var(--ink); background: var(--paper); padding: 1.2vmin 1.6vmin; box-shadow: 0.5vmin 0.5vmin 0 var(--ink); }
+.loop span.arrow { font-size: 3vmin; }
+.src { margin-top: auto; font-family: var(--font-mono); font-size: 1.4vmin; color: var(--muted); line-height: 1.5; }
+.quote { font-size: 3.6vmin; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; max-width: 34ch; }
+.quote::before { content: "“"; } .quote::after { content: "”"; }
+.foot { position: fixed; bottom: 1.6vmin; right: 2vmin; font-family: var(--font-mono); font-size: 1.4vmin; font-weight: 700; color: var(--ink); background: var(--hl); border: 0.25vmin solid var(--ink); padding: 0.3vmin 0.8vmin; z-index: 2; }
+.navhint { position: fixed; bottom: 1.6vmin; left: 2vmin; font-family: var(--font-mono); font-size: 1.3vmin; color: var(--muted); z-index: 2; }
+.cover { justify-content: center; background: var(--hl); background-image: none; }
+.cover::before { display: none; }
+.cover .lede { border-left-color: var(--ink); font-size: 2.8vmin; }
+.cover .who { margin-top: 3vmin; align-self: flex-start; font-family: var(--font-mono); font-size: 1.8vmin; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: var(--ink); color: var(--hl); padding: 0.8vmin 1.4vmin; }
+.cover .eyebrow { background: var(--ink); color: var(--hl); }
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 1 -->
+<section class="slide cover">
+  <span class="eyebrow">AI consulting playbook</span>
+  <h1>Ship<br>the audit</h1>
+  <p class="lede">Find the profit leaks in your operations before you automate anything.</p>
+  <div class="who">Alexandra Spalato · AI systems consultant</div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <span class="eyebrow">Start with the result</span>
+  <h2>Nobody wants an audit. They want <em>the time and the money back.</em></h2>
+  <div class="grid g3">
+    <div class="card"><span class="k">Hours</span><h3>Time returned</h3><p>Re-typing, chasing, copy-pasting between tools, searching for information.</p></div>
+    <div class="card"><span class="k">Capacity</span><h3>Work you can say yes to</h3><p>Demand often isn't the constraint. The team's time is.</p></div>
+    <div class="card"><span class="k">Leaks</span><h3>Money that slips out</h3><p>Leads not followed up, tools nobody uses, subscriptions paid twice.</p></div>
+  </div>
+  <p class="lede" style="margin-top:auto">The audit is how you find exactly where those three are hiding.</p>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <span class="eyebrow">What businesses are already doing</span>
+  <h2>Everyone is trying AI. Most are on <em>separate rafts.</em></h2>
+  <div class="grid g2">
+    <div class="card"><h3>One ChatGPT account per person</h3><p>Personal accounts, personal prompts, nothing shared or governed.</p></div>
+    <div class="card"><h3>Data scattered everywhere</h3><p>A CRM, a project board, two chat apps, notebooks, spreadsheets. Nothing in sync.</p></div>
+    <div class="card"><h3>Tools bought before a diagnosis</h3><p>A chatbot or voice agent sold as the answer before anyone looked at the process.</p></div>
+    <div class="card hl"><h3>Result: "AI doesn't work"</h3><p>You can't build on data in silos. The business isn't AI-ready yet, and nobody checked.</p></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <span class="eyebrow">Why this matters</span>
+  <h2>Most AI projects don't fail on <em>the technology.</em></h2>
+  <div class="grid g2">
+    <div class="card"><span class="big">80%+</span><p>of AI projects fail by some estimates, about twice the rate of IT projects without AI. Top causes: the wrong problem, and the wrong data.</p></div>
+    <div class="card"><span class="big">95%</span><p>of generative AI pilots had no measurable effect on profit in one 2025 study. A preliminary and contested figure, but the pattern is consistent.</p></div>
+  </div>
+  <p class="lede">The common thread: nobody diagnosed the business first.</p>
+  <p class="src">RAND, "The Root Causes of Failure for Artificial Intelligence Projects", 2024 · MIT NANDA, "The GenAI Divide: State of AI in Business 2025" (not peer-reviewed)</p>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <span class="eyebrow">Where the real opportunities are</span>
+  <h2>Look at <em>operations</em> before marketing.</h2>
+  <div class="grid g2">
+    <div class="card"><span class="k">What people jump to</span><p>Cold calling bots. Automatic content. LinkedIn spam. Complex funnels.</p></div>
+    <div class="card hl"><span class="k">Where the money usually is</span><p>The bottlenecks in day-to-day operations: manual capture, re-typing, hand-offs, searching, reporting, and the one person everybody waits for.</p></div>
+  </div>
+  <ul>
+    <li>Where is the same information typed twice?</li>
+    <li>Where does work wait for one person?</li>
+    <li>Where do people search for something the business already knows?</li>
+  </ul>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <span class="eyebrow">What not to do with AI</span>
+  <h2>Remove the mechanical work so <em>the human part</em> gets more room.</h2>
+  <div class="grid g2">
+    <div class="card"><h3 class="alert">Don't automate a broken process</h3><p>Analyse the human process first. Automation only makes a bad process faster.</p></div>
+    <div class="card"><h3 class="alert">Don't build on scattered data</h3><p>Centralise and clean first. Otherwise every AI tool gives poor answers.</p></div>
+    <div class="card"><h3 class="alert">Don't buy the solution before the diagnosis</h3><p>The tool should come out of the audit, not the other way round.</p></div>
+    <div class="card"><h3 class="ok">Keep the human where the value is</h3><p>Relationships, judgment and creativity stay human. Your knowledge becomes more valuable, not less.</p></div>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <span class="eyebrow">The process</span>
+  <h2>Seven steps. <em>One delivery week.</em></h2>
+  <div class="flow">
+    <div class="step"><span class="n">01</span><h3>Discovery call</h3><p>The problem in the client's own words. Recorded.</p></div>
+    <div class="step"><span class="n">02</span><h3>Company research</h3><p>Deep research: numbers, market, tools, public signals.</p></div>
+    <div class="step"><span class="n">03</span><h3>Interview packs</h3><p>Questions per person, must-asks first.</p></div>
+    <div class="step"><span class="n">04</span><h3>Interviews</h3><p>Leaders, then the people doing the work.</p></div>
+    <div class="step"><span class="n">05</span><h3>Synthesis &amp; ROI</h3><p>Evidence, triangulation, hours and cost.</p></div>
+    <div class="step"><span class="n">06</span><h3>Deck &amp; roadmap</h3><p>Opportunity matrix and what to do first.</p></div>
+    <div class="step"><span class="n">07</span><h3>Prototype</h3><p>One quick win, clickable.</p></div>
+  </div>
+  <p class="lede" style="margin-top:auto">Each step has its own AI workflow. Each one has a human review gate.</p>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <span class="eyebrow">Who to interview</span>
+  <h2>Leadership tells you what they believe. <em>The team tells you what is.</em></h2>
+  <div class="grid g3">
+    <div class="card"><span class="k">1 · Leadership</span><p>Vision, priorities, what they think takes time.</p></div>
+    <div class="card"><span class="k">2 · The field</span><p>Most central to most peripheral. Walk through the last real case, on screen.</p></div>
+    <div class="card"><span class="k">3 · Everyone, lightly</span><p>A short team survey to check the patterns.</p></div>
+  </div>
+  <p class="quote">The gap between those two views is where the value of the audit is.</p>
+  <p class="lede">Confidentiality promised twice. Reporting aggregated, never "who said what".</p>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <span class="eyebrow">Interviews that learn</span>
+  <h2>Every interview <em>rewrites</em> the next questions.</h2>
+  <div class="loop">
+    <span class="box">Interview</span><span class="arrow">→</span>
+    <span class="box">Debrief &amp; evidence</span><span class="arrow">→</span>
+    <span class="box">Hypotheses updated</span><span class="arrow">→</span>
+    <span class="box">Next pack adjusted</span><span class="arrow">↺</span>
+  </div>
+  <div class="grid g3">
+    <div class="card"><h3>Must-asks first</h3><p>My first interviews ran out of time. Now the critical questions come first and get checked halfway.</p></div>
+    <div class="card"><h3>Listen 80%, sell 0%</h3><p>No solutions during the call. Key quotes confirmed live.</p></div>
+    <div class="card"><h3>Lock the time</h3><p>Agree the time contract in the first two minutes.</p></div>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+  <span class="eyebrow">The steps most people miss</span>
+  <h2>A <em>diagnosis</em>, not a sales pitch.</h2>
+  <div class="grid g2">
+    <div class="card"><h3>Interviewing the team, not only the owner</h3><p>The people using the tools see the real problems.</p></div>
+    <div class="card"><h3>Watching the real tools</h3><p>Screen-share walkthroughs show what nobody thinks to mention.</p></div>
+    <div class="card"><h3>Checking data readiness</h3><p>Where the data lives, who owns it, whether it can be trusted.</p></div>
+    <div class="card"><h3>Saying what not to automate</h3><p>Explicit exclusions build more trust than any promise.</p></div>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+  <span class="eyebrow">ROI that holds up</span>
+  <h2>Count hours the client <em>can verify.</em></h2>
+  <div class="formula">time per task <span class="muted">(from the field)</span> × volume <span class="muted">(from ops)</span> × loaded cost <span class="muted">(salary bands)</span></div>
+  <div class="grid g2">
+    <div class="card"><span class="k">The floor</span><p>Hours × salary. Defensible, written in the client's own KPIs.</p></div>
+    <div class="card hl"><span class="k">The real upside</span><p>Capacity: the work the business turns away today. Presented as a scenario, never as a promise.</p></div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+  <span class="eyebrow">What the client gets</span>
+  <h2><em>Clarity:</em> a map of the business they never had.</h2>
+  <div class="grid g4">
+    <div class="card"><span class="k">Map</span><h3>Business flow</h3><p>How work really moves, and where it gets stuck.</p></div>
+    <div class="card"><span class="k">Matrix</span><h3>Opportunities</h3><p>Impact against effort, scored on evidence.</p></div>
+    <div class="card"><span class="k">Roadmap</span><h3>What comes first</h3><p>A foundation first, then the builds in the order that pays back.</p></div>
+    <div class="card"><span class="k">Proof</span><h3>Prototype</h3><p>One quick win they can click the same week.</p></div>
+  </div>
+  <p class="lede">It ends up being a business check-up, not only an AI review.</p>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+  <span class="eyebrow">Start small</span>
+  <h2>From a <em>small audit</em> to a full one.</h2>
+  <div class="flow">
+    <div class="step"><span class="n">ENTRY</span><h3>Mini audit</h3><p>One person, one team, or one journey. Solve the first problem fast.</p></div>
+    <div class="step"><span class="n">CORE</span><h3>Full diagnostic</h3><p>Every role interviewed. The whole flow mapped.</p></div>
+    <div class="step"><span class="n">AFTER</span><h3>What it opens</h3><p>Implementation, an internal app, team training on a monthly plan, or more audits.</p></div>
+  </div>
+  <p class="lede" style="margin-top:auto">The small audit earns the trust. The big pain point usually shows up during it.</p>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+  <span class="eyebrow">After the audit</span>
+  <h2>Foundation first. <em>Then the client sets the pace.</em></h2>
+  <div class="grid g3">
+    <div class="card hl"><span class="k">Foundation</span><p>Data in one place, automations you can monitor, clear rules for using AI.</p></div>
+    <div class="card"><span class="k">Monthly</span><p>An ongoing plan: build, train the team and adjust, one step at a time.</p></div>
+    <div class="card"><span class="k">First 30 days</span><p>Owners, a measurable success criterion per step, and unknowns marked as unknown.</p></div>
+  </div>
+</section>
+
+<!-- 16 -->
+<section class="slide">
+  <span class="eyebrow">Behind the scenes</span>
+  <h2>I run the audit with <em>the same AI</em> I recommend.</h2>
+  <div class="grid g3">
+    <div class="card"><span class="k">Research</span><p>Company research, then interview packs generated per person.</p></div>
+    <div class="card"><span class="k">Synthesis</span><p>Evidence tracker, opportunity matrix, ROI cases.</p></div>
+    <div class="card"><span class="k">Delivery</span><p>Deck, business-flow map and a clickable prototype.</p></div>
+  </div>
+  <div class="loop">
+    <span class="box">First automated deck</span><span class="arrow">→</span>
+    <span class="box">Mistakes found in review</span><span class="arrow">→</span>
+    <span class="box">System rebuilt to check itself</span><span class="arrow">↺</span>
+  </div>
+  <p class="lede">Every output still goes through my review before a client sees it.</p>
+</section>
+
+<!-- 17 -->
+<section class="slide cover">
+  <span class="eyebrow">Free resource</span>
+  <h1>Take my<br>interview<br>generator</h1>
+  <p class="lede">The AI skill I use to turn company research into interview questions for leaders and staff, with the must-asks first.</p>
+  <div class="who">Link in the description</div>
+</section>
+
+</div>
+<div class="navhint">← → to navigate</div>
+<div class="foot" id="count"></div>
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var i = 0;
+  try { var h = parseInt(location.hash.slice(1), 10); if (h > 0 && h <= slides.length) i = h - 1; } catch (e) {}
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach(function (s, k) { s.classList.toggle('active', k === i); });
+    document.getElementById('count').textContent = (i + 1) + ' / ' + slides.length;
+    try { history.replaceState(null, '', '#' + (i + 1)); } catch (e) {}
+  }
+  document.addEventListener('keydown', function (e) {
+    if (['ArrowRight', 'PageDown', ' '].indexOf(e.key) > -1) { e.preventDefault(); show(i + 1); }
+    if (['ArrowLeft', 'PageUp'].indexOf(e.key) > -1) { e.preventDefault(); show(i - 1); }
+  });
+  document.addEventListener('click', function (e) { show(e.clientX > window.innerWidth / 2 ? i + 1 : i - 1); });
+  show(i);
+})();
+</script>
+</body>
+</html>
