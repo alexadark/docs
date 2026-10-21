@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ClickUp Reorganization Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Linear-style dark document: one reading column, square corners, mono caps labels, colour only as accent. */
+:root {
+  --bg: #0B0B0D; --surface: #131316; --fg: #EDEDF0; --muted: #8A8F98; --line: #2C2D30;
+  --accent: #7C8CFF; --warn: #FFB224; --ok: #3DD68C; --alert: #FF4D4F; --info: #22D3EE;
+  --code-bg: #18181C;
+  --font-body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+    --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+    --code-bg: #F0F0F3; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+  --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+  --code-bg: #F0F0F3; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; padding: 48px 16px 96px; }
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.45rem; font-weight: 650; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+header, section { display: flex; flex-direction: column; gap: 16px; }
+.eyebrow, .caps { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.eyebrow { color: var(--muted); }
+.lede { font-size: 1.15rem; color: var(--muted); }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); padding: 0.1em 0.35em; }
+pre { font-family: var(--font-mono); font-size: 0.82rem; background: var(--code-bg); border: 1px solid var(--line); padding: 16px; margin: 0; overflow-x: auto; }
+ul, ol { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 65ch; }
+.note { border-left: 3px solid var(--info); background: var(--surface); padding: 14px 16px; }
+.note.warn { border-left-color: var(--warn); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { border: 1px solid var(--line); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.stat .n { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.stat p { font-size: 0.85rem; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 18px; }
+.steps > li { counter-increment: s; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; }
+.steps > li > h3::before { content: "Step " counter(s) " · "; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
+.c-accent { color: var(--accent); } .c-warn { color: var(--warn); } .c-ok { color: var(--ok); } .c-alert { color: var(--alert); } .c-info { color: var(--info); }
+footer { color: var(--muted); font-size: 0.88rem; border-top: 1px solid var(--line); padding-top: 20px; }
+
+.flow { display: flex; flex-direction: column; gap: 0; }
+.node { border: 1px solid var(--line); background: var(--surface); padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+.node .who { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.node.wait { border-left: 3px solid var(--warn); }
+.node.new { border-left: 3px solid var(--ok); }
+.arrow { align-self: center; color: var(--muted); font-family: var(--font-mono); font-size: 0.8rem; padding: 4px 0; }
+.arrow.warn { color: var(--warn); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.card { border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.card ul { font-size: 0.9rem; color: var(--muted); }
+.tag { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--line); padding: 2px 6px; align-self: flex-start; }
+.tag.ok { color: var(--ok); border-color: var(--ok); } .tag.warn { color: var(--warn); border-color: var(--warn); } .tag.info { color: var(--info); border-color: var(--info); } .tag.muted { color: var(--muted); }
+.lane { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 8px; align-items: stretch; }
+.lane .arrow { align-self: center; }
+@media (max-width: 640px) { .lane { grid-template-columns: 1fr; } .lane .arrow { transform: rotate(90deg); } }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.85rem; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; margin-right: 6px; vertical-align: middle; }
+.legend .l-wait::before { background: var(--warn); } .legend .l-new::before { background: var(--ok); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="eyebrow">Ian Garlic team · October 21, 2026</span>
+  <h1>ClickUp reorganization plan</h1>
+  <p class="lede">Built from your August team survey and a read-only audit of the workspace. Nothing has changed yet: this is a draft to review together, and nothing moves before you've seen it.</p>
+</header>
+
+<section>
+  <span class="eyebrow">What you told us</span>
+  <h2>Four signals from the survey</h2>
+  <div class="grid2">
+    <div class="card"><span class="tag warn">3 of 4</span><h3>Handoffs are incomplete</h3><p class="c-muted">Missing scope, deliverables, access or kickoff. Work waits on Ian.</p></div>
+    <div class="card"><span class="tag warn">3 of 4</span><h3>ClickUp needs a cleanup</h3><p>The internal project most of you would pick with two free weeks.</p></div>
+    <div class="card"><span class="tag info">Requested</span><h3>One place per client</h3><p>Notes, preferences, contacts and updates for every client.</p></div>
+    <div class="card"><span class="tag info">Requested</span><h3>Less manual relay</h3><p>Slack pings on assignment, Vimeo comments to ClickUp, YouTube descriptions to the right task, and no more triple entry in Descript, ClickUp and Airtable.</p></div>
+  </div>
+</section>
+
+<section>
+  <span class="eyebrow">Where we are</span>
+  <h2>What the audit found</h2>
+  <div class="stats">
+    <div class="stat"><span class="n">~1,270</span><p>parent tasks that look open, mostly template clones and old work</p></div>
+    <div class="stat"><span class="n">6+</span><p>different status sets, with "client review" and "in client review" side by side</p></div>
+    <div class="stat"><span class="n">3–5</span><p>places where the same client lives</p></div>
+  </div>
+  <p>"Closed" is set up as a done status that ClickUp still counts as open. That's why lists look much busier than they are, and why any automation built today would send noise.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Target</span>
+  <h2>Spaces by function, not by client</h2>
+  <p>The client becomes a record you link to, not a place you have to find.</p>
+  <div class="grid3">
+    <div class="card"><span class="tag ok">Clients</span><p>One card per client: offer, services, contacts, Slack channel, preferences, approval history.</p></div>
+    <div class="card"><span class="tag ok">Delivery</span><p>One folder per active client, one list per project created from a template. Offer level becomes a field.</p></div>
+    <div class="card"><span class="tag ok">Support</span><p>Client and hosting tickets in a single flow.</p></div>
+    <div class="card"><span class="tag ok">Products</span><p>Internal product work, visible to the whole team.</p></div>
+    <div class="card"><span class="tag ok">Growth</span><p>Agency marketing and sales.</p></div>
+    <div class="card"><span class="tag muted">Archive</span><p>Everything dead, archived, never deleted.</p></div>
+  </div>
+  <div class="note"><strong>One status set everywhere:</strong> Inbox → Ready → In Progress → Waiting → Review → Done (really closed) → Parked.</div>
+</section>
+
+<section>
+  <span class="eyebrow">Working without waiting</span>
+  <h2>SOPs and templates that open with the work</h2>
+  <p>Each procedure is a ClickUp Doc attached to a task or list template, so the right instructions show up when the work starts. Written with you, validated once by Ian.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Template</th><th>What it holds</th><th>Fixes</th></tr>
+    <tr><td>Kickoff and handoff</td><td>Required before starting: scope, deliverables, access, assets, contacts, preferences</td><td>Incomplete handoffs</td></tr>
+    <tr><td>Client card</td><td>Offer, services, contacts, Slack channel, preferences, approvals</td><td>Client info scattered</td></tr>
+    <tr><td>Shoot: before, during, after</td><td>Landscape and vertical, content angle announced before each take, footage upload list</td><td>Missing footage</td></tr>
+    <tr><td>Writing and headlines</td><td>Headline rules and recurring mistakes, approved once</td><td>Waiting on headline approval</td></tr>
+    <tr><td>Review and follow-up</td><td>Client review status, delays, follow-up message</td><td>Constant follow-ups</td></tr>
+    <tr><td>Project per offer</td><td>Subtasks with description, owner and definition of done</td><td>Tasks slow to start</td></tr>
+    <tr><td>Prompts</td><td>Asset placement, text callouts, stock footage, YouTube descriptions</td><td>Outdated prompts</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <span class="eyebrow">Connections</span>
+  <h2>How the tools talk to each other</h2>
+  <div class="lane">
+    <div class="node"><span class="who">Vimeo</span>Client comments</div>
+    <span class="arrow">→</span>
+    <div class="node new"><span class="who">ClickUp</span>The source of truth for work: owner, status, due date</div>
+    <span class="arrow">→</span>
+    <div class="node"><span class="who">Slack</span>Ping when a task is assigned or a status changes</div>
+  </div>
+  <div class="lane">
+    <div class="node"><span class="who">YouTube descriptions</span>Finished copy</div>
+    <span class="arrow">→</span>
+    <div class="node new"><span class="who">ClickUp</span>Lands in the right task</div>
+    <span class="arrow">↔</span>
+    <div class="node"><span class="who">Descript · Airtable</span>One tool owns each piece of info, the others link to it</div>
+  </div>
+  <p>Later, Claude connects to ClickUp, Slack and the SOPs so you can ask it to start a project from a template, check a handoff is complete, draft a follow-up or summarize a client. Only after the cleanup: on today's workspace it would repeat the mess.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Order</span>
+  <h2>Seven steps</h2>
+  <ol class="steps">
+    <li><h3>Safe cleanup</h3><p>Archive dead spaces and empty lists, assign orphan tickets.</p></li>
+    <li><h3>Client cards</h3><p>One list, one card per client, clean up the client field.</p></li>
+    <li><h3>One status set</h3><p>A real closed "Done". Needed before any automation.</p></li>
+    <li><h3>SOPs and templates</h3><p>The table above, written with you.</p></li>
+    <li><h3>Automations</h3><p>ClickUp to Slack first, then Vimeo and YouTube descriptions.</p></li>
+    <li><h3>Merge Delivery</h3><p>Fold client tiers into one Delivery space, move product work to its own space.</p></li>
+    <li><h3>Claude for the team</h3><p>Start with one concrete job you asked for, like checking a handoff.</p></li>
+  </ol>
+</section>
+
+<section>
+  <span class="eyebrow">Your input</span>
+  <h2>Questions for you</h2>
+  <ul>
+    <li>Which spaces and lists do you actually open every day? Which could disappear?</li>
+    <li>Which statuses do you need to run reviews and client follow-ups?</li>
+    <li>What would you like Slack to tell you, and what's just noise?</li>
+    <li>Which template would save you the most time first?</li>
+  </ul>
+</section>
+
+<footer>Prepared by Alexandra Spalato · October 21, 2026 · Draft for discussion</footer>
+</div>
+</body>
+</html>
