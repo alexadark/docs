@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Discover how StoryCollector turns guided AI video interviews into private recordings, transcripts, story highlights and written reviews. Explore the complete product guide.">
+  <meta name="theme-color" content="#0c0c0f">
+  <title>StoryCollector — The video interviewer, explained</title>
+  <style>
+    :root { color-scheme:dark; --paper:#0c0c0f; --surface:#141418; --ink:#f2f2f5; --muted:#aaaab7; --line:#2a2a33; --brand:#a78bfa; --link:#c4b5fd; --accent:#a78bfa; --night:#111115; --night-text:#f2f2f5; --night-muted:#aaaab7; --focus:#c4b5fd; --body:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; --display:var(--body); }
+    * { box-sizing:border-box; }
+    html { scroll-padding-top:6rem; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:1rem/1.6 var(--body); -webkit-font-smoothing:antialiased; }
+    a { color:var(--link); text-underline-offset:.2em; }
+    button,input,select { font:inherit; }
+    button,a,input,select,summary { -webkit-tap-highlight-color:transparent; }
+    :focus-visible { outline:3px solid var(--focus); outline-offset:4px; }
+    ::selection { background:var(--accent); color:var(--night); }
+    h1,h2,h3,p { margin:0; }
+    h1,h2,.wordmark,.big-number { font-family:var(--display); font-weight:600; }
+    h1 { font-size:clamp(2.3rem,4.2vw,3.75rem); line-height:1.12; letter-spacing:-.045em; text-wrap:balance; }
+    h2 { font-size:clamp(1.8rem,3vw,2.5rem); line-height:1.2; letter-spacing:-.035em; text-wrap:balance; }
+    h3 { font-size:1.1rem; line-height:1.4; font-weight:600; }
+    p { text-wrap:pretty; max-width:70ch; }
+    [hidden] { display:none !important; }
+    .wrap { width:min(1080px,calc(100% - 6rem)); margin-inline:auto; }
+    main { margin-inline-start:244px; }
+    .skip { position:fixed; inset-block-start:.5rem; inset-inline-start:.5rem; padding:1rem; background:var(--surface); z-index:10; transform:translateY(-200%); }
+    .skip:focus { transform:none; }
+    header { background:#101014; border-inline-end:1px solid var(--line); position:fixed; inset:0 auto 0 0; width:244px; overflow-y:auto; }
+    .header-inner { display:flex; flex-direction:column; align-items:stretch; gap:2rem; width:auto; margin:0; padding:2rem 1.2rem; min-height:100%; }
+    .wordmark { text-decoration:none; color:var(--ink); font-size:1.12rem; display:flex; align-items:center; gap:.6rem; letter-spacing:-.035em; }
+    .mark { width:19px; height:21px; background:var(--brand); display:inline-block; clip-path:polygon(0 0,100% 0,100% 73%,35% 73%,0 100%); }
+    .nav-label { color:var(--muted); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; padding-inline:.7rem; margin-block-end:.6rem; }
+    .sidebar-note { margin-block-start:auto; padding:.9rem .7rem 0; border-top:1px solid var(--line); font-size:.75rem; color:var(--muted); }
+    nav { display:flex; flex-direction:column; gap:.35rem; }
+    nav a { color:var(--muted); font-size:.875rem; text-decoration:none; padding:.65rem .7rem; border-radius:6px; }
+    nav a:hover,nav a[aria-current="location"] { background:#23202f; color:var(--ink); }
+    .eyebrow { font-size:.75rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+    .hero { display:grid; grid-template-columns:1.2fr 1fr; gap:3rem; padding-block:4.5rem 3rem; align-items:center; }
+    .hero h1 { margin-block:1.2rem; }
+    .hero h1 span { color:var(--link); }
+    .intro { font-size:1rem; color:var(--muted); max-width:50ch; line-height:1.75; }
+    .actions { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-block-start:2rem; }
+    .button { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:.65rem 1rem; border:1px solid var(--line); border-radius:6px; background:var(--surface); color:var(--ink); text-decoration:none; cursor:pointer; font-weight:500; font-size:.85rem; }
+    .button.primary { background:var(--ink); color:var(--paper); }
+    .hero-note { margin-block-start:1.25rem; color:var(--muted); font-size:.85rem; }
+    .studio { background:var(--night); color:var(--night-text); padding:1.5rem; border:1px solid var(--line); border-radius:10px; position:relative; }
+    .studio-top { display:flex; gap:1rem; justify-content:space-between; align-items:center; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--night-muted); }
+    .studio-label { display:flex; gap:.5rem; align-items:center; }
+    .dot { width:7px; height:7px; background:var(--accent); display:inline-block; }
+    .sound { height:100px; display:flex; align-items:center; justify-content:center; gap:6px; margin-block:1.5rem; }
+    .sound i { width:4px; height:calc(var(--height) * .7); background:var(--accent); border-radius:3px; }
+    .quote { font-size:1.25rem; line-height:1.5; max-width:25ch; margin-block-end:1rem; letter-spacing:-.02em; }
+    .speaker { color:var(--night-muted); font-size:.82rem; }
+    .studio-bottom { border-top:1px solid var(--line); margin-block-start:1.5rem; padding-block-start:1.2rem; display:grid; grid-template-columns:1fr; gap:.8rem; }
+    .studio-bottom strong { display:block; font-size:.9rem; }
+    .studio-bottom span { font-size:.78rem; color:var(--night-muted); }
+    .caption { margin-block-start:1.5rem; color:var(--muted); font-size:.75rem; }
+    .promise { display:flex; flex-wrap:wrap; gap:.7rem 1.5rem; padding-block:1.5rem; border-block:1px solid var(--line); font-size:.78rem; color:var(--muted); }
+    .promise span::before { content:""; display:inline-block; width:4px; height:4px; border-radius:50%; background:var(--muted); margin-inline-end:.6rem; vertical-align:middle; }
+    section { padding-block:4rem; scroll-margin-top:2rem; }
+    .section-heading { display:grid; grid-template-columns:1fr 1fr; align-items:end; gap:2.5rem; margin-block-end:3rem; }
+    .section-heading h2 { margin-block-start:.8rem; }
+    .section-heading>p { color:var(--muted); }
+    .journey { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; list-style:none; padding:0; margin:0; }
+    .journey li { border-top:1px solid var(--line); padding-block-start:1.2rem; }
+    .step-meta { display:flex; justify-content:space-between; align-items:center; margin-block-end:1.25rem; }
+    .big-number { font-size:.85rem; line-height:1; color:var(--link); background:#23202f; padding:.6rem; border:1px solid #3c3254; border-radius:6px; font-variant-numeric:tabular-nums; }
+    .role { font-size:.72rem; letter-spacing:.07em; text-transform:uppercase; font-weight:700; color:var(--muted); }
+    .journey p { margin-block-start:.6rem; color:var(--muted); font-size:.95rem; }
+    .deliverables { background:var(--night); color:var(--night-text); border-block:1px solid var(--line); }
+    .deliverables .section-heading>p { color:var(--night-muted); }
+    .outputs { display:grid; grid-template-columns:repeat(2,1fr); gap:2rem; }
+    .output { border-top:1px solid var(--line); padding-block-start:1.2rem; }
+    .file-type { display:inline-block; font:700 .75rem/1 monospace; color:var(--accent); margin-block-end:1.5rem; }
+    .output p { color:var(--night-muted); margin-block-start:.7rem; font-size:.95rem; }
+    .output h3 { font-size:1.15rem; }
+    .boundary { margin-block-start:2rem; padding-block-start:1.5rem; border-top:1px solid var(--line); color:var(--night-muted); font-size:.85rem; }
+    .tools { display:grid; grid-template-columns:1fr 220px auto; gap:1rem; align-items:end; margin-block-end:1rem; }
+    label { display:block; font-size:.8rem; font-weight:700; margin-block-end:.4rem; }
+    input,select { width:100%; min-height:44px; background:var(--surface); border:1px solid #666674; color:var(--ink); padding:.65rem .85rem; border-radius:6px; }
+    .search-status { color:var(--muted); font-size:.85rem; min-height:1.6rem; margin-block-end:1.5rem; }
+    .legend { display:flex; flex-wrap:wrap; gap:.6rem 1.5rem; font-size:.8rem; color:var(--muted); margin-block-end:1.5rem; }
+    .badge { display:inline-block; font-size:.7rem; line-height:1.5; padding:.15rem .5rem; border:1px solid var(--line); border-radius:4px; font-weight:500; white-space:nowrap; background:var(--surface); color:var(--muted); }
+    .badge.optional { background:#1c2330; color:#aac7ef; border-color:#32435c; }
+    .badge.local { background:#282317; color:#d9c38d; border-color:#50452d; }
+    details.group { border-top:1px solid var(--line); }
+    details.group:last-child { border-bottom:1px solid var(--line); }
+    summary { cursor:pointer; }
+    .group>summary { list-style:none; display:flex; gap:1rem; align-items:center; padding-block:1.5rem; }
+    .group>summary::-webkit-details-marker { display:none; }
+    .group>summary::after { content:"+"; margin-inline-start:auto; font-size:1.8rem; line-height:1; }
+    .group[open]>summary::after { content:"−"; }
+    .group-number { color:var(--muted); font: .8rem/1 monospace; }
+    .group-title { font-size:1.12rem; font-weight:600; }
+    .feature-list { margin:0 0 2rem 2.25rem; padding:0; list-style:none; display:grid; grid-template-columns:1fr; }
+    .feature { padding-block:1.15rem; border-top:1px solid var(--line); }
+    .feature-head { display:flex; align-items:start; justify-content:space-between; gap:.7rem; flex-wrap:wrap; }
+    .feature h3 { font-size:1rem; }
+    .feature p { font-size:.9rem; color:var(--muted); margin-block-start:.4rem; max-width:80ch; line-height:1.75; }
+    .empty { background:var(--surface); padding:2rem; border:1px solid var(--line); }
+    .empty .button { margin-block-start:1rem; }
+    .availability { padding:1.5rem; margin-block-start:2rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+    .availability p { color:var(--muted); font-size:.9rem; margin-block-start:.5rem; }
+    .faq { padding-block-start:0; }
+    .faq-grid { display:grid; grid-template-columns:1fr 1.45fr; gap:4rem; }
+    .faq h2 { margin-block-start:.8rem; }
+    .faq details { border-top:1px solid var(--line); padding-block:1.2rem; }
+    .faq summary { font-weight:700; padding-inline-end:1rem; }
+    .faq details p { margin-block-start:.8rem; color:var(--muted); font-size:.95rem; }
+    .closing { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:2rem; display:flex; justify-content:space-between; gap:2rem; align-items:center; }
+    .closing h2 { font-size:2rem; max-width:24ch; }
+    .closing p { margin-block-start:.8rem; max-width:52ch; }
+    footer.wrap { width:auto; margin-inline:292px 3rem; padding-block:2.5rem; font-size:.75rem; color:var(--muted); }
+    .footer-inner { display:flex; justify-content:space-between; gap:2rem; align-items:start; }
+    footer p { max-width:80ch; }
+    @media (hover:hover) { .button:hover { background:#26262e; color:var(--ink); } .button.primary:hover { background:#d6d6df; color:var(--paper); } summary:hover { color:var(--link); } }
+    @media (max-width:72rem) { .hero { grid-template-columns:1fr; gap:2rem; } .studio-bottom { grid-template-columns:1fr 1fr; } .hero h1 { max-width:18ch; } .studio .sound { height:60px; margin-block:1rem; } .wrap { width:calc(100% - 3rem); } .journey { grid-template-columns:1fr 1fr; } }
+    @media (max-width:46rem) {
+      main { margin-inline-start:0; } header { position:static; width:100%; border-inline-end:0; border-bottom:1px solid var(--line); }
+      .wrap { width:calc(100% - 2.5rem); } .header-inner { width:auto; gap:1rem; padding:1.25rem; } nav { flex-direction:row; flex-wrap:wrap; gap:.25rem; } nav a { padding:.5rem .6rem; }
+      .nav-label,.sidebar-note { display:none; } footer.wrap { margin-inline:1.25rem; }
+      .hero { grid-template-columns:1fr; padding-block:2.5rem; gap:2rem; } h1 { max-width:18ch; }
+      section { padding-block:3.5rem; } .section-heading { grid-template-columns:1fr; gap:1rem; margin-block-end:2rem; }
+      .journey { grid-template-columns:1fr 1fr; gap:1.8rem; } .tools { grid-template-columns:1fr 1fr; } .search-field { grid-column:1/-1; }
+      .feature-list { margin-inline-start:0; grid-template-columns:1fr; } .group-title { font-size:1.1rem; }
+      .faq-grid { grid-template-columns:1fr; gap:2rem; } .closing { padding:2rem; flex-direction:column; align-items:start; } .footer-inner { flex-direction:column; gap:1rem; }
+    }
+    @media (max-width:26rem) { .journey,.outputs,.tools { grid-template-columns:1fr; } .promise { gap:.8rem; } .group-number { display:none; } }
+    @media print {
+      :root { --paper:#fff; --surface:#fff; --ink:#17191c; --muted:#555961; --line:#ccc; --link:#b80f31; }
+      header, .actions, .tools, .search-status, .closing, .skip { display:none !important; }
+      main { margin:0; } footer.wrap { margin:0; } .wrap { width:100%; } section { padding-block:1.5rem; } .hero { padding-block:1rem; }
+      .studio { box-shadow:none; } .feature-list { grid-template-columns:1fr 1fr; } .feature { break-inside:avoid; }
+      .deliverables { background:#fff; color:#17191c; } .deliverables .section-heading>p,.output p,.boundary { color:#555961; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header><div class="wrap header-inner">
+    <a class="wordmark" href="#main" aria-label="StoryCollector overview"><span class="mark" aria-hidden="true"></span>StoryCollector</a>
+    <div><p class="nav-label">Product guide</p><nav aria-label="Product guide"><a href="#main" aria-current="location">Overview</a><a href="#how-it-works">How it works</a><a href="#deliverables">What you receive</a><a href="#features">All features</a><a href="#questions">Common questions</a></nav></div>
+    <p class="sidebar-note"><a href="index.html">← All pages</a><br><a href="for-businesses.html">TAMOS for businesses →</a><br><br>AI video interviews<br>Customer stories · Team knowledge<br><br>Updated October 2026</p>
+  </div></header>
+  <main id="main">
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">The AI video interviewer · Product guide</p>
+          <h1>Your video interviewer,<br><span>explained.</span></h1>
+          <p class="intro">StoryCollector interviews your customers and team members for you. It records the conversation and prepares a video, transcript, highlights and written review for you to check and use.</p>
+          <div class="actions"><a class="button primary" href="#how-it-works">Explore the workflow</a><a class="button" href="#features">Browse all features</a></div>
+          <p class="hero-note">You set the direction. Your interviewee brings the story.</p>
+        </div>
+        <div>
+          <div class="studio" role="img" aria-label="Illustration of a guided interview: the AI asks what made the customer feel heard, then the recording becomes private story material.">
+            <div class="studio-top"><span class="studio-label"><span class="dot"></span>Guided conversation</span><span>Illustration</span></div>
+            <div class="sound" aria-hidden="true"><i style="--height:12px"></i><i style="--height:26px"></i><i style="--height:17px"></i><i style="--height:47px"></i><i style="--height:76px"></i><i style="--height:39px"></i><i style="--height:90px"></i><i style="--height:116px"></i><i style="--height:66px"></i><i style="--height:94px"></i><i style="--height:49px"></i><i style="--height:72px"></i><i style="--height:32px"></i><i style="--height:53px"></i><i style="--height:24px"></i><i style="--height:14px"></i><i style="--height:30px"></i></div>
+            <p class="quote">“What made you feel heard?”</p><p class="speaker">An example of a person-centered interview question.</p>
+            <div class="studio-bottom"><div><strong>A natural conversation</strong><span>Follow-ups shaped by the answers</span></div><div><strong>A useful story collection</strong><span>Video, transcript, highlights &amp; review</span></div></div>
+          </div>
+          <p class="caption">Concept illustration, not a live recording or product screenshot.</p>
+        </div>
+      </div>
+      <div class="promise"><span>No interviewee account required</span><span>Questions tailored to your business</span><span>Private recordings and transcripts</span><span>Review before sharing</span></div>
+      <section id="how-it-works">
+        <div class="section-heading"><div><p class="eyebrow">01 / The workflow</p><h2>How it works</h2></div><p>Six steps, from setting up your business to reviewing the finished interview. Here is who does what at each stage.</p></div>
+        <ol class="journey">
+          <li><div class="step-meta"><span class="big-number">01</span><span class="role">Business owner</span></div><h3>Set the context</h3><p>Add your business, services and audience. Choose an industry template or prepare your own questions, then personalize the interview with context and focus angles.</p></li>
+          <li><div class="step-meta"><span class="big-number">02</span><span class="role">Business owner</span></div><h3>Share an invitation</h3><p>Add or import interviewees and send a personal link. A reusable business link offers another entry point. Scheduling and reminders help people follow through.</p></li>
+          <li><div class="step-meta"><span class="big-number">03</span><span class="role">Interviewee</span></div><h3>Get comfortable</h3><p>Open the link without creating an account. Review the recording release, choose name and face permissions, and check the camera and microphone.</p></li>
+          <li><div class="step-meta"><span class="big-number">04</span><span class="role">Interviewee + AI</span></div><h3>Have the conversation</h3><p>The voice interviewer uses your chosen direction and asks adaptive follow-ups. Camera and microphone recording run alongside the conversation. Supported interrupted sessions can resume.</p></li>
+          <li><div class="step-meta"><span class="big-number">05</span><span class="role">StoryCollector</span></div><h3>Find the useful material</h3><p>Background processing prepares the private recording, speaker-attributed transcript, timestamped highlights and a written review grounded in the interview.</p></li>
+          <li><div class="step-meta"><span class="big-number">06</span><span class="role">Owner + interviewee</span></div><h3>Review, then share</h3><p>Watch, read, edit and download. Approval and sending are separate actions. The interviewee controls posting to Google; configured publishing destinations are optional.</p></li>
+        </ol>
+      </section>
+    </div>
+    <section class="deliverables" id="deliverables"><div class="wrap">
+      <div class="section-heading"><div><p class="eyebrow">02 / The deliverables</p><h2>What you receive</h2></div><p>Four outputs from the same conversation. They stay private in the owner workspace until an explicit sharing or publishing action.</p></div>
+      <div class="outputs">
+        <article class="output"><span class="file-type">01 / VIDEO</span><h3>The original recording</h3><p>Watch and download the interviewee’s camera recording. New recordings also prepare an editor-compatible download without replacing the original.</p></article>
+        <article class="output"><span class="file-type">02 / TXT + JSON</span><h3>The full transcript</h3><p>Read both sides of the conversation with speaker attribution. Navigate by timestamp and download text or structured data.</p></article>
+        <article class="output"><span class="file-type">03 / HIGHLIGHTS</span><h3>The golden nuggets</h3><p>Find useful moments with timestamps, review their context, and create downloadable clips when clip generation is available.</p></article>
+        <article class="output"><span class="file-type">04 / WRITTEN REVIEW</span><h3>The customer’s own words</h3><p>New short customer reviews use exact interviewee transcript excerpts. People can edit and approve the draft before sending or posting.</p></article>
+      </div>
+      <p class="boundary">The delivered video preserves the interviewee recording. Separate conversation audio supports transcription and analysis; the AI interviewer’s voice is not mixed back into that video.</p>
+    </div></section>
+    <section id="features" class="wrap">
+      <div class="section-heading"><div><p class="eyebrow">03 / Feature catalogue</p><h2>Everything you can do</h2></div><p>Browse by product area, search for a feature, or filter by role. Open a section to see what each capability does.</p></div>
+      <div class="tools" id="feature-tools" hidden>
+        <div class="search-field"><label for="feature-search">Search features</label><input id="feature-search" type="search" placeholder="Try “transcript”, “templates” or “consent”" autocomplete="off"></div>
+        <div><label for="feature-role">Show features for</label><select id="feature-role"><option value="all">Everyone</option><option value="owner">Business owners</option><option value="interviewee">Interviewees</option><option value="admin">Administrators</option></select></div>
+        <button class="button" id="expand-all" type="button">Expand all</button>
+      </div>
+      <p class="search-status" id="feature-status" role="status"></p>
+      <div class="legend"><span>Unlabelled features: documented implementation</span><span><span class="badge optional">Optional</span> Requires configuration</span><span><span class="badge local">Local / preparation</span> Not confirmed live</span></div>
+      <noscript><p>Open a product area below to read its features. Search and filtering require JavaScript.</p></noscript>
+      <div id="feature-groups">
+        <details class="group" open><summary><span class="group-number">01</span><span class="group-title">Access &amp; business setup</span></summary><ul class="feature-list">
+          <li class="feature" data-role="owner"><div class="feature-head"><h3>Public product and legal pages</h3></div><p>Explore the business offer, pricing application, terms and privacy information before requesting access.</p></li>
+          <li class="feature" data-role="owner admin"><h3>Waitlist and invitation-only signup</h3><p>Apply for access, receive an administrator-approved invitation and create an owner account. A waitlist gate controls wider access.</p></li>
+          <li class="feature" data-role="owner"><h3>Email authentication and account recovery</h3><p>Sign in with email and password, verify your mailbox, sign out and request a password-reset link when needed.</p></li>
+          <li class="feature" data-role="owner"><h3>Guided, resumable onboarding</h3><p>Prepare business identity, services, sender information and real interview candidates. Save and resume; one fully valid candidate is the completion minimum. Completing setup does not send invitations.</p></li>
+          <li class="feature" data-role="owner"><h3>Business identity and brand context</h3><p>Store company name, description, website, logo and industry so the interview and client-facing experience reflect the right business.</p></li>
+          <li class="feature" data-role="owner"><h3>Sender identity and review destination</h3><p>Configure invitation sender details and the business’s Google review link for the post-interview handoff.</p></li>
+          <li class="feature" data-role="interviewee owner"><div class="feature-head"><h3>Post-interview account activation</h3><span class="badge optional">Optional</span></div><p>When enabled, an interviewee can become an owner after the interview through a short-lived activation flow and mailbox verification.</p></li>
+          <li class="feature" data-role="admin"><div class="feature-head"><h3>Airtable-assisted provisioning</h3><span class="badge optional">Optional</span></div><p>A configured intake integration can create an approved account and prefill known business information.</p></li>
+        </ul></details>
+        <details class="group"><summary><span class="group-number">02</span><span class="group-title">Questions, templates &amp; personalization</span></summary><ul class="feature-list">
+          <li class="feature" data-role="owner"><h3>Industry template catalogue</h3><p>Preview ordered interview questions relevant to the selected industry and request more material when needed.</p></li>
+          <li class="feature" data-role="owner"><h3>Custom story templates</h3><p>Create, edit and select your own interview question sets. Choose a default while keeping existing interviews and owner customization separate.</p></li>
+          <li class="feature" data-role="owner"><h3>FAQ templates</h3><p>Prepare question sets for expertise and frequently asked questions, separate from customer-story interviews.</p></li>
+          <li class="feature" data-role="owner"><h3>AI-assisted question generator</h3><p>Start with account-prefilled activity, service, audience and context. Generate an editable draft, review it, then explicitly save it as a template. Generation alone saves no template and sends no invitation.</p></li>
+          <li class="feature" data-role="owner"><h3>Person-centered question preparation</h3><p>A reusable authoring process, question-set template and fictional example help you ask about specific experiences, feelings and moments without inventing outcomes.</p></li>
+          <li class="feature" data-role="owner"><h3>Business focus points</h3><p>Add the topics the conversation should explore, then manage their order and relevance to your business.</p></li>
+          <li class="feature" data-role="owner"><h3>Per-person questions and context</h3><p>Add custom questions, background, bio context and focus angles for one interviewee without changing everyone’s template.</p></li>
+          <li class="feature" data-role="owner"><h3>Longer interview context (5,000 characters)</h3><p>Give the interviewer up to 5,000 characters of background per interview, with a live character counter.</p></li>
+          <li class="feature" data-role="owner admin"><h3>Personalised question sets from onboarding</h3><p>Onboarding answers, including the business audience, produce a draft question set tailored to the business. The team reviews it before use.</p></li>
+          <li class="feature" data-role="owner"><h3>Legal practice-area question sets</h3><p>Ready-made question sets for law firms, organised by practice area.</p></li>
+          <li class="feature" data-role="owner"><h3>Weekly question email</h3><p>Opted-in accounts receive a weekly question to answer. Choose the days, the time to the quarter hour and your time zone from a named list.</p></li>
+          <li class="feature" data-role="owner"><h3>Invitation and follow-up email templates</h3><p>Customize the messages people receive before and after the interview, using the configured business identity.</p></li>
+          <li class="feature" data-role="owner"><div class="feature-head"><h3>Template lifecycle and duplicate grouping</h3><span class="badge local">Local / preparation</span></div><p>Local template management includes draft import, revisions, reversible deactivation and grouping of exact copies with matching lifecycle and revision. Individual records remain accessible.</p></li>
+        </ul></details>
+        <details class="group"><summary><span class="group-number">03</span><span class="group-title">Invitations, links &amp; scheduling</span></summary><ul class="feature-list">
+          <li class="feature" data-role="owner"><h3>Individual and bulk interviewee creation</h3><p>Add one person with their contact details and interview context, or import multiple interviewees with validation.</p></li>
+          <li class="feature" data-role="owner"><h3>Personal invitation links</h3><p>Send or resend a secure link tied to the intended person and business. Track invitation activity and delivery state.</p></li>
+          <li class="feature" data-role="owner"><h3>Interviewee lifecycle management</h3><p>Follow progress from invitation through interview, processing and available deliverables, and remove unused interviewee records through the supported flow.</p></li>
+          <li class="feature" data-role="owner interviewee"><h3>Reusable business links</h3><p>Share a business entry link with a daily cap. Visitors may leave name and email blank; without an email address, on-screen results remain available but email delivery and account activation do not.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Contact confirmation on open links</h3><p>Before an open-link interview starts, the person confirms their name and contact details.</p></li>
+          <li class="feature" data-role="owner"><div class="feature-head"><h3>Reusable service interview links</h3><span class="badge local">Local / preparation</span></div><p>Prepared service links connect entry to a particular owner-owned template. This separate flow preserves the selected service and its own contact-capture rules.</p></li>
+          <li class="feature" data-role="owner interviewee"><div class="feature-head"><h3>Scheduling and reminders</h3><span class="badge optional">Optional</span></div><p>Offer scheduling and reminder workflows when enabled. Scheduled jobs support timely follow-up without requiring the owner to conduct the interview.</p></li>
+          <li class="feature" data-role="owner admin"><div class="feature-head"><h3>SMS invitations with opt-in</h3><span class="badge optional">Requires configuration</span></div><p>Interviewees can opt in to SMS from the interview page or a public opt-in page. Every message carries an opt-out footer, and the privacy policy and terms cover SMS. Sending stays off until it is explicitly switched on.</p></li>
+        </ul></details>
+        <details class="group"><summary><span class="group-number">04</span><span class="group-title">Team knowledge, bios &amp; FAQs</span></summary><ul class="feature-list">
+          <li class="feature" data-role="owner"><h3>Team member management</h3><p>Add and update the people whose professional experience or expertise you want to capture.</p></li>
+          <li class="feature" data-role="owner interviewee"><h3>Dedicated bio interviews</h3><p>Invite a team member to a personal bio interview with a dedicated link; manage reinvitations and revocation.</p></li>
+          <li class="feature" data-role="owner interviewee"><h3>Expertise and FAQ interviews</h3><p>Use a separate FAQ interview path and the selected question set to collect clear explanations from your team.</p></li>
+          <li class="feature" data-role="owner interviewee"><h3>Shareable team links</h3><p>Copy the appropriate bio or FAQ link so each person reaches the intended interview.</p></li>
+          <li class="feature" data-role="owner"><h3>Recurring team schedules</h3><p>Set weekly or monthly interview activity, inspect the next run, and pause schedules when needed.</p></li>
+        </ul></details>
+        <details class="group"><summary><span class="group-number">05</span><span class="group-title">The interview experience</span></summary><ul class="feature-list">
+          <li class="feature" data-role="interviewee"><h3>Account-free, secure entry</h3><p>Open a personal token-based link to reach the intended interview without creating an owner account. Invalid or expired entry is rejected.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Recording consent and identity choices</h3><p>Accept the recording release and choose use-name, show-face and anonymity preferences before the recording providers are provisioned.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Camera and microphone preparation</h3><p>Select devices, preview the camera, test and replay the microphone, and resolve browser permissions before starting. An eyeline guide helps people frame themselves naturally.</p></li>
+          <li class="feature" data-role="interviewee"><div class="feature-head"><h3>Pre-roll and confidence guidance</h3><span class="badge optional">Optional</span></div><p>Configured pre-call guidance and setup checks help people understand what will happen and identify device problems.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Coaching before the first question</h3><p>The interviewer opens fully, then reminds people to answer in full sentences, say their name and start over whenever they want, before the first question.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Adaptive AI voice conversation</h3><p>Speak naturally while the interviewer follows the selected direction and adapts follow-up questions to the answers. Calls run on the latest Retell web call integration.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Video recording alongside the conversation</h3><p>The interviewee’s camera and microphone are recorded while the voice interview runs, producing the source video for later review.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Topic guidance and end controls</h3><p>Follow the current topic and use the interview’s end action when finished. Duration guidance is not a promise of a fixed call length.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Interruption detection and supported resume</h3><p>Disconnected sessions are detected and classified. A resume link and status support continuation where the session allows it.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Completion confirmation and rating</h3><p>See recording confirmation, give an experience rating and reach the available review or follow-up actions.</p></li>
+        </ul></details>
+        <details class="group"><summary><span class="group-number">06</span><span class="group-title">Recordings, transcripts &amp; highlights</span></summary><ul class="feature-list">
+          <li class="feature" data-role="owner"><h3>Background processing and status</h3><p>The completed interview moves through media preparation, transcription and analysis. Visible status identifies ready results or work needing attention.</p></li>
+          <li class="feature" data-role="owner"><h3>Private original video</h3><p>Play and download the original recording through authorized workspace access. Recording storage is private.</p></li>
+          <li class="feature" data-role="owner"><h3>Editor-ready video downloads</h3><p>New recordings prepare a separate video file for editors, with a timed transcript and a questions subtitle file (SRT) alongside. A 16:9 landscape version without black side bars is also available. The original file is preserved.</p></li>
+          <li class="feature" data-role="owner"><h3>Text and JSON transcript downloads</h3><p>Read the conversation as text or download structured transcript data for another workflow.</p></li>
+          <li class="feature" data-role="owner"><h3>Speaker attribution and completeness checks</h3><p>Processing uses conversation evidence to distinguish speakers and checks for missing content or incomplete sessions.</p></li>
+          <li class="feature" data-role="owner"><h3>Golden nugget discovery and review</h3><p>Review timestamped story moments in context, approve or reject them, and retry supported generation steps.</p></li>
+          <li class="feature" data-role="owner"><div class="feature-head"><h3>Clips and trimmed downloads</h3><span class="badge optional">Optional</span></div><p>Generate or download clips and trimmed media where those outputs are available. These capabilities do not imply a full video-editing suite.</p></li>
+          <li class="feature" data-role="owner interviewee admin"><h3>Completion notices</h3><p>The team receives one email when an interview completes, sent to its own recipient list that administrators manage. Configured messages notify the intended recipient when a review or video is ready.</p></li>
+        </ul></details>
+        <details class="group"><summary><span class="group-number">07</span><span class="group-title">Written reviews &amp; publishing</span></summary><ul class="feature-list">
+          <li class="feature" data-role="owner interviewee"><h3>Transcript-grounded short reviews</h3><p>New generated short reviews select exact interviewee excerpts, with source and context checks. Unsupported drafts fail generation. Existing reviews are not automatically rewritten.</p></li>
+          <li class="feature" data-role="owner"><h3>Owner editing and approval</h3><p>Edit, save, approve or skip a draft. Approval stores the current text; sending is a separate explicit action. Human edits and approved versions survive generation errors.</p></li>
+          <li class="feature" data-role="owner"><h3>Delivery status and retry</h3><p>See sending, sent and error states, and use the controlled retry flow if a message fails.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Interviewee review control</h3><p>View, edit, save and approve the review before deciding to share it. The generated text is a starting point for the person’s decision.</p></li>
+          <li class="feature" data-role="interviewee"><h3>Manual Google review handoff</h3><p>Copy the text and open the configured business review destination. The person posts on Google; copying or opening the link does not confirm publication.</p></li>
+          <li class="feature" data-role="owner interviewee"><h3>Follow-up service requests</h3><p>Request posting help, a live interview, certification or a long-form story. A recorded request is a follow-up action, not an automatically completed service.</p></li>
+          <li class="feature" data-role="owner"><div class="feature-head"><h3>Approved story publication</h3><span class="badge optional">Optional</span></div><p>Configured TackleBox / Authentic.Video workflows can publish approved stories to a separate destination. Long stories and summaries are separate from short verbatim reviews.</p></li>
+        </ul></details>
+        <details class="group"><summary><span class="group-number">08</span><span class="group-title">Workspace, billing &amp; referrals</span></summary><ul class="feature-list">
+          <li class="feature" data-role="owner"><h3>Dashboard overview</h3><p>See totals and status summaries to understand interview activity and identify the next follow-up.</p></li>
+          <li class="feature" data-role="owner"><h3>Recording workspace</h3><p>Browse completed sessions, play recordings, follow transcript timestamps and navigate directly to highlighted moments.</p></li>
+          <li class="feature" data-role="owner"><h3>Hide and restore interviews</h3><p>Hide interviews you no longer want in your lists, and restore them at any time.</p></li>
+          <li class="feature" data-role="owner"><h3>Correct an interviewee name</h3><p>Fix a misspelled name on an interview without altering the recording or transcript.</p></li>
+          <li class="feature" data-role="owner"><h3>Customer lifecycle board</h3><p>Track people and sessions by stage so invitations, processing and ready deliverables are easier to manage.</p></li>
+          <li class="feature" data-role="owner"><h3>Minutes balance and transaction history</h3><p>View minutes granted, reserved, consumed and reconciled. Failure-refund paths account for eligible processing failures.</p></li>
+          <li class="feature" data-role="owner"><div class="feature-head"><h3>Plans, top-ups and billing portal</h3><span class="badge optional">Optional</span></div><p>Configured Stripe checkout supports plans and minute top-ups, including annual plans, with subscription management through the billing portal. Offers depend on account configuration.</p></li>
+          <li class="feature" data-role="owner"><h3>Referral link sharing</h3><p>Eligible owners can copy or email a personal referral link after reaching the completed-story threshold.</p></li>
+          <li class="feature" data-role="owner"><h3>Referral attribution and rewards</h3><p>Track eligible referred signups and award minutes under the referral rules, with self-referral prevention, duplicate protection and reward limits.</p></li>
+        </ul></details>
+        <details class="group"><summary><span class="group-number">09</span><span class="group-title">Administration &amp; support</span></summary><ul class="feature-list">
+          <li class="feature" data-role="admin"><h3>Restricted administrator workspace</h3><p>Allowlisted administrators can use operational tools that are unavailable to ordinary owner accounts.</p></li>
+          <li class="feature" data-role="admin"><h3>Waitlist review and client provisioning</h3><p>Review applications, invite clients, create approved accounts and prefill onboarding facts without sending candidate invitations. New client accounts start with 60 minutes.</p></li>
+          <li class="feature" data-role="admin"><h3>Assisted client onboarding</h3><p>Enter an authorized client’s onboarding with a visible identity banner, time-limited server-side access and audited start/stop events. Return to the original administrator account afterward.</p></li>
+          <li class="feature" data-role="admin"><h3>Administrator recording search</h3><p>Find any recording by interviewee name or email and inspect its deliverables.</p></li>
+          <li class="feature" data-role="admin"><h3>Client link directory</h3><p>See every client’s interview links in one place, with admin contact fields, and open forwarded interview links.</p></li>
+          <li class="feature" data-role="admin"><h3>Question-set import tool</h3><p>Import question sets with a dry run first, then apply and verify the exact planned change.</p></li>
+          <li class="feature" data-role="admin"><h3>Usage, plans and balance controls</h3><p>Inspect usage and subscriptions, manage authorized plan or minutes changes, and send account reset links.</p></li>
+          <li class="feature" data-role="admin"><h3>Stuck-session investigation</h3><p>Inspect sessions needing attention and use targeted reconciliation or recovery paths instead of restarting completed work.</p></li>
+          <li class="feature" data-role="admin"><h3>Question library uploads</h3><p>Manage uploaded shared question sets through controlled validation and import workflows.</p></li>
+          <li class="feature" data-role="owner admin"><h3>Feedback with screenshot annotation</h3><p>Report a bug or feature request with page context and an optional annotated screenshot.</p></li>
+          <li class="feature" data-role="admin"><div class="feature-head"><h3>GitHub feedback handoff</h3><span class="badge optional">Optional</span></div><p>When configured, a feedback report can create a linked issue for the team to investigate.</p></li>
+        </ul></details>
+        <details class="group"><summary><span class="group-number">10</span><span class="group-title">Privacy &amp; operational reliability</span></summary><ul class="feature-list">
+          <li class="feature" data-role="owner interviewee admin"><h3>Account-scoped private access</h3><p>Owner access is scoped to the intended business, people, recordings and reviews. Personal interview links grant access to their specific interview flow.</p></li>
+          <li class="feature" data-role="owner interviewee admin"><h3>Stored consent choices</h3><p>Recording and identity preferences are saved before the interview starts so downstream handling can respect the recorded choices.</p></li>
+          <li class="feature" data-role="admin"><h3>Verified provider events</h3><p>Recording and call events are checked for authentic signatures, freshness and duplicate delivery before advancing processing.</p></li>
+          <li class="feature" data-role="admin"><h3>Retry and reconciliation workflows</h3><p>Background jobs use controlled retries and reconciliation to recover interrupted processing while protecting completed outputs.</p></li>
+          <li class="feature" data-role="admin"><h3>Scheduled operations</h3><p>Recurring jobs support reminders, follow-up, missed-signal detection and configured provisioning tasks.</p></li>
+          <li class="feature" data-role="admin"><h3>Logs and selected failure alerts</h3><p>Structured operational evidence and email alerts help administrators investigate failures and trace the affected session.</p></li>
+          <li class="feature" data-role="admin"><h3>Voice provider credit alert</h3><p>The team is alerted when the voice provider runs out of credit, before interviews start failing.</p></li>
+        </ul></details>
+      </div>
+      <div class="empty" id="empty-results" hidden><h3>No matching features</h3><p>Try a broader term or reset the filters to browse every product area.</p><button class="button" id="reset-filters" type="button">Reset filters</button></div>
+      <aside class="availability"><h3>What “available” means here</h3><p>This guide describes the documented implementation as of October 23, 2026. It is not a live deployment audit. Optional features need configuration, and local preparation is labelled separately. Full provider delivery and production readiness require their own verification.</p><p>Planned work such as WordPress embedding and a full video editor is not presented as available. Live SMS sending stays off until it is explicitly enabled. Polar remains a dormant billing fallback, not the default checkout.</p></aside>
+    </section>
+    <section class="faq wrap" id="questions"><div class="faq-grid">
+      <div><p class="eyebrow">04 / Frequently asked</p><h2>Common questions</h2></div>
+      <div>
+        <details><summary>Does the owner need to attend the interview?</summary><p>No. The owner prepares the context and questions, then shares a link. The AI voice interviewer conducts the conversation and the owner reviews the resulting material afterward.</p></details>
+        <details><summary>Does an interviewee need an account?</summary><p>Normally, no. They enter through a personal interview link or a business open link. Account activation after the interview is a separate, optional flow.</p></details>
+        <details><summary>Is this just for customer testimonials?</summary><p>No. Customer stories are a primary use case, but team bio interviews, expertise capture and FAQ interviews are also supported.</p></details>
+        <details><summary>Does the AI invent the written review?</summary><p>New short review generation is constrained to exact interviewee transcript excerpts, with deterministic source checks and a context audit. Human review still matters. People may deliberately edit the draft, and older reviews are not automatically regenerated.</p></details>
+        <details><summary>Is anything automatically published to Google?</summary><p>No. The interviewee can copy the review and open the business’s Google destination, then decide whether to post it. Owner approval, message delivery and public posting are separate actions.</p></details>
+        <details><summary>What if the interview is interrupted?</summary><p>The application detects disconnections and incomplete sessions. Supported sessions provide a resume path. Processing failures and stuck sessions have separate recovery workflows.</p></details>
+        <details><summary>Can people participate without giving their name or email?</summary><p>The general business open-link flow allows those fields to be blank. Without email, interview participation and on-screen review remain available, but email delivery and email-based activation do not. Other entry flows can have different requirements.</p></details>
+        <details><summary>How does usage work?</summary><p>Usage is tracked in minutes, with reservations, final reconciliation and eligible failure refunds. Available plans and top-ups depend on account and billing configuration; this guide does not quote prices.</p></details>
+      </div>
+    </div></section>
+    <div class="wrap"><div class="closing"><div><p class="eyebrow">Start with a story worth hearing</p><h2 style="margin-block-start:.6rem">Prepare. Invite.<br>Listen. Review.</h2><p>A good interview starts with relevant context and thoughtful questions. The platform carries the conversation through to material you can actually use.</p></div><a class="button primary" href="#how-it-works">Revisit the workflow ↑</a></div></div>
+  </main>
+  <footer class="wrap"><div class="footer-inner"><span class="wordmark">StoryCollector</span><p>Product guide · October 2026<br>Based on the project’s product specification, roadmap and implementation documentation. This standalone guide contains no customer recordings or personal data.</p><a href="#main">Back to top ↑</a> · <a href="for-businesses.html">TAMOS for businesses</a></div></footer>
+  <script>
+    (() => {
+      const search = document.getElementById('feature-search');
+      const role = document.getElementById('feature-role');
+      const groups = [...document.querySelectorAll('details.group')];
+      const features = [...document.querySelectorAll('.feature')];
+      const status = document.getElementById('feature-status');
+      const expand = document.getElementById('expand-all');
+      const empty = document.getElementById('empty-results');
+      let browsingState = groups.map(group => group.open);
+      let filtering = false;
+      const normalize = value => value.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+      const updateExpandLabel = () => {
+        const visible = groups.filter(group => !group.hidden);
+        expand.textContent = visible.length && visible.every(group => group.open) ? 'Collapse all' : 'Expand all';
+        expand.disabled = visible.length === 0;
+      };
+      const filter = () => {
+        const words = normalize(search.value.trim()).split(/\s+/).filter(Boolean);
+        const active = words.length > 0 || role.value !== 'all';
+        if (active && !filtering) browsingState = groups.map(group => group.open);
+        let count = 0;
+        for (const feature of features) {
+          const text = normalize(feature.textContent);
+          const matchesRole = role.value === 'all' || feature.dataset.role.split(' ').includes(role.value);
+          feature.hidden = !matchesRole || !words.every(word => text.includes(word));
+          if (!feature.hidden) count++;
+        }
+        groups.forEach((group, index) => {
+          group.hidden = ![...group.querySelectorAll('.feature')].some(feature => !feature.hidden);
+          if (active) group.open = !group.hidden;
+          else if (filtering) group.open = browsingState[index];
+        });
+        filtering = active;
+        empty.hidden = count !== 0;
+        const areaCount = groups.filter(group => !group.hidden).length;
+        status.textContent = `${count} of ${features.length} features · ${areaCount} product ${areaCount === 1 ? 'area' : 'areas'}`;
+        updateExpandLabel();
+      };
+      search.addEventListener('input', filter);
+      role.addEventListener('change', filter);
+      groups.forEach(group => group.addEventListener('toggle', updateExpandLabel));
+      expand.addEventListener('click', () => {
+        const visible = groups.filter(group => !group.hidden);
+        const open = !visible.every(group => group.open);
+        visible.forEach(group => { group.open = open; });
+        updateExpandLabel();
+      });
+      document.getElementById('reset-filters').addEventListener('click', () => {
+        search.value = ''; role.value = 'all'; filter(); search.focus();
+      });
+      let printState;
+      window.addEventListener('beforeprint', () => {
+        printState = { groups: groups.map(group => ({open:group.open, hidden:group.hidden})), features:features.map(feature => feature.hidden), empty:empty.hidden };
+        groups.forEach(group => { group.open = true; group.hidden = false; });
+        features.forEach(feature => { feature.hidden = false; });
+        empty.hidden = true;
+      });
+      window.addEventListener('afterprint', () => {
+        if (!printState) return;
+        groups.forEach((group,index) => Object.assign(group, printState.groups[index]));
+        features.forEach((feature,index) => { feature.hidden = printState.features[index]; });
+        empty.hidden = printState.empty;
+        updateExpandLabel();
+      });
+      document.getElementById('feature-tools').hidden = false;
+      const navLinks = [...document.querySelectorAll('nav a')];
+      const sections = navLinks.map(link => document.querySelector(link.getAttribute('href')));
+      const updateNavigation = () => {
+        let current = sections[0];
+        for (const section of sections) {
+          if (section.getBoundingClientRect().top <= 180) current = section;
+        }
+        navLinks.forEach(link => {
+          if (link.getAttribute('href') === `#${current.id}`) link.setAttribute('aria-current','location');
+          else link.removeAttribute('aria-current');
+        });
+      };
+      window.addEventListener('scroll', updateNavigation, {passive:true});
+      updateNavigation();
+      filter();
+    })();
+  </script>
+</body>
+</html>
