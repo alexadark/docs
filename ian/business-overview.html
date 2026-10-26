@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A plain-language overview of Ian Garlic's TAMOS business: products, customers, money flows, team and priorities.">
+  <meta name="theme-color" content="#0c0c0f">
+  <title>TAMOS: the business, explained</title>
+  <style>
+    :root { color-scheme:dark; --paper:#0c0c0f; --surface:#141418; --ink:#f2f2f5; --muted:#aaaab7; --line:#2a2a33; --brand:#a78bfa; --link:#c4b5fd; --accent:#a78bfa; --night:#111115; --night-text:#f2f2f5; --night-muted:#aaaab7; --focus:#c4b5fd; --body:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; --display:var(--body); }
+    * { box-sizing:border-box; }
+    html { scroll-padding-top:6rem; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:1rem/1.6 var(--body); -webkit-font-smoothing:antialiased; }
+    a { color:var(--link); text-underline-offset:.2em; }
+    button,input,select { font:inherit; }
+    button,a,input,select,summary { -webkit-tap-highlight-color:transparent; }
+    :focus-visible { outline:3px solid var(--focus); outline-offset:4px; }
+    ::selection { background:var(--accent); color:var(--night); }
+    h1,h2,h3,p { margin:0; }
+    h1,h2,.wordmark,.big-number { font-family:var(--display); font-weight:600; }
+    h1 { font-size:clamp(2.3rem,4.2vw,3.75rem); line-height:1.12; letter-spacing:-.045em; text-wrap:balance; }
+    h2 { font-size:clamp(1.8rem,3vw,2.5rem); line-height:1.2; letter-spacing:-.035em; text-wrap:balance; }
+    h3 { font-size:1.1rem; line-height:1.4; font-weight:600; }
+    p { text-wrap:pretty; max-width:70ch; }
+    [hidden] { display:none !important; }
+    .wrap { width:min(1080px,calc(100% - 6rem)); margin-inline:auto; }
+    main { margin-inline-start:244px; }
+    .skip { position:fixed; inset-block-start:.5rem; inset-inline-start:.5rem; padding:1rem; background:var(--surface); z-index:10; transform:translateY(-200%); }
+    .skip:focus { transform:none; }
+    header { background:#101014; border-inline-end:1px solid var(--line); position:fixed; inset:0 auto 0 0; width:244px; overflow-y:auto; }
+    .header-inner { display:flex; flex-direction:column; align-items:stretch; gap:2rem; width:auto; margin:0; padding:2rem 1.2rem; min-height:100%; }
+    .wordmark { text-decoration:none; color:var(--ink); font-size:1.12rem; display:flex; align-items:center; gap:.6rem; letter-spacing:-.035em; }
+    .mark { width:19px; height:21px; background:var(--brand); display:inline-block; clip-path:polygon(0 0,100% 0,100% 73%,35% 73%,0 100%); }
+    .nav-label { color:var(--muted); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; padding-inline:.7rem; margin-block-end:.6rem; }
+    .sidebar-note { margin-block-start:auto; padding:.9rem .7rem 0; border-top:1px solid var(--line); font-size:.75rem; color:var(--muted); }
+    nav { display:flex; flex-direction:column; gap:.35rem; }
+    nav a { color:var(--muted); font-size:.875rem; text-decoration:none; padding:.65rem .7rem; border-radius:6px; }
+    nav a:hover,nav a[aria-current="location"] { background:#23202f; color:var(--ink); }
+    .eyebrow { font-size:.75rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+    .hero { display:grid; grid-template-columns:1.2fr 1fr; gap:3rem; padding-block:4.5rem 3rem; align-items:center; }
+    .hero h1 { margin-block:1.2rem; }
+    .hero h1 span { color:var(--link); }
+    .intro { font-size:1rem; color:var(--muted); max-width:50ch; line-height:1.75; }
+    .actions { display:flex; gap:1rem; flex-wrap:wrap; align-items:center; margin-block-start:2rem; }
+    .button { display:inline-flex; align-items:center; justify-content:center; min-height:44px; padding:.65rem 1rem; border:1px solid var(--line); border-radius:6px; background:var(--surface); color:var(--ink); text-decoration:none; cursor:pointer; font-weight:500; font-size:.85rem; }
+    .button.primary { background:var(--ink); color:var(--paper); }
+    .hero-note { margin-block-start:1.25rem; color:var(--muted); font-size:.85rem; }
+    .studio { background:var(--night); color:var(--night-text); padding:1.5rem; border:1px solid var(--line); border-radius:10px; position:relative; }
+    .studio-top { display:flex; gap:1rem; justify-content:space-between; align-items:center; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--night-muted); }
+    .studio-label { display:flex; gap:.5rem; align-items:center; }
+    .dot { width:7px; height:7px; background:var(--accent); display:inline-block; }
+    .sound { height:100px; display:flex; align-items:center; justify-content:center; gap:6px; margin-block:1.5rem; }
+    .sound i { width:4px; height:calc(var(--height) * .7); background:var(--accent); border-radius:3px; }
+    .quote { font-size:1.25rem; line-height:1.5; max-width:25ch; margin-block-end:1rem; letter-spacing:-.02em; }
+    .speaker { color:var(--night-muted); font-size:.82rem; }
+    .studio-bottom { border-top:1px solid var(--line); margin-block-start:1.5rem; padding-block-start:1.2rem; display:grid; grid-template-columns:1fr; gap:.8rem; }
+    .studio-bottom strong { display:block; font-size:.9rem; }
+    .studio-bottom span { font-size:.78rem; color:var(--night-muted); }
+    .caption { margin-block-start:1.5rem; color:var(--muted); font-size:.75rem; }
+    .promise { display:flex; flex-wrap:wrap; gap:.7rem 1.5rem; padding-block:1.5rem; border-block:1px solid var(--line); font-size:.78rem; color:var(--muted); }
+    .promise span::before { content:""; display:inline-block; width:4px; height:4px; border-radius:50%; background:var(--muted); margin-inline-end:.6rem; vertical-align:middle; }
+    section { padding-block:4rem; scroll-margin-top:2rem; }
+    .section-heading { display:grid; grid-template-columns:1fr 1fr; align-items:end; gap:2.5rem; margin-block-end:3rem; }
+    .section-heading h2 { margin-block-start:.8rem; }
+    .section-heading>p { color:var(--muted); }
+    .journey { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; list-style:none; padding:0; margin:0; }
+    .journey li { border-top:1px solid var(--line); padding-block-start:1.2rem; }
+    .step-meta { display:flex; justify-content:space-between; align-items:center; margin-block-end:1.25rem; }
+    .big-number { font-size:.85rem; line-height:1; color:var(--link); background:#23202f; padding:.6rem; border:1px solid #3c3254; border-radius:6px; font-variant-numeric:tabular-nums; }
+    .role { font-size:.72rem; letter-spacing:.07em; text-transform:uppercase; font-weight:700; color:var(--muted); }
+    .journey p { margin-block-start:.6rem; color:var(--muted); font-size:.95rem; }
+    .deliverables { background:var(--night); color:var(--night-text); border-block:1px solid var(--line); }
+    .deliverables .section-heading>p { color:var(--night-muted); }
+    .outputs { display:grid; grid-template-columns:repeat(2,1fr); gap:2rem; }
+    .output { border-top:1px solid var(--line); padding-block-start:1.2rem; }
+    .file-type { display:inline-block; font:700 .75rem/1 monospace; color:var(--accent); margin-block-end:1.5rem; }
+    .output p { color:var(--night-muted); margin-block-start:.7rem; font-size:.95rem; }
+    .output h3 { font-size:1.15rem; }
+    .boundary { margin-block-start:2rem; padding-block-start:1.5rem; border-top:1px solid var(--line); color:var(--night-muted); font-size:.85rem; }
+    .tools { display:grid; grid-template-columns:1fr 220px auto; gap:1rem; align-items:end; margin-block-end:1rem; }
+    label { display:block; font-size:.8rem; font-weight:700; margin-block-end:.4rem; }
+    input,select { width:100%; min-height:44px; background:var(--surface); border:1px solid #666674; color:var(--ink); padding:.65rem .85rem; border-radius:6px; }
+    .search-status { color:var(--muted); font-size:.85rem; min-height:1.6rem; margin-block-end:1.5rem; }
+    .legend { display:flex; flex-wrap:wrap; gap:.6rem 1.5rem; font-size:.8rem; color:var(--muted); margin-block-end:1.5rem; }
+    .badge { display:inline-block; font-size:.7rem; line-height:1.5; padding:.15rem .5rem; border:1px solid var(--line); border-radius:4px; font-weight:500; white-space:nowrap; background:var(--surface); color:var(--muted); }
+    .badge.optional { background:#1c2330; color:#aac7ef; border-color:#32435c; }
+    .badge.local { background:#282317; color:#d9c38d; border-color:#50452d; }
+    details.group { border-top:1px solid var(--line); }
+    details.group:last-child { border-bottom:1px solid var(--line); }
+    summary { cursor:pointer; }
+    .group>summary { list-style:none; display:flex; gap:1rem; align-items:center; padding-block:1.5rem; }
+    .group>summary::-webkit-details-marker { display:none; }
+    .group>summary::after { content:"+"; margin-inline-start:auto; font-size:1.8rem; line-height:1; }
+    .group[open]>summary::after { content:"−"; }
+    .group-number { color:var(--muted); font: .8rem/1 monospace; }
+    .group-title { font-size:1.12rem; font-weight:600; }
+    .feature-list { margin:0 0 2rem 2.25rem; padding:0; list-style:none; display:grid; grid-template-columns:1fr; }
+    .feature { padding-block:1.15rem; border-top:1px solid var(--line); }
+    .feature-head { display:flex; align-items:start; justify-content:space-between; gap:.7rem; flex-wrap:wrap; }
+    .feature h3 { font-size:1rem; }
+    .feature p { font-size:.9rem; color:var(--muted); margin-block-start:.4rem; max-width:80ch; line-height:1.75; }
+    .empty { background:var(--surface); padding:2rem; border:1px solid var(--line); }
+    .empty .button { margin-block-start:1rem; }
+    .availability { padding:1.5rem; margin-block-start:2rem; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+    .availability p { color:var(--muted); font-size:.9rem; margin-block-start:.5rem; }
+    .faq { padding-block-start:0; }
+    .faq-grid { display:grid; grid-template-columns:1fr 1.45fr; gap:4rem; }
+    .faq h2 { margin-block-start:.8rem; }
+    .faq details { border-top:1px solid var(--line); padding-block:1.2rem; }
+    .faq summary { font-weight:700; padding-inline-end:1rem; }
+    .faq details p { margin-block-start:.8rem; color:var(--muted); font-size:.95rem; }
+    .closing { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:2rem; display:flex; justify-content:space-between; gap:2rem; align-items:center; }
+    .closing h2 { font-size:2rem; max-width:24ch; }
+    .closing p { margin-block-start:.8rem; max-width:52ch; }
+    footer.wrap { width:auto; margin-inline:292px 3rem; padding-block:2.5rem; font-size:.75rem; color:var(--muted); }
+    .footer-inner { display:flex; justify-content:space-between; gap:2rem; align-items:start; }
+    footer p { max-width:80ch; }
+    @media (hover:hover) { .button:hover { background:#26262e; color:var(--ink); } .button.primary:hover { background:#d6d6df; color:var(--paper); } summary:hover { color:var(--link); } }
+    @media (max-width:72rem) { .hero { grid-template-columns:1fr; gap:2rem; } .studio-bottom { grid-template-columns:1fr 1fr; } .hero h1 { max-width:18ch; } .studio .sound { height:60px; margin-block:1rem; } .wrap { width:calc(100% - 3rem); } .journey { grid-template-columns:1fr 1fr; } }
+    @media (max-width:46rem) {
+      main { margin-inline-start:0; } header { position:static; width:100%; border-inline-end:0; border-bottom:1px solid var(--line); }
+      .wrap { width:calc(100% - 2.5rem); } .header-inner { width:auto; gap:1rem; padding:1.25rem; } nav { flex-direction:row; flex-wrap:wrap; gap:.25rem; } nav a { padding:.5rem .6rem; }
+      .nav-label,.sidebar-note { display:none; } footer.wrap { margin-inline:1.25rem; }
+      .hero { grid-template-columns:1fr; padding-block:2.5rem; gap:2rem; } h1 { max-width:18ch; }
+      section { padding-block:3.5rem; } .section-heading { grid-template-columns:1fr; gap:1rem; margin-block-end:2rem; }
+      .journey { grid-template-columns:1fr 1fr; gap:1.8rem; } .tools { grid-template-columns:1fr 1fr; } .search-field { grid-column:1/-1; }
+      .feature-list { margin-inline-start:0; grid-template-columns:1fr; } .group-title { font-size:1.1rem; }
+      .faq-grid { grid-template-columns:1fr; gap:2rem; } .closing { padding:2rem; flex-direction:column; align-items:start; } .footer-inner { flex-direction:column; gap:1rem; }
+    }
+    @media (max-width:26rem) { .journey,.outputs,.tools { grid-template-columns:1fr; } .promise { gap:.8rem; } .group-number { display:none; } }
+    @media print {
+      :root { --paper:#fff; --surface:#fff; --ink:#17191c; --muted:#555961; --line:#ccc; --link:#b80f31; }
+      header, .actions, .tools, .search-status, .closing, .skip { display:none !important; }
+      main { margin:0; } footer.wrap { margin:0; } .wrap { width:100%; } section { padding-block:1.5rem; } .hero { padding-block:1rem; }
+      .studio { box-shadow:none; } .feature-list { grid-template-columns:1fr 1fr; } .feature { break-inside:avoid; }
+      .deliverables { background:#fff; color:#17191c; } .deliverables .section-heading>p,.output p,.boundary { color:#555961; }
+    }
+  
+    /* Overview page additions, same palette as the StoryCollector guide */
+    .diagram { background:var(--night); border:1px solid var(--line); border-radius:10px; padding:1.25rem; overflow-x:auto; }
+    .diagram svg { display:block; width:100%; height:auto; min-width:720px; }
+    .diagram.narrow svg { min-width:0; }
+    .diagram-note { margin-block-start:1rem; color:var(--muted); font-size:.8rem; }
+    svg text { font-family:var(--body); fill:var(--ink); }
+    svg .t-title { font-size:15px; font-weight:600; }
+    svg .t-sub { font-size:12px; fill:var(--muted); }
+    svg .t-label { font-size:11px; letter-spacing:.08em; text-transform:uppercase; fill:var(--muted); font-weight:700; }
+    svg .t-edge { font-size:11.5px; fill:var(--link); }
+    svg .box { fill:var(--surface); stroke:var(--line); stroke-width:1.2; }
+    svg .box-accent { fill:#1d1a28; stroke:#3c3254; stroke-width:1.2; }
+    svg .box-strong { fill:#23202f; stroke:var(--accent); stroke-width:1.4; }
+    svg .zone { fill:none; stroke:#3c3254; stroke-width:1.2; stroke-dasharray:5 5; }
+    svg .edge { fill:none; stroke:#6f6a85; stroke-width:1.4; }
+    svg .edge-accent { fill:none; stroke:var(--accent); stroke-width:1.6; }
+    svg .dot-live { fill:#7fd3a0; } svg .dot-build { fill:#d9c38d; } svg .dot-plan { fill:#aac7ef; }
+    .badge.live { background:#17271e; color:#9fdcb6; border-color:#2f4d3a; }
+    .badge.build { background:#282317; color:#d9c38d; border-color:#50452d; }
+    .badge.plan { background:#1c2330; color:#aac7ef; border-color:#32435c; }
+    .cards { display:grid; grid-template-columns:repeat(2,1fr); gap:1.5rem 2rem; }
+    .card { border-top:1px solid var(--line); padding-block-start:1.2rem; }
+    .card-head { display:flex; justify-content:space-between; align-items:start; gap:.7rem; flex-wrap:wrap; margin-block-end:.6rem; }
+    .card dl { margin:.6rem 0 0; display:grid; grid-template-columns:7.5rem 1fr; gap:.35rem 1rem; font-size:.9rem; }
+    .card dt { color:var(--muted); font-size:.72rem; letter-spacing:.07em; text-transform:uppercase; font-weight:700; padding-block-start:.2rem; }
+    .card dd { margin:0; color:var(--ink); line-height:1.6; }
+    .card .kind { font:700 .72rem/1 monospace; color:var(--accent); }
+    .board { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .lane { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:1rem; }
+    .lane h3 { display:flex; align-items:center; gap:.5rem; font-size:.8rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-block-end:.9rem; }
+    .lane h3 i { width:8px; height:8px; border-radius:50%; display:inline-block; }
+    .lane ul { list-style:none; margin:0; padding:0; display:grid; gap:.6rem; }
+    .lane li { background:var(--night); border:1px solid var(--line); border-radius:6px; padding:.7rem .8rem; }
+    .lane li strong { display:block; font-size:.92rem; }
+    .lane li span { display:block; font-size:.8rem; color:var(--muted); margin-block-start:.2rem; line-height:1.5; }
+    .plain { margin:0; padding:0; list-style:none; display:grid; gap:.9rem; }
+    .plain li { border-top:1px solid var(--line); padding-block-start:.9rem; color:var(--muted); font-size:.95rem; }
+    .plain li strong { color:var(--ink); }
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:2.5rem; }
+    .two-col h3 { margin-block-end:1rem; }
+    .channels { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem 2rem; margin-block-start:2.5rem; }
+    .channel { border-top:1px solid var(--line); padding-block-start:1rem; }
+    .channel p { color:var(--muted); font-size:.92rem; margin-block-start:.4rem; }
+    .section-sub { margin-block:3rem 1.5rem; }
+    .loop-steps { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem 2rem; list-style:none; margin:0; padding:0; }
+    .loop-steps li { border-top:1px solid var(--line); padding-block-start:1rem; }
+    .loop-steps p { color:var(--muted); font-size:.92rem; margin-block-start:.4rem; }
+    .callout { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:1.5rem; margin-block-start:2rem; }
+    .callout p { color:var(--muted); font-size:.92rem; margin-block-start:.5rem; }
+    @media (max-width:72rem) { .board { grid-template-columns:1fr 1fr; } .loop-steps { grid-template-columns:1fr 1fr; } }
+    @media (max-width:46rem) { .cards,.two-col,.channels,.board,.loop-steps { grid-template-columns:1fr; } .card dl { grid-template-columns:1fr; gap:.1rem; } .card dd { margin-block-end:.5rem; } .diagram { padding:.75rem; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header><div class="wrap header-inner">
+    <a class="wordmark" href="#main" aria-label="TAMOS business overview"><span class="mark" aria-hidden="true"></span>TAMOS</a>
+    <div><p class="nav-label">Business overview</p><nav aria-label="Business overview"><a href="#main" aria-current="location">Overview</a><a href="#map">Ecosystem map</a><a href="#products">Products</a><a href="#fit">How it fits</a><a href="#journey">Customers</a><a href="#money">Money flows</a><a href="#status">Status board</a><a href="#team">Team</a><a href="#now">Right now</a><a href="#partner">Where you fit</a></nav></div>
+    <p class="sidebar-note"><a href="storycollector-guide.html">StoryCollector product guide →</a><br><br>Ian Garlic · TAMOS<br>Products, team and priorities<br><br>Updated October 26, 2026</p>
+  </div></header>
+  <main id="main">
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">Ian Garlic · TAMOS · Business overview</p>
+          <h1>Customer stories,<br><span>turned into trust.</span></h1>
+          <p class="intro">Ian Garlic helps service businesses win clients with real customer stories on video. His agency has done this by hand for years. TAMOS is the set of software products and services that makes it repeatable: find the stories a business is missing, collect them, approve them, publish them where buyers look, and learn what works.</p>
+          <div class="actions"><a class="button primary" href="#map">See the ecosystem</a><a class="button" href="#status">Jump to the status board</a></div>
+          <p class="hero-note">Written for someone who has never seen the project. No jargon, no numbers that aren't public.</p>
+        </div>
+        <div>
+          <div class="studio">
+            <div class="studio-top"><span class="studio-label"><span class="dot"></span>In one sentence</span><span>TAMOS</span></div>
+            <p class="quote" style="margin-block-start:1.5rem">“You don’t want testimonials. You want stories.”</p>
+            <p class="speaker">Ian’s working philosophy, behind every product here.</p>
+            <div class="studio-bottom"><div><strong>Trusted Authority Media Operating System</strong><span>What the letters TAMOS stand for</span></div><div><strong>Two engines</strong><span>An agency that earns today, and products being built to scale it</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="promise"><span>Agency revenue today</span><span>StoryCollector live</span><span>Directories and strategy tools in progress</span><span>Small team, two partners</span></div>
+
+      <section id="who">
+        <div class="section-heading"><div><p class="eyebrow">01 / The basics</p><h2>Who Ian is, what TAMOS is</h2></div><p>The short version you can repeat to someone else.</p></div>
+        <div class="two-col">
+          <div>
+            <h3>Ian Garlic</h3>
+            <ul class="plain" style="margin-block-start:1rem">
+              <li><strong>Marketer and founder of Video Case Story</strong>, an agency that films and publishes customer stories for professional service firms.</li>
+              <li><strong>Host of the Garlic Marketing Show</strong> podcast, author of a book on video testimonials, and a regular speaker at workshops and conferences.</li>
+              <li><strong>Has run thousands of case story interviews.</strong> His method (which questions to ask, whom to ask, how to ask) is the core know-how behind the products.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>TAMOS and its mission</h3>
+            <ul class="plain" style="margin-block-start:1rem">
+              <li><strong>An umbrella, not a single app.</strong> TAMOS groups the agency’s services and several software products that share one goal.</li>
+              <li><strong>The mission:</strong> help service businesses prove they’re trustworthy with real stories from real clients, and make those stories easy to find for buyers, Google and AI search tools.</li>
+              <li><strong>Ian and Alexandra build it together.</strong> Ian leads sales and the commercial vision. Alexandra leads the technology.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="map">
+        <div class="section-heading"><div><p class="eyebrow">02 / The big picture</p><h2>Ecosystem map</h2></div><p>Where clients come from, the loop every story goes through, and who does the work. The dashed frame is TAMOS itself.</p></div>
+        <figure class="diagram" style="margin:0" role="img" aria-label="Ecosystem map: four sources of clients lead to a service business, which enters the TAMOS story loop of diagnose, plan, capture, approve, publish and measure. The agency team does the human work; published stories reach buyers and search engines and bring the business more customers.">
+          <svg viewBox="0 0 1000 630" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6f6a85"/></marker>
+              <marker id="a1v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a78bfa"/></marker>
+            </defs>
+            <text class="t-label" x="20" y="24">Where clients come from</text>
+            <rect class="box" x="20" y="36" width="225" height="74" rx="8"/><text class="t-title" x="36" y="66">Ian’s audience</text><text class="t-sub" x="36" y="88">Workshops, podcast, book, YouTube</text>
+            <rect class="box" x="265" y="36" width="225" height="74" rx="8"/><text class="t-title" x="281" y="66">Directories</text><text class="t-sub" x="281" y="88">BackTax, StoryCrews listings</text>
+            <rect class="box" x="510" y="36" width="225" height="74" rx="8"/><text class="t-title" x="526" y="66">Outreach and ads</text><text class="t-sub" x="526" y="88">Cold outreach, planned ads</text>
+            <rect class="box" x="755" y="36" width="225" height="74" rx="8"/><text class="t-title" x="771" y="66">Partner networks</text><text class="t-sub" x="771" y="88">Referral partners, Thrive (idea)</text>
+            <path class="edge" d="M132,110 L420,148" marker-end="url(#a1)"/>
+            <path class="edge" d="M377,110 L470,148" marker-end="url(#a1)"/>
+            <path class="edge" d="M622,110 L530,148" marker-end="url(#a1)"/>
+            <path class="edge" d="M867,110 L580,148" marker-end="url(#a1)"/>
+            <rect class="box-strong" x="330" y="150" width="340" height="56" rx="8"/><text class="t-title" x="500" y="174" text-anchor="middle">A service business (the client)</text><text class="t-sub" x="500" y="194" text-anchor="middle">agency, law or tax firm, dentist, consultant</text>
+            <path class="edge-accent" d="M500,206 L500,290" marker-end="url(#a1v)"/>
+            <text class="t-edge" x="510" y="236">buys a project or a plan</text>
+            <rect class="zone" x="20" y="246" width="960" height="232" rx="12"/>
+            <text class="t-label" x="40" y="272" style="fill:#c4b5fd">TAMOS · the story loop</text>
+            <g>
+              <rect class="box-accent" x="40" y="296" width="166" height="96" rx="8"/><text class="t-label" x="54" y="318">1 · Diagnose</text><text class="t-title" x="54" y="344">Clarity Compass</text><text class="t-sub" x="54" y="364">+ Fish in the Barrel</text><text class="t-sub" x="54" y="380">find the missing proof</text>
+              <rect class="box-accent" x="230" y="296" width="166" height="96" rx="8"/><text class="t-label" x="244" y="318">2 · Plan</text><text class="t-title" x="244" y="344">TackleBox</text><text class="t-sub" x="244" y="364">which stories to get,</text><text class="t-sub" x="244" y="380">and from whom</text>
+              <rect class="box-strong" x="420" y="296" width="166" height="96" rx="8"/><text class="t-label" x="434" y="318">3 · Capture</text><text class="t-title" x="434" y="344">StoryCollector</text><text class="t-sub" x="434" y="364">AI video interviews</text><text class="t-sub" x="434" y="380">+ filmed shoots</text>
+              <rect class="box-accent" x="610" y="296" width="166" height="96" rx="8"/><text class="t-label" x="624" y="318">4 · Approve</text><text class="t-title" x="624" y="344">Client + team</text><text class="t-sub" x="624" y="364">approve, edit, title,</text><text class="t-sub" x="624" y="380">polish the video</text>
+              <rect class="box-accent" x="800" y="296" width="166" height="96" rx="8"/><text class="t-label" x="814" y="318">5 · Publish</text><text class="t-title" x="814" y="344">Authentic.Video</text><text class="t-sub" x="814" y="364">directories, websites,</text><text class="t-sub" x="814" y="380">YouTube</text>
+              <path class="edge-accent" d="M206,344 L228,344" marker-end="url(#a1v)"/>
+              <path class="edge-accent" d="M396,344 L418,344" marker-end="url(#a1v)"/>
+              <path class="edge-accent" d="M586,344 L608,344" marker-end="url(#a1v)"/>
+              <path class="edge-accent" d="M776,344 L798,344" marker-end="url(#a1v)"/>
+              <path class="edge" d="M860,392 L860,438 L123,438 L123,394" stroke-dasharray="5 4" marker-end="url(#a1)"/>
+              <text class="t-edge" x="491" y="462" text-anchor="middle">6 · Measure and learn: results show which stories to collect next (not built yet)</text>
+            </g>
+            <rect class="box" x="20" y="520" width="460" height="86" rx="8"/><text class="t-label" x="36" y="544">People</text><text class="t-title" x="36" y="568">Ian’s agency team (Video Case Story)</text><text class="t-sub" x="36" y="590">Shoots, edits and publishes stories; runs client onboarding</text>
+            <path class="edge" d="M380,520 L680,394" stroke-dasharray="3 4" marker-end="url(#a1)"/>
+            <text class="t-edge" x="560" y="505">does the human work</text>
+            <rect class="box" x="520" y="520" width="460" height="86" rx="8"/><text class="t-label" x="536" y="544">Audience</text><text class="t-title" x="536" y="568">Buyers, Google and AI search</text><text class="t-sub" x="536" y="590">See trusted stories, then contact the business</text>
+            <path class="edge" d="M940,392 L940,518" marker-end="url(#a1)"/>
+            <path class="edge" d="M980,563 L992,563 L992,178 L674,178" stroke-dasharray="5 4" marker-end="url(#a1)"/>
+            <text class="t-edge" x="984" y="140" text-anchor="end">more customers for the client</text>
+          </svg>
+        </figure>
+        <p class="diagram-note">On a phone, scroll the diagram sideways.</p>
+      </section>
+
+      <section id="products">
+        <div class="section-heading"><div><p class="eyebrow">03 / What exists</p><h2>Products and services</h2></div><p>Each one: what it does, who it’s for, how it earns, and where it stands today. Prices are left out on purpose.</p></div>
+        <div class="legend"><span><span class="badge live">Live</span> In use by real clients</span><span><span class="badge build">Building / testing</span> Partly built or being tested</span><span><span class="badge plan">Planned</span> Decided or proposed, not built</span></div>
+        <div class="cards">
+          <article class="card"><div class="card-head"><div><span class="kind">AGENCY</span><h3>Video case story services</h3></div><span class="badge live">Live</span></div>
+            <dl><dt>What</dt><dd>Done-for-you customer story videos, a podcast format, plus websites, hosting, and SEO or ads for some clients.</dd><dt>For whom</dt><dd>Professional service firms that sell on trust.</dd><dt>Earns by</dt><dd>Client projects and monthly services.</dd><dt>Status</dt><dd>The business that pays the bills today.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">SOFTWARE · CAPTURE</span><h3>StoryCollector</h3></div><span class="badge live">Live</span></div>
+            <dl><dt>What</dt><dd>An AI voice interviewer. The business sends a link; the AI interviews the customer on video and returns the recording, transcript, best moments and a written review. <a href="storycollector-guide.html">Full product guide</a>.</dd><dt>For whom</dt><dd>Any business that needs customer or team stories.</dd><dt>Earns by</dt><dd>A software plan billed by interview minutes; also bundled with agency work.</dd><dt>Status</dt><dd>Live with first clients. Onboarding is still done by hand; text-message invites and Google sign-in are being added.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">TOOL · DIAGNOSE</span><h3>Clarity Compass</h3></div><span class="badge build">Building</span></div>
+            <dl><dt>What</dt><dd>A guided tool: your goals and positioning, then which stories you need, whom to interview, what to ask, and how to ask them.</dd><dt>For whom</dt><dd>Business owners who don’t know where to start with stories.</dd><dt>Earns by</dt><dd>A small entry purchase, with an upgrade to done-with-you help or an automatic hand-off to StoryCollector.</dd><dt>Status</dt><dd>Ian is finishing it himself for a workshop in late October.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">TOOL · DIAGNOSE</span><h3>Fish in the Barrel</h3></div><span class="badge live">Live</span></div>
+            <dl><dt>What</dt><dd>A quick calculator that shows a business how much video proof it’s missing.</dd><dt>For whom</dt><dd>Prospects; it doubles as a lead capture.</dd><dt>Earns by</dt><dd>Free. It feeds workshops and calls.</dd><dt>Status</dt><dd>Public and collecting leads. Being folded into TackleBox; a redesign is waiting on feedback.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">SOFTWARE · PLAN</span><h3>TackleBox</h3></div><span class="badge build">Building</span></div>
+            <dl><dt>What</dt><dd>The strategy layer: analyses the business, recommends which stories to collect, indexes the client’s video library, and later helps salespeople find the right story for a prospect.</dd><dt>For whom</dt><dd>Clients of Ian’s agency and StoryCollector users.</dd><dt>Earns by</dt><dd>Always sold together with StoryCollector, not alone.</dd><dt>Status</dt><dd>Parts exist; StoryCollector already sends approved stories to it. Scope still to be pinned down; the Compass is its front door.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">PUBLISH</span><h3>Authentic.Video</h3></div><span class="badge live">Live</span></div>
+            <dl><dt>What</dt><dd>A public directory of expert profiles with verified video stories, plus badges a business can show on its own site.</dd><dt>For whom</dt><dd>Experts who want to be found and trusted; the buyers looking for them.</dd><dt>Earns by</dt><dd>Basic and advanced listings, and badges.</dd><dt>Status</dt><dd>Live, with a human approval step before anything goes public. Badge levels and their rules are still being defined.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">DIRECTORY</span><h3>BackTax</h3></div><span class="badge build">Building</span></div>
+            <dl><dt>What</dt><dd>A directory of tax-relief experts, built to show up in Google and AI answers.</dd><dt>For whom</dt><dd>Tax-relief firms, and people looking for one.</dd><dt>Earns by</dt><dd>Free listing to claim, then a paid upgrade, then a certified tier that includes StoryCollector and stories.</dd><dt>Status</dt><dd>Built, moving to new hosting. Outreach to firms is being tested.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">DIRECTORY</span><h3>StoryCrews</h3></div><span class="badge build">Building</span></div>
+            <dl><dt>What</dt><dd>A directory of video and story production providers, searchable by service and location.</dd><dt>For whom</dt><dd>Agencies and videographers that sell with customer stories.</dd><dt>Earns by</dt><dd>Same model as BackTax: free, then paid listings.</dd><dt>Status</dt><dd>Built on the same base as BackTax. Categories just defined; moving to new hosting.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">SERVICE</span><h3>YouTube-driven websites</h3></div><span class="badge plan">Planned</span></div>
+            <dl><dt>What</dt><dd>Standard websites built around case story videos: home, process, services with video FAQs, stories page.</dd><dt>For whom</dt><dd>Small service businesses.</dd><dt>Earns by</dt><dd>A monthly plan that also opens the door to StoryCollector.</dd><dt>Status</dt><dd>Decided on October 21. First test on Ian’s own site.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">SERVICE</span><h3>AI consulting and audits</h3></div><span class="badge build">Early</span></div>
+            <dl><dt>What</dt><dd>Assessments of where AI can help a business’s marketing and sales, then help to implement.</dd><dt>For whom</dt><dd>Business owners in Ian’s network.</dd><dt>Earns by</dt><dd>Paid audits and engagements.</dd><dt>Status</dt><dd>First paid client in October; the offer is still being shaped.</dd></dl></article>
+          <article class="card"><div class="card-head"><div><span class="kind">LATER</span><h3>YouTube Optimizer, ads, plugin</h3></div><span class="badge plan">Planned</span></div>
+            <dl><dt>What</dt><dd>Better titles and packaging for YouTube videos; a managed ads system; a WordPress plugin to show stories on any site.</dd><dt>For whom</dt><dd>Existing clients first.</dd><dt>Earns by</dt><dd>Add-on services.</dd><dt>Status</dt><dd>Ads: plan written, nothing running. Plugin: built, being checked. Optimizer: data exists, tool to rebuild.</dd></dl></article>
+        </div>
+      </section>
+
+      <section id="fit">
+        <div class="section-heading"><div><p class="eyebrow">04 / The logic</p><h2>How it fits together</h2></div><p>Each product handles one step. A client can enter at any step, and each step makes the next one easier to sell.</p></div>
+        <ol class="loop-steps">
+          <li><h3>The agency funds the build</h3><p>Paying clients get stories today. Every manual project shows which steps are worth turning into software.</p></li>
+          <li><h3>Tools open the door</h3><p>Fish in the Barrel and the Clarity Compass are cheap or free first steps. They end with a plan that StoryCollector carries out.</p></li>
+          <li><h3>StoryCollector is the engine</h3><p>It collects stories at scale without a film crew. Approved stories flow to TackleBox and on to publishing.</p></li>
+          <li><h3>Directories create demand</h3><p>A free listing brings experts in. Upgrading means collecting stories, which means StoryCollector.</p></li>
+          <li><h3>Publishing builds authority</h3><p>Stories on Authentic.Video, directories and YouTube-driven sites help clients show up in Google and AI answers.</p></li>
+          <li><h3>Partners multiply reach</h3><p>Referral partners and communities bring audiences. Ian has ties to Thrive, a large small-business network; a link-up there is an idea, not an agreement.</p></li>
+        </ol>
+      </section>
+
+      <section id="journey">
+        <div class="section-heading"><div><p class="eyebrow">05 / Customers</p><h2>Customer journey and channels</h2></div><p>How a business discovers TAMOS, buys, and uses it. Most sales today come from Ian in person: workshops, talks and his network.</p></div>
+        <figure class="diagram" style="margin:0" role="img" aria-label="Customer journey in six steps: discover, try, buy, set up, collect, publish.">
+          <svg viewBox="0 0 1000 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g>
+              <polygon class="box-strong" points="20,30 170,30 185,75 170,120 20,120"/>
+              <polygon class="box-accent" points="182,30 332,30 347,75 332,120 182,120 197,75"/>
+              <polygon class="box-accent" points="344,30 494,30 509,75 494,120 344,120 359,75"/>
+              <polygon class="box-accent" points="506,30 656,30 671,75 656,120 506,120 521,75"/>
+              <polygon class="box-accent" points="668,30 818,30 833,75 818,120 668,120 683,75"/>
+              <polygon class="box-strong" points="830,30 980,30 995,75 980,120 830,120 845,75"/>
+            </g>
+            <g text-anchor="middle">
+              <text class="t-label" x="100" y="58">01</text><text class="t-title" x="100" y="80">Discover</text><text class="t-sub" x="100" y="100">audience, lists, ads</text>
+              <text class="t-label" x="264" y="58">02</text><text class="t-title" x="264" y="80">Try</text><text class="t-sub" x="264" y="100">workshop, tool, listing</text>
+              <text class="t-label" x="426" y="58">03</text><text class="t-title" x="426" y="80">Buy</text><text class="t-sub" x="426" y="100">project or software</text>
+              <text class="t-label" x="588" y="58">04</text><text class="t-title" x="588" y="80">Set up</text><text class="t-sub" x="588" y="100">who and what to ask</text>
+              <text class="t-label" x="750" y="58">05</text><text class="t-title" x="750" y="80">Collect</text><text class="t-sub" x="750" y="100">interviews, shoots</text>
+              <text class="t-label" x="912" y="58">06</text><text class="t-title" x="912" y="80">Publish</text><text class="t-sub" x="912" y="100">where buyers look</text>
+            </g>
+          </svg>
+        </figure>
+        <ol class="journey" style="margin-block-start:2.5rem">
+          <li><div class="step-meta"><span class="big-number">01</span><span class="role">Discover</span></div><h3>Hears about Ian</h3><p>At a workshop or talk, on the podcast, through a referral, a directory listing, or an outreach message. Paid ads are planned.</p></li>
+          <li><div class="step-meta"><span class="big-number">02</span><span class="role">Try</span></div><h3>Takes a first step</h3><p>Joins a workshop, uses Fish in the Barrel or the Clarity Compass, claims a free directory listing, or books a call.</p></li>
+          <li><div class="step-meta"><span class="big-number">03</span><span class="role">Buy</span></div><h3>Picks an offer</h3><p>A done-for-you story project, a StoryCollector plan, a low-cost monthly program, or a listing upgrade. Sales go through Ian.</p></li>
+          <li><div class="step-meta"><span class="big-number">04</span><span class="role">Set up</span></div><h3>Gets onboarded</h3><p>The team helps pick whom to interview and what to ask. Today this is done by hand; the Compass is meant to automate it.</p></li>
+          <li><div class="step-meta"><span class="big-number">05</span><span class="role">Collect</span></div><h3>Stories come in</h3><p>Customers do AI interviews through StoryCollector, or the team films them. The client approves; the team edits and titles.</p></li>
+          <li><div class="step-meta"><span class="big-number">06</span><span class="role">Publish</span></div><h3>Stories go to work</h3><p>On Authentic.Video, directories, the client’s site and YouTube. Badges link back. Then the client collects the next round.</p></li>
+        </ol>
+        <h3 class="section-sub">Acquisition channels</h3>
+        <div class="channels">
+          <div class="channel"><span class="badge live">Main channel</span><h3 style="margin-block-start:.6rem">Workshops and talks</h3><p>Ian presents to rooms of business owners, then sells a monthly program and follow-up work. The strongest channel today.</p></div>
+          <div class="channel"><span class="badge live">Live</span><h3 style="margin-block-start:.6rem">Ian’s network and content</h3><p>Podcast, book, YouTube and past clients. Existing clients were the first StoryCollector users.</p></div>
+          <div class="channel"><span class="badge build">Testing</span><h3 style="margin-block-start:.6rem">Directory outreach</h3><p>Contacting firms to claim their free listing, by email, site forms and AI follow-up calls, managed from the CRM.</p></div>
+          <div class="channel"><span class="badge plan">Planned</span><h3 style="margin-block-start:.6rem">Paid ads and partners</h3><p>A YouTube and Meta ads system is designed but not running. Referral and affiliate partners are an idea with no terms yet.</p></div>
+        </div>
+      </section>
+
+      <section id="money">
+        <div class="section-heading"><div><p class="eyebrow">06 / Money</p><h2>How money flows</h2></div><p>Who pays, for what, and where it goes. No amounts on purpose: several prices are still being tested.</p></div>
+        <figure class="diagram" style="margin:0" role="img" aria-label="Money flow: five kinds of buyers pay for agency services, a StoryCollector plan, workshops and a monthly program, directory listings, and entry tools. Payments are collected through Ian's sales and payment tools, then go to the team, software and AI tools, and later ads and partner commissions.">
+          <svg viewBox="0 0 1000 540" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a78bfa"/></marker></defs>
+            <text class="t-label" x="20" y="24">Who pays</text><text class="t-label" x="320" y="24">What they pay for</text><text class="t-label" x="760" y="24">Who collects</text>
+            <rect class="box" x="20" y="40" width="250" height="56" rx="8"/><text class="t-title" x="34" y="63">Service businesses</text><text class="t-sub" x="34" y="83">clients of the agency</text>
+            <rect class="box" x="20" y="112" width="250" height="56" rx="8"/><text class="t-title" x="34" y="135">Service businesses</text><text class="t-sub" x="34" y="155">StoryCollector users</text>
+            <rect class="box" x="20" y="184" width="250" height="56" rx="8"/><text class="t-title" x="34" y="207">Business owners</text><text class="t-sub" x="34" y="227">at workshops and talks</text>
+            <rect class="box" x="20" y="256" width="250" height="56" rx="8"/><text class="t-title" x="34" y="279">Listed experts</text><text class="t-sub" x="34" y="299">in a directory</text>
+            <rect class="box" x="20" y="328" width="250" height="56" rx="8"/><text class="t-title" x="34" y="351">Business owners</text><text class="t-sub" x="34" y="371">new to TAMOS</text>
+            <rect class="box-accent" x="320" y="40" width="380" height="56" rx="8"/><circle class="dot-live" cx="338" cy="58" r="5"/><text class="t-title" x="352" y="63">Story videos, podcast, websites</text><text class="t-sub" x="352" y="83">done-for-you agency work · live</text>
+            <rect class="box-accent" x="320" y="112" width="380" height="56" rx="8"/><circle class="dot-live" cx="338" cy="130" r="5"/><text class="t-title" x="352" y="135">StoryCollector plan</text><text class="t-sub" x="352" y="155">billed by interview minutes · live</text>
+            <rect class="box-accent" x="320" y="184" width="380" height="56" rx="8"/><circle class="dot-live" cx="338" cy="202" r="5"/><text class="t-title" x="352" y="207">Workshop, then a monthly program</text><text class="t-sub" x="352" y="227">live, being expanded</text>
+            <rect class="box-accent" x="320" y="256" width="380" height="56" rx="8"/><circle class="dot-plan" cx="338" cy="274" r="5"/><text class="t-title" x="352" y="279">Listing upgrade, certified tier</text><text class="t-sub" x="352" y="299">free to claim, paid to upgrade · planned</text>
+            <rect class="box-accent" x="320" y="328" width="380" height="56" rx="8"/><circle class="dot-build" cx="338" cy="346" r="5"/><text class="t-title" x="352" y="351">Compass, website plan</text><text class="t-sub" x="352" y="371">entry tool and monthly site · in progress</text>
+            <g class="edge-accent">
+              <path class="edge-accent" d="M270,68 L318,68" marker-end="url(#a2)"/><path class="edge-accent" d="M270,140 L318,140" marker-end="url(#a2)"/><path class="edge-accent" d="M270,212 L318,212" marker-end="url(#a2)"/><path class="edge-accent" d="M270,284 L318,284" marker-end="url(#a2)"/><path class="edge-accent" d="M270,356 L318,356" marker-end="url(#a2)"/>
+            </g>
+            <path class="edge" d="M700,68 L758,170"/><path class="edge" d="M700,140 L758,190"/><path class="edge" d="M700,212 L758,212"/><path class="edge" d="M700,284 L758,234"/><path class="edge" d="M700,356 L758,254"/>
+            <rect class="box-strong" x="760" y="140" width="220" height="140" rx="8"/><text class="t-title" x="776" y="172">Ian’s company</text><text class="t-title" x="776" y="192">and TAMOS</text><text class="t-sub" x="776" y="222">paid through Ian’s sales</text><text class="t-sub" x="776" y="240">and payment tools</text><text class="t-sub" x="776" y="258">(CRM checkout, Stripe)</text>
+            <path class="edge" d="M870,280 L870,420 M420,420 L870,420"/>
+            <path class="edge-accent" d="M420,420 L420,444" marker-end="url(#a2)"/><path class="edge-accent" d="M645,420 L645,444" marker-end="url(#a2)"/><path class="edge-accent" d="M870,420 L870,444" marker-end="url(#a2)"/>
+            <text class="t-label" x="20" y="430">Where money goes</text>
+            <rect class="box" x="320" y="446" width="200" height="70" rx="8"/><text class="t-title" x="336" y="474">The team</text><text class="t-sub" x="336" y="496">salaries and fees</text>
+            <rect class="box" x="545" y="446" width="200" height="70" rx="8"/><text class="t-title" x="561" y="474">Software and AI</text><text class="t-sub" x="561" y="496">voice AI, video, hosting</text>
+            <rect class="box" x="770" y="446" width="210" height="70" rx="8"/><text class="t-title" x="786" y="474">Later</text><text class="t-sub" x="786" y="496">ad spend, partner fees</text>
+          </svg>
+        </figure>
+        <p class="diagram-note">Green dot: live. Amber: in progress. Blue: planned. Pricing for most offers is still being tested.</p>
+      </section>
+
+      <section id="status">
+        <div class="section-heading"><div><p class="eyebrow">07 / Where things stand</p><h2>Status board</h2></div><p>As of late October 2026, based on the latest team calls.</p></div>
+        <div class="board">
+          <div class="lane"><h3><i style="background:#7fd3a0"></i>Live</h3><ul>
+            <li><strong>Agency services</strong><span>Story videos, podcast, websites. Main revenue.</span></li>
+            <li><strong>StoryCollector</strong><span>Used by first clients. Manual onboarding.</span></li>
+            <li><strong>Authentic.Video</strong><span>Profiles and stories, human approval first.</span></li>
+            <li><strong>Fish in the Barrel</strong><span>Public calculator, collecting leads.</span></li>
+            <li><strong>Workshops</strong><span>Main sales channel.</span></li>
+          </ul></div>
+          <div class="lane"><h3><i style="background:#d9c38d"></i>Building or testing</h3><ul>
+            <li><strong>Clarity Compass</strong><span>Ian finishing it for a late-October workshop.</span></li>
+            <li><strong>TackleBox</strong><span>Parts built; scope to pin down.</span></li>
+            <li><strong>BackTax and StoryCrews</strong><span>Built; moving hosting; outreach being tested.</span></li>
+            <li><strong>StoryCollector add-ons</strong><span>Text invites, Google sign-in, WordPress plugin.</span></li>
+            <li><strong>AI consulting and audits</strong><span>First paid client, offer still forming.</span></li>
+            <li><strong>Team workflow</strong><span>Clear handoffs, shared call notes, AI help.</span></li>
+          </ul></div>
+          <div class="lane"><h3><i style="background:#aac7ef"></i>Planned</h3><ul>
+            <li><strong>YouTube-driven websites</strong><span>Standard site plan, first test on Ian’s site.</span></li>
+            <li><strong>Ads system</strong><span>Plan written, nothing running.</span></li>
+            <li><strong>YouTube Optimizer</strong><span>Titles and packaging for videos.</span></li>
+            <li><strong>Measurement</strong><span>Tie stories to views, clicks and leads.</span></li>
+            <li><strong>More directories</strong><span>Dental, then legal, on the same base.</span></li>
+            <li><strong>Partner and affiliate program</strong><span>Idea, no terms yet.</span></li>
+          </ul></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="deliverables" id="team"><div class="wrap">
+      <div class="section-heading"><div><p class="eyebrow">08 / People</p><h2>Team and roles</h2></div><p>Two partners and a small remote team. Ian is the hub for sales and most decisions; freeing his time is a current project.</p></div>
+      <figure class="diagram" style="margin:0" role="img" aria-label="Team: Ian and Alexandra at the top. Below, three groups: clients and coordination (Danika, Shane, Arnie), video and content (Jhez, Mark, Jess, Joyce), web and systems (Vishal, AI assistants).">
+        <svg viewBox="0 0 1000 480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect class="box-strong" x="150" y="20" width="320" height="92" rx="8"/><text class="t-label" x="166" y="42">Founder · commercial</text><text class="t-title" x="166" y="66">Ian</text><text class="t-sub" x="166" y="86">sales, strategy, workshops, filming</text><text class="t-sub" x="166" y="102">final say on titles and writing</text>
+          <rect class="box-strong" x="530" y="20" width="320" height="92" rx="8"/><text class="t-label" x="546" y="42">Partner · technology</text><text class="t-title" x="546" y="66">Alexandra</text><text class="t-sub" x="546" y="86">StoryCollector, platform, automation</text><text class="t-sub" x="546" y="102">ads system, team workflow project</text>
+          <path class="edge" d="M310,112 L310,140 M690,112 L690,140 M175,140 L825,140 M175,140 L175,164 M500,140 L500,164 M825,140 L825,164"/>
+          <rect class="zone" x="20" y="166" width="310" height="296" rx="10"/><text class="t-label" x="36" y="192" style="fill:#c4b5fd">Clients and coordination</text>
+          <rect class="zone" x="345" y="166" width="310" height="296" rx="10"/><text class="t-label" x="361" y="192" style="fill:#c4b5fd">Video and content</text>
+          <rect class="zone" x="670" y="166" width="310" height="296" rx="10"/><text class="t-label" x="686" y="192" style="fill:#c4b5fd">Web and systems</text>
+          <g>
+            <rect class="box" x="32" y="206" width="286" height="54" rx="6"/><text class="t-title" x="46" y="228">Danika</text><text class="t-sub" x="46" y="248">coordination, reviews, follow-up, QA</text>
+            <rect class="box" x="32" y="270" width="286" height="54" rx="6"/><text class="t-title" x="46" y="292">Shane</text><text class="t-sub" x="46" y="312">onboarding, final publishing, thumbnails</text>
+            <rect class="box" x="32" y="334" width="286" height="54" rx="6"/><text class="t-title" x="46" y="356">Arnie</text><text class="t-sub" x="46" y="376">outreach and assistant work (new)</text>
+            <rect class="box" x="357" y="206" width="286" height="54" rx="6"/><text class="t-title" x="371" y="228">Jhez</text><text class="t-sub" x="371" y="248">video editing, podcast</text>
+            <rect class="box" x="357" y="270" width="286" height="54" rx="6"/><text class="t-title" x="371" y="292">Mark</text><text class="t-sub" x="371" y="312">design and color looks</text>
+            <rect class="box" x="357" y="334" width="286" height="54" rx="6"/><text class="t-title" x="371" y="356">Jess</text><text class="t-sub" x="371" y="376">color and design review</text>
+            <rect class="box" x="357" y="398" width="286" height="54" rx="6"/><text class="t-title" x="371" y="420">Joyce</text><text class="t-sub" x="371" y="440">YouTube titles, blog, podcast publishing</text>
+            <rect class="box" x="682" y="206" width="286" height="54" rx="6"/><text class="t-title" x="696" y="228">Vishal</text><text class="t-sub" x="696" y="248">websites, hosting, SEO, directories</text>
+            <rect class="box-accent" x="682" y="270" width="286" height="54" rx="6"/><text class="t-title" x="696" y="292">AI assistants</text><text class="t-sub" x="696" y="312">for Ian and the team, being built</text>
+          </g>
+        </svg>
+      </figure>
+      <p class="boundary">Roles as seen in the team’s task tool and recent interviews; a few are still being confirmed. Tools: a CRM for sales and campaigns, ClickUp for tasks, Slack for talk, Descript for editing, Vimeo for client video review, Airtable for the story catalog.</p>
+    </div></section>
+
+    <div class="wrap">
+      <section id="now">
+        <div class="section-heading"><div><p class="eyebrow">09 / This month</p><h2>Current priorities</h2></div><p>What the team agreed to focus on in the October 21 call, in rough order.</p></div>
+        <ol class="journey">
+          <li><div class="step-meta"><span class="big-number">01</span><span class="role">Team</span></div><h3>Free up Ian</h3><p>Map how work moves through the team, fix handoffs, share client call notes with everyone, then give Ian an AI assistant.</p></li>
+          <li><div class="step-meta"><span class="big-number">02</span><span class="role">Product</span></div><h3>Finish the Compass</h3><p>Launch it at the next workshop, then connect it so its plan sets up StoryCollector automatically.</p></li>
+          <li><div class="step-meta"><span class="big-number">03</span><span class="role">Directories</span></div><h3>Move and launch</h3><p>Move BackTax and StoryCrews to new hosting, fix the sign-up form, and test outreach to firms.</p></li>
+          <li><div class="step-meta"><span class="big-number">04</span><span class="role">Product</span></div><h3>Smoother StoryCollector</h3><p>Text-message invites, Google sign-in, easier onboarding for current clients.</p></li>
+          <li><div class="step-meta"><span class="big-number">05</span><span class="role">Sales</span></div><h3>Workshops and offers</h3><p>Sell the monthly program at workshops; keep testing prices; shape the consulting offer.</p></li>
+          <li><div class="step-meta"><span class="big-number">06</span><span class="role">Next</span></div><h3>Websites and ads</h3><p>Design the standard YouTube-driven website; start the ads system once offers are stable.</p></li>
+        </ol>
+      </section>
+
+      <section id="partner">
+        <div class="section-heading"><div><p class="eyebrow">10 / Where you fit</p><h2>Where a new partner could add value</h2></div><p>The gaps that came up again and again in recent calls and team interviews.</p></div>
+        <div class="cards">
+          <article class="card"><span class="kind">SALES</span><h3>A second seller</h3><p style="color:var(--muted);margin-block-start:.5rem">Ian is the only person who sells. Someone who can run demos, follow up workshop leads and close would remove the biggest bottleneck.</p></article>
+          <article class="card"><span class="kind">OFFERS</span><h3>Packaging and pricing</h3><p style="color:var(--muted);margin-block-start:.5rem">Many offers, few fixed prices. A clear ladder from free tool to monthly plan to done-for-you would make every channel easier.</p></article>
+          <article class="card"><span class="kind">GROWTH</span><h3>Outbound and ads</h3><p style="color:var(--muted);margin-block-start:.5rem">Directory outreach and paid ads are designed but not proven. Someone to run, measure and tune them, within the rules for email and reviews.</p></article>
+          <article class="card"><span class="kind">OPERATIONS</span><h3>Running the delivery line</h3><p style="color:var(--muted);margin-block-start:.5rem">Footage handoffs, title approvals and client updates need one clear owner. An operator who runs the process would speed up every project.</p></article>
+          <article class="card"><span class="kind">DATA</span><h3>Measurement and reporting</h3><p style="color:var(--muted);margin-block-start:.5rem">Nobody owns results today. Showing clients which stories brought views, clicks and leads would prove the whole idea and help renewals.</p></article>
+          <article class="card"><span class="kind">CHANNELS</span><h3>Partnerships and verticals</h3><p style="color:var(--muted);margin-block-start:.5rem">Networks of agencies, assistants or associations could each bring many businesses. A partner with access to one vertical could launch its directory.</p></article>
+        </div>
+        <div class="callout"><h3>Read next</h3><p>The <a href="storycollector-guide.html">StoryCollector product guide</a> explains the main product feature by feature.</p></div>
+      </section>
+    </div>
+  </main>
+  <footer class="wrap"><div class="footer-inner"><p><strong>TAMOS business overview</strong><br>Updated October 26, 2026 · Prepared by Alexandra Spalato</p><p>Built from team calls, product notes and the StoryCollector specification, September and October 2026. Plans change fast; statuses reflect the latest call. No prices, client names or contract terms on purpose. <a href="#main">Back to top ↑</a></p></div></footer>
+  <script>
+    (() => {
+      const navLinks = [...document.querySelectorAll('nav a')];
+      const sections = navLinks.map(link => document.querySelector(link.getAttribute('href')));
+      const update = () => {
+        let current = sections[0];
+        for (const section of sections) if (section.getBoundingClientRect().top <= 180) current = section;
+        navLinks.forEach(link => link.getAttribute('href') === `#${current.id}` ? link.setAttribute('aria-current','location') : link.removeAttribute('aria-current'));
+      };
+      window.addEventListener('scroll', update, {passive:true});
+      update();
+    })();
+  </script>
+</body>
+</html>
