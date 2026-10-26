@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Guide T3 Code</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Linear-style dark document: one reading column, square corners, mono caps labels, colour only as accent. */
+:root {
+  --bg: #0B0B0D; --surface: #131316; --fg: #EDEDF0; --muted: #8A8F98; --line: #2C2D30;
+  --accent: #7C8CFF; --warn: #FFB224; --ok: #3DD68C; --alert: #FF4D4F; --info: #22D3EE;
+  --code-bg: #18181C;
+  --font-body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+    --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+    --code-bg: #F0F0F3; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+  --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+  --code-bg: #F0F0F3; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; padding: 48px 16px 96px; }
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.45rem; font-weight: 650; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+header, section { display: flex; flex-direction: column; gap: 16px; }
+.eyebrow, .caps { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.eyebrow { color: var(--muted); }
+.lede { font-size: 1.15rem; color: var(--muted); }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); padding: 0.1em 0.35em; }
+pre { font-family: var(--font-mono); font-size: 0.82rem; background: var(--code-bg); border: 1px solid var(--line); padding: 16px; margin: 0; overflow-x: auto; }
+ul, ol { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 65ch; }
+.note { border-left: 3px solid var(--info); background: var(--surface); padding: 14px 16px; }
+.note.warn { border-left-color: var(--warn); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { border: 1px solid var(--line); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.stat .n { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.stat p { font-size: 0.85rem; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 18px; }
+.steps > li { counter-increment: s; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; }
+.steps > li > h3::before { content: "Étape " counter(s) " · "; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
+.c-accent { color: var(--accent); } .c-warn { color: var(--warn); } .c-ok { color: var(--ok); } .c-alert { color: var(--alert); } .c-info { color: var(--info); }
+footer { color: var(--muted); font-size: 0.88rem; border-top: 1px solid var(--line); padding-top: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="eyebrow">Outils · 26 octobre 2026 · T3 Code 0.1.2</span>
+  <h1>Guide T3 Code</h1>
+  <p class="lede">Mode d'emploi des réglages pour travailler avec plusieurs projets, plusieurs agents en parallèle, un worktree par tâche, plusieurs machines et le téléphone. Ce qu'il faut toucher, ce qu'il vaut mieux laisser.</p>
+</header>
+
+<section>
+  <div class="note warn"><p><strong>Rien n'a été modifié.</strong> Ce guide vient d'une lecture des onze sections de Settings, dans l'app et dans un navigateur appairé en lecture seule. En lecture seule, certaines valeurs sont masquées : un contrôle invisible ne veut pas dire « désactivé ». Ces cas sont marqués <span class="c-warn">à vérifier</span>.</p></div>
+</section>
+
+<section>
+  <span class="eyebrow">L'essentiel</span>
+  <h2>Six choses à retenir</h2>
+  <ul>
+    <li><strong>Un serveur, plusieurs fenêtres.</strong> Les agents tournent sur une machine (le serveur). L'app, un onglet Chrome ou le téléphone ne sont que des fenêtres dessus. Il n'y a pas de commande « nouvelle fenêtre » dans l'app, mais un onglet Chrome appairé marche très bien comme deuxième fenêtre.</li>
+    <li><strong>Un thread reste sur sa machine.</strong> Changer de machine, c'est déplacer le code avec Git (push, puis pull), pas le thread.</li>
+    <li><strong>Settle ≠ merge ≠ suppression.</strong> Settle range un thread dans les terminés. Archive le cache. Delete le supprime. Aucun des trois ne fusionne une branche.</li>
+    <li><strong>Le nettoyage des worktrees efface les fichiers ignorés.</strong> Le garde-fou protège les modifications non commitées, pas les <code>.env</code>. Sauvegarde-les avant d'activer le nettoyage.</li>
+    <li><strong>Queue ou Steer.</strong> Un message envoyé pendant qu'un agent travaille attend son tour (Queue). <code>⌘+Enter</code> fait l'inverse : il corrige l'agent en cours de route (Steer).</li>
+    <li><strong>Une connexion n'est pas une synchronisation.</strong> Accéder au Mac depuis le téléphone ne copie rien entre machines.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="eyebrow">À faire</span>
+  <h2>Réglages que je te conseille de changer</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Où</th><th>Réglage</th><th>Pourquoi</th></tr>
+    <tr><td>Appearance</td><td><strong>Keep composer context visible</strong> → on</td><td>Tu vois toujours la branche et le worktree actifs sous la zone de saisie. Utile quand tu jongles entre tâches.</td></tr>
+    <tr><td>Organization</td><td><strong>Working section (beta)</strong> → on, à tester</td><td>Les threads qui tournent vont dans une section Working et reviennent dans l'inbox quand ils ont besoin de toi.</td></tr>
+    <tr><td>Organization</td><td><strong>Keep threads with a PR</strong> → on</td><td>Une PR en attente de review ne disparaît plus dans les terminés après 3 jours d'inactivité.</td></tr>
+    <tr><td>Organization</td><td><strong>Auto-settle inactive threads</strong> : passer de 3 à 7 jours</td><td>3 jours, c'est court quand on attend la réponse d'un client.</td></tr>
+    <tr><td>Behavior</td><td>Notifications actives <strong>dans un seul client</strong></td><td>Elles sont activées dans l'app et coupées dans Chrome : garde ça, sinon tu reçois tout en double.</td></tr>
+    <tr><td>Projet par projet</td><td><strong>Workspace</strong> → worktree pour les projets de code</td><td>Aujourd'hui, c'est <em>Current checkout</em> : deux agents lancés sur le même projet écrivent dans le même dossier. Garde Current checkout pour Life-OS et les dossiers de notes.</td></tr>
+    <tr><td>Projects &amp; threads</td><td><strong>Add project starts in</strong> → <code>~/DEV</code></td><td>Moins de navigation quand tu ajoutes un projet.</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <span class="eyebrow">À ne pas toucher</span>
+  <h2>Ce qu'il vaut mieux laisser tel quel</h2>
+  <ul>
+    <li><strong>Delete confirmation</strong> : on. C'est ta seule protection contre une suppression accidentelle.</li>
+    <li><strong>Storage → Delete now</strong> : ne clique pas « pour voir ». Lis d'abord <em>Last run</em>, qui montre ce qui aurait été supprimé ou gardé.</li>
+    <li><strong>Start from remote</strong> : on, c'est bien. Exception : pour une branche qui dépend de commits pas encore poussés, choisis la base locale au moment de créer le worktree.</li>
+    <li><strong>Continue threads after restarts</strong> : on. Les threads repartent après une mise à jour ou un crash.</li>
+    <li><strong>Send shortcut</strong> : Enter. Comme tu dictes, fais attention : Enter envoie tout de suite. Si ça t'arrive trop souvent, passe à ⌘+Enter.</li>
+    <li><strong>Providers</strong> : Claude et Codex sont connectés. N'ajoute pas d'autres fournisseurs Git (GitLab, Bitbucket…) sans en avoir besoin, GitHub suffit.</li>
+    <li><strong>Permissions des connexions</strong> : ne donne pas plus de droits à un appareil que nécessaire. Lecture seule pour consulter, accès complet seulement pour l'appareil depuis lequel tu lances des tâches.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="eyebrow">Worktrees</span>
+  <h2>Un worktree par tâche, et le ménage après</h2>
+  <p>Un worktree est une copie du dépôt sur sa propre branche. Chaque tâche a la sienne, donc les agents ne se marchent pas dessus. Le cycle complet : branche → commits → push → PR → merge → nettoyage.</p>
+  <p>Le nettoyage se règle dans <strong>Settings → Storage</strong>. Valeurs observées :</p>
+  <div class="table-wrap"><table>
+    <tr><th>Réglage</th><th>État</th><th>Effet</th></tr>
+    <tr><td>Delete merged worktrees</td><td class="c-warn">Différent selon la machine</td><td>Supprime le worktree quand la PR est fusionnée et que ses commits sont dans la branche principale.</td></tr>
+    <tr><td>Delete worktrees with deleted threads</td><td class="c-warn">Différent selon la machine</td><td>Supprime le worktree quand tu supprimes le thread.</td></tr>
+    <tr><td>Delete settled worktrees</td><td>off</td><td>Supprime après un délai une fois le thread terminé. 0 jour = au prochain passage.</td></tr>
+    <tr><td>Delete inactive worktrees</td><td>off</td><td>Supprime après X jours sans activité.</td></tr>
+    <tr><td>Delete unchanged worktrees</td><td>off</td><td>Supprime ceux qui n'ont aucun commit en plus de la branche principale.</td></tr>
+    <tr><td>Keep worktrees with local changes</td><td>Uncommitted changes</td><td>Garde ceux qui ont des modifications non commitées ou des fichiers non suivis. <span class="c-alert">Pas les fichiers ignorés, donc pas les <code>.env</code>.</span></td></tr>
+  </table></div>
+  <ol class="steps">
+    <li><h3>Mets les secrets à l'abri</h3><p>Vérifie que chaque <code>.env</code> utilisé dans un worktree existe aussi ailleurs (dossier principal du projet, gestionnaire de mots de passe).</p></li>
+    <li><h3>Choisis la machine</h3><p>En haut de Storage, sélectionne une seule machine à la fois pour voir son vrai état, puisqu'elles diffèrent.</p></li>
+    <li><h3>Active les deux suppressions utiles</h3><p><strong>Delete merged worktrees</strong> et <strong>Delete worktrees with deleted threads</strong>, sur chaque machine où tu codes. Laisse le garde-fou sur <em>Uncommitted changes</em>.</p></li>
+    <li><h3>Contrôle</h3><p>Après le prochain passage, lis <em>Last run</em> : nombre supprimé, nombre gardé, et pourquoi.</p></li>
+  </ol>
+  <p>Supprimer un worktree efface ses fichiers locaux, pas la branche ni l'historique du thread.</p>
+</section>
+
+<section>
+  <span class="eyebrow">Threads</span>
+  <h2>Organiser et grouper ses threads</h2>
+  <ul>
+    <li><strong>Project grouping</strong> (on) regroupe un même dépôt présent sur plusieurs machines sous un seul projet. Ça ne crée pas d'arbre de threads.</li>
+    <li><strong>Fork</strong> : nouveau thread qui part d'un point de la conversation, pour tester une piste. <strong>Merge back</strong> renvoie ensuite son contexte au thread d'origine.</li>
+    <li><strong>Sous-tâches</strong> : quand un agent délègue, les sous-tâches restent rattachées à son thread.</li>
+    <li><strong>Pin, Snooze, Settle, Archive</strong> pour ranger. Les threads « settled » n'apparaissent pas dans Archive.</li>
+    <li>Settle automatique : à la fusion d'une PR (on), à sa fermeture, et après 3 jours sans activité (on). Une nouvelle activité réactive le thread.</li>
+    <li>Les projets sans Git ne profitent ni du regroupement par dépôt ni des worktrees. Fais un <code>git init</code> là où tu en veux.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="eyebrow">Connexions</span>
+  <h2>Autre fenêtre, téléphone, VPS ou Mac mini</h2>
+  <h3>Ouvrir T3 dans Chrome (deuxième fenêtre)</h3>
+  <ol class="steps">
+    <li><h3>Crée un lien</h3><p>Settings → Connections → <strong>Create link</strong>. Choisis les permissions, crée, copie.</p></li>
+    <li><h3>Colle-le dans la barre d'adresse</h3><p>Le lien complet, dans la barre d'adresse de Chrome, pas dans le champ <em>Pairing token</em>. Il expire au bout de cinq minutes s'il n'est pas utilisé.</p></li>
+    <li><h3>C'est fait une fois</h3><p>Le navigateur reste autorisé. Chaque nouvel appareil ou navigateur demande son propre lien.</p></li>
+  </ol>
+  <p>Les préférences d'affichage et de notifications sont propres à chaque client : Chrome n'hérite pas de celles de l'app.</p>
+  <h3>Depuis le téléphone</h3>
+  <ul>
+    <li>Une app existe pour iPhone/iPad et Android : liens dans <strong>Settings → About → Mobile app</strong>.</li>
+    <li>Sur le même Wi-Fi : <em>Network access</em> est déjà activé.</li>
+    <li>Hors de chez toi : active <strong>T3 Connect</strong> (le plus simple, avec ton compte) ou <strong>Tailscale HTTPS</strong> (réseau privé entre tes appareils). Une seule des deux suffit. Les deux sont off aujourd'hui.</li>
+    <li>La machine qui fait tourner les agents doit rester allumée et éveillée.</li>
+  </ul>
+  <h3>VPS ou Mac mini</h3>
+  <ul>
+    <li>Un environnement SSH (ton VPS) est déjà connecté dans l'app. Il n'apparaît pas automatiquement dans Chrome.</li>
+    <li>Choisir le VPS ou le Mac mini, c'est choisir <em>où tournent les agents</em>. Une machine toujours allumée te permet de lancer de longues tâches et de les suivre du téléphone.</li>
+    <li>Pour changer de machine en cours de travail : résumé de contexte, <code>git push</code>, puis sur l'autre machine <code>git pull</code> et nouveau thread.</li>
+    <li><strong>Load balancing</strong> (off) : inutile tant que tu n'as pas plusieurs machines à répartir.</li>
+  </ul>
+</section>
+
+<section>
+  <span class="eyebrow">Référence</span>
+  <h2>Les autres sections en bref</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Section</th><th>Ce qu'il y a</th><th>Conseil</th></tr>
+    <tr><td>General · New threads</td><td>Modèle par défaut Claude Opus 5.5 (effort Medium), Full access, Current checkout, submodules Recursive</td><td>Change le modèle tâche par tâche. Full access ne veut pas dire publier ou déployer sans demander.</td></tr>
+    <tr><td>Organization</td><td>Tri par dernier message, Compact idle threads au retour, Auto-resume off</td><td>Auto-resume relance des agents seul après une limite d'usage : à activer seulement si tu le veux vraiment.</td></tr>
+    <tr><td>Behavior</td><td>Paragraphes affichés une fois terminés, diffs repliés et empilés, espaces masqués, Follow-up = Queue</td><td>Réaffiche les espaces pour les reviews où ils comptent.</td></tr>
+    <tr><td>Confirmations</td><td>Delete on, Archive et Unpin off, Quit : maintenir</td><td>Bien comme ça.</td></tr>
+    <tr><td>Text generation</td><td>Modèle léger pour les titres et textes générés</td><td>Rien à faire.</td></tr>
+    <tr><td>Appearance</td><td>Suit le système, thème T3 Code, largeur Comfortable, retour à la ligne activé</td><td>Confort uniquement, sauf Composer context.</td></tr>
+    <tr><td>Keybindings</td><td>Liste et fichier <code>keybindings.json</code></td><td class="c-warn">Non lisible en lecture seule, à revoir dans l'app.</td></tr>
+    <tr><td>SnapShots</td><td>Capture d'une fenêtre jointe au brouillon</td><td>App desktop seulement. Ce n'est pas une sauvegarde.</td></tr>
+    <tr><td>Providers</td><td>Claude et Codex connectés, 13 modèles Codex visibles, mise à jour Codex disponible</td><td>Mets tes modèles habituels en favoris pour alléger le sélecteur. Fais la mise à jour Codex.</td></tr>
+    <tr><td>Integrations</td><td>Navigateur intégré (profil Default, 30 fps, DuckDuckGo), PR ouvertes dans T3, simulateurs</td><td>Plus tard : un profil navigateur pour le perso, un par client. N'active le simulateur EAS (payant) que pour un vrai projet mobile.</td></tr>
+    <tr><td>Scheduled Tasks</td><td>Aucune tâche planifiée</td><td>Avant d'en créer, décide où arrivent les résultats.</td></tr>
+    <tr><td>Source Control</td><td>Git et GitHub CLI OK, autres fournisseurs absents</td><td class="c-warn">Merge method, nommage des branches, style des commits : masqués, à vérifier dans l'app.</td></tr>
+    <tr><td>Archive</td><td>Aucun thread archivé</td><td>Rien à faire.</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <span class="eyebrow">Reste à vérifier</span>
+  <h2>À contrôler dans l'app quand tu ne travailles pas</h2>
+  <ul>
+    <li>Storage : l'état réel de chaque machine pour les deux suppressions qui diffèrent.</li>
+    <li>Source Control : Automatically pull, Default merge method, Worktree branch naming, writing style.</li>
+    <li>Integrations : Agent browser access, profils navigateur, Device hub.</li>
+    <li>Keybindings : la liste complète des raccourcis.</li>
+    <li>Providers : Health check interval, et les réglages de chaque modèle.</li>
+  </ul>
+</section>
+
+<footer>Préparé par Alexandra Spalato · 26 octobre 2026 · Sources : réglages de T3 Code 0.1.2 et <a href="https://github.com/pingdotgg/t3code/blob/main/docs/user/remote-access.md">documentation accès distant</a></footer>
+</div>
+</body>
+</html>
