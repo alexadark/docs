@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How Alexandra's personal AI work system fits together: a kanban, a private knowledge vault, Claude Code, RIFF and agents that work overnight.">
+  <meta name="theme-color" content="#0c0c0f">
+  <meta name="robots" content="noindex">
+  <title>How my AI work system works</title>
+  <style>
+    :root { color-scheme:dark; --paper:#0c0c0f; --surface:#141418; --ink:#f2f2f5; --muted:#aaaab7; --line:#2a2a33; --brand:#a78bfa; --link:#c4b5fd; --accent:#a78bfa; --night:#111115; --night-text:#f2f2f5; --night-muted:#aaaab7; --focus:#c4b5fd; --todo:#7C8CFF; --doing:#FFB224; --done:#3DD68C; --wait:#22D3EE; --body:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; --mono:ui-monospace,"SF Mono",Menlo,monospace; }
+    * { box-sizing:border-box; }
+    html { scroll-padding-top:2rem; scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:1rem/1.6 var(--body); -webkit-font-smoothing:antialiased; }
+    a { color:var(--link); text-underline-offset:.2em; }
+    :focus-visible { outline:3px solid var(--focus); outline-offset:4px; }
+    ::selection { background:var(--accent); color:var(--night); }
+    h1,h2,h3,p { margin:0; }
+    h1,h2,.wordmark { font-weight:600; }
+    h1 { font-size:clamp(2.3rem,4.2vw,3.75rem); line-height:1.12; letter-spacing:-.045em; text-wrap:balance; }
+    h2 { font-size:clamp(1.8rem,3vw,2.5rem); line-height:1.2; letter-spacing:-.035em; text-wrap:balance; }
+    h3 { font-size:1.1rem; line-height:1.4; font-weight:600; }
+    p { text-wrap:pretty; max-width:70ch; }
+    code { font-family:var(--mono); font-size:.85em; background:#1c1c22; border:1px solid var(--line); padding:.05em .35em; border-radius:4px; color:var(--ink); }
+    .wrap { width:min(1080px,calc(100% - 6rem)); margin-inline:auto; }
+    main { margin-inline-start:244px; }
+    .skip { position:fixed; inset-block-start:.5rem; inset-inline-start:.5rem; padding:1rem; background:var(--surface); z-index:10; transform:translateY(-200%); }
+    .skip:focus { transform:none; }
+    header { background:#101014; border-inline-end:1px solid var(--line); position:fixed; inset:0 auto 0 0; width:244px; overflow-y:auto; }
+    .header-inner { display:flex; flex-direction:column; gap:2rem; padding:2rem 1.2rem; min-height:100%; }
+    .wordmark { text-decoration:none; color:var(--ink); font-size:1.12rem; display:flex; align-items:center; gap:.6rem; letter-spacing:-.035em; }
+    .mark { width:19px; height:21px; background:var(--brand); display:inline-block; clip-path:polygon(0 0,100% 0,100% 73%,35% 73%,0 100%); }
+    .nav-label { color:var(--muted); font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; padding-inline:.7rem; margin-block-end:.6rem; }
+    .sidebar-note { margin-block-start:auto; padding:.9rem .7rem 0; border-top:1px solid var(--line); font-size:.75rem; color:var(--muted); }
+    nav { display:flex; flex-direction:column; gap:.35rem; }
+    nav a { color:var(--muted); font-size:.875rem; text-decoration:none; padding:.65rem .7rem; border-radius:6px; }
+    nav a:hover,nav a[aria-current="location"] { background:#23202f; color:var(--ink); }
+    .eyebrow { font-size:.75rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); }
+    .hero { display:grid; grid-template-columns:1.15fr 1fr; gap:3rem; padding-block:4.5rem 3rem; align-items:center; }
+    .hero h1 { margin-block:1.2rem; }
+    .hero h1 span { color:var(--link); }
+    .intro { color:var(--muted); max-width:52ch; line-height:1.75; }
+    .actions { display:flex; gap:1rem; flex-wrap:wrap; margin-block-start:2rem; }
+    .button { display:inline-flex; align-items:center; min-height:44px; padding:.65rem 1rem; border:1px solid var(--line); border-radius:6px; background:var(--surface); color:var(--ink); text-decoration:none; font-weight:500; font-size:.85rem; }
+    .button.primary { background:var(--ink); color:var(--paper); }
+    .hero-note { margin-block-start:1.25rem; color:var(--muted); font-size:.85rem; }
+    /* Hero mock: one kanban card coming back from an agent */
+    .mock { background:var(--night); padding:1.4rem; border:1px solid var(--line); border-radius:10px; display:flex; flex-direction:column; gap:1rem; }
+    .mock-top { display:flex; justify-content:space-between; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .dot { width:7px; height:7px; background:var(--accent); display:inline-block; margin-inline-end:.5rem; }
+    .kcard { border:1px solid var(--line); border-radius:8px; padding:1rem; background:var(--surface); display:flex; flex-direction:column; gap:.6rem; }
+    .kcard .t { font-weight:600; }
+    .kcard ul { list-style:none; margin:0; padding:0; font-size:.85rem; color:var(--muted); display:flex; flex-direction:column; gap:.3rem; }
+    .kcard li.ok { color:var(--done); }
+    .kcard li.sub { padding-inline-start:1.1rem; }
+    .chips { display:flex; gap:.4rem; flex-wrap:wrap; }
+    .chip { font:600 .68rem/1 var(--mono); letter-spacing:.04em; padding:.35rem .5rem; border:1px solid var(--line); border-radius:4px; color:var(--muted); }
+    .chip.p1 { color:var(--doing); border-color:#5a4520; }
+    .chip.agent { color:var(--link); border-color:#3c3254; }
+    .review { border-top:1px solid var(--line); padding-top:.8rem; font-size:.82rem; color:var(--muted); }
+    .review strong { color:var(--ink); display:block; margin-bottom:.25rem; font-size:.85rem; }
+    .btns { display:flex; gap:.5rem; margin-top:.7rem; }
+    .btns span { font-size:.75rem; padding:.35rem .6rem; border-radius:4px; border:1px solid var(--line); }
+    .btns .yes { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+    .caption { color:var(--muted); font-size:.75rem; }
+    .promise { display:flex; flex-wrap:wrap; gap:.7rem 1.5rem; padding-block:1.5rem; border-block:1px solid var(--line); font-size:.78rem; color:var(--muted); }
+    .promise span::before { content:""; display:inline-block; width:4px; height:4px; border-radius:50%; background:var(--muted); margin-inline-end:.6rem; vertical-align:middle; }
+    section { padding-block:4rem; scroll-margin-top:2rem; }
+    .section-heading { display:grid; grid-template-columns:1fr 1fr; align-items:end; gap:2.5rem; margin-block-end:3rem; }
+    .section-heading h2 { margin-block-start:.8rem; }
+    .section-heading>p { color:var(--muted); }
+    /* Map of the pieces */
+    .pieces { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2rem; }
+    .piece { border:1px solid var(--line); border-radius:8px; padding:1.2rem; background:var(--surface); }
+    .piece .tag { font:700 .72rem/1 var(--mono); color:var(--accent); display:block; margin-block-end:1rem; letter-spacing:.04em; }
+    .piece p { color:var(--muted); font-size:.92rem; margin-block-start:.5rem; }
+    .flow { margin-block-start:2.5rem; display:flex; align-items:stretch; gap:0; flex-wrap:wrap; border:1px solid var(--line); border-radius:8px; overflow:hidden; }
+    .flow div { flex:1 1 140px; padding:1rem; border-inline-end:1px solid var(--line); font-size:.85rem; color:var(--muted); position:relative; }
+    .flow div:last-child { border-inline-end:0; }
+    .flow b { display:block; color:var(--ink); font-size:.9rem; margin-block-end:.3rem; }
+    .flow i { font-style:normal; font:600 .68rem/1 var(--mono); color:var(--accent); display:block; margin-block-end:.6rem; }
+    .journey { display:grid; grid-template-columns:repeat(3,1fr); gap:2rem; list-style:none; padding:0; margin:0; }
+    .journey li { border-top:1px solid var(--line); padding-block-start:1.2rem; }
+    .step-meta { display:flex; justify-content:space-between; align-items:center; margin-block-end:1.25rem; }
+    .num { font-size:.85rem; line-height:1; color:var(--link); background:#23202f; padding:.6rem; border:1px solid #3c3254; border-radius:6px; font-variant-numeric:tabular-nums; font-weight:600; }
+    .role { font-size:.72rem; letter-spacing:.07em; text-transform:uppercase; font-weight:700; color:var(--muted); }
+    .journey p { margin-block-start:.6rem; color:var(--muted); font-size:.95rem; }
+    .dark { background:var(--night); border-block:1px solid var(--line); }
+    .cols2 { display:grid; grid-template-columns:repeat(2,1fr); gap:2rem; }
+    .block { border-top:1px solid var(--line); padding-block-start:1.2rem; }
+    .block .tag { display:inline-block; font:700 .75rem/1 var(--mono); color:var(--accent); margin-block-end:1.2rem; }
+    .block p, .block li { color:var(--muted); font-size:.95rem; }
+    .block p { margin-block-start:.6rem; }
+    .block ul { margin:.7rem 0 0; padding-inline-start:1.1rem; display:flex; flex-direction:column; gap:.4rem; }
+    .lane { display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; margin-block-start:2.5rem; }
+    .lane div { border:1px solid var(--line); border-radius:8px; padding:1rem; background:var(--surface); font-size:.85rem; color:var(--muted); }
+    .lane b { display:block; color:var(--ink); margin-block-end:.3rem; }
+    .lane .who { font:600 .68rem/1 var(--mono); color:var(--accent); display:block; margin-block-end:.6rem; letter-spacing:.04em; }
+    .note { margin-block-start:2rem; padding:1.2rem 1.4rem; border-inline-start:3px solid var(--wait); background:var(--surface); border-radius:0 8px 8px 0; color:var(--muted); font-size:.92rem; }
+    .note strong { color:var(--ink); }
+    .rules { list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(2,1fr); gap:0 2rem; }
+    .rules li { border-top:1px solid var(--line); padding-block:1rem; color:var(--muted); font-size:.95rem; }
+    .rules li b { color:var(--ink); display:block; margin-block-end:.2rem; }
+    .faq-grid { display:grid; grid-template-columns:1fr 1.45fr; gap:4rem; }
+    .faq h2 { margin-block-start:.8rem; }
+    .faq details { border-top:1px solid var(--line); padding-block:1.2rem; }
+    .faq summary { font-weight:700; cursor:pointer; padding-inline-end:1rem; }
+    .faq details p { margin-block-start:.8rem; color:var(--muted); font-size:.95rem; }
+    .closing { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:2rem; display:flex; justify-content:space-between; gap:2rem; align-items:center; margin-block-end:3rem; }
+    .closing h2 { font-size:2rem; max-width:24ch; margin-block-start:.6rem; }
+    .closing p { margin-block-start:.8rem; max-width:52ch; color:var(--muted); }
+    footer { margin-inline:292px 3rem; padding-block:2.5rem; font-size:.75rem; color:var(--muted); border-top:1px solid var(--line); }
+    @media (hover:hover) { .button:hover { background:#26262e; } .button.primary:hover { background:#d6d6df; } .faq summary:hover { color:var(--link); } }
+    @media (max-width:72rem) { .hero { grid-template-columns:1fr; } .wrap { width:calc(100% - 3rem); } .journey,.pieces { grid-template-columns:1fr 1fr; } .lane { grid-template-columns:1fr 1fr; } }
+    @media (max-width:46rem) {
+      main { margin-inline-start:0; } header { position:static; width:100%; border-inline-end:0; border-bottom:1px solid var(--line); }
+      .wrap { width:calc(100% - 2.5rem); } .header-inner { gap:1rem; padding:1.25rem; } nav { flex-direction:row; flex-wrap:wrap; gap:.25rem; } nav a { padding:.5rem .6rem; }
+      .nav-label,.sidebar-note { display:none; } footer { margin-inline:1.25rem; }
+      .hero { padding-block:2.5rem; } section { padding-block:3rem; } .section-heading,.cols2,.rules,.faq-grid { grid-template-columns:1fr; gap:1.5rem; }
+      .closing { flex-direction:column; align-items:start; }
+    }
+    @media (max-width:30rem) { .journey,.pieces,.lane { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header><div class="header-inner">
+    <a class="wordmark" href="#main"><span class="mark" aria-hidden="true"></span>My AI system</a>
+    <div><p class="nav-label">Guide</p><nav aria-label="Guide">
+      <a href="#main" aria-current="location">Overview</a>
+      <a href="#pieces">The pieces</a>
+      <a href="#day">How I work</a>
+      <a href="#card">Life of a card</a>
+      <a href="#routing">Finding the project</a>
+      <a href="#riff">RIFF</a>
+      <a href="#outbox">Messages out</a>
+      <a href="#machines">Machines &amp; sync</a>
+      <a href="#guardrails">Guardrails</a>
+      <a href="#questions">Questions</a>
+    </nav></div>
+    <p class="sidebar-note"><a href="../index.html">← All pages</a><br><br>Kanban · Claude Code · RIFF<br>Agents that work while I sleep<br><br>Updated October 2026</p>
+  </div></header>
+
+  <main id="main">
+    <div class="wrap">
+      <div class="hero">
+        <div>
+          <p class="eyebrow">For a friend · How it all fits together</p>
+          <h1>My AI work system,<br><span>explained.</span></h1>
+          <p class="intro">I dictate almost everything. Claude turns what I say into cards on a kanban, works out which project each card belongs to, and hands the work that doesn't need my judgment to agents. They work overnight on a second Mac and come back with a short report for me to approve.</p>
+          <div class="actions"><a class="button primary" href="#card">Follow one card</a><a class="button" href="#pieces">See the pieces</a></div>
+          <p class="hero-note">I decide and review. The agents do the legwork.</p>
+        </div>
+        <div>
+          <div class="mock" role="img" aria-label="Illustration of a kanban card that came back from an agent, with two finished steps, a summary to check and Approve and Refuse buttons.">
+            <div class="mock-top"><span><span class="dot"></span>To review</span><span>Illustration</span></div>
+            <div class="kcard">
+              <div class="t">Fix directory search</div>
+              <div class="chips"><span class="chip p1">P1 · this week</span><span class="chip agent">Agent · effort medium</span><span class="chip">repo: directory-app</span></div>
+              <ul>
+                <li class="ok">✓ Reproduce the empty results bug</li>
+                <li class="ok">✓ Fix the filter query</li>
+                <li class="sub">• Add a test for accented names</li>
+                <li>• Deploy (mine)</li>
+              </ul>
+              <div class="review"><strong>To check</strong>Search returned nothing when a city had an accent. The query now normalises accents; two screenshots attached. Not tested on the live data.
+                <div class="btns"><span class="yes">Approve ✓</span><span>Refuse</span><span>Ask the agent</span></div>
+              </div>
+            </div>
+          </div>
+          <p class="caption" style="margin-top:1rem">Concept illustration, not a screenshot of real data.</p>
+        </div>
+      </div>
+      <div class="promise"><span>One board for everything</span><span>Captured from any conversation</span><span>Agents never push, deploy or send</span><span>Every result reviewed by me</span></div>
+
+      <section id="pieces">
+        <div class="section-heading"><div><p class="eyebrow">01 / The pieces</p><h2>Six parts, one loop</h2></div><p>Each part does one job. They talk to each other through plain files on disk, so any of them can be read or fixed by hand.</p></div>
+        <div class="pieces">
+          <article class="piece"><span class="tag">01 / KANBAN</span><h3>The board</h3><p>A small web app on my Mac with one JSON file behind it. Columns: inbox, to do, doing, done, later. Every change goes through one command-line tool, <code>board.py</code>, so Claude and I edit the same way.</p></article>
+          <article class="piece"><span class="tag">02 / LIFE-OS</span><h3>The vault</h3><p>My private Obsidian vault: business, projects, people, call debriefs, journal, ideas. Each area has an index file that says what lives where.</p></article>
+          <article class="piece"><span class="tag">03 / CLAUDE CODE</span><h3>The assistant</h3><p>Claude Code (and sometimes Codex) runs in my terminal and in T3 Code, an app that holds many agent threads side by side. It reads and writes files like a developer would.</p></article>
+          <article class="piece"><span class="tag">04 / SKILLS</span><h3>The playbook</h3><p>A private repo of rules and skills: written procedures for capturing a task, debriefing a call, delegating work. A registry decides which skills are available everywhere and which only inside one folder.</p></article>
+          <article class="piece"><span class="tag">05 / RIFF</span><h3>The build method</h3><p>My framework for building software with agents in small, checked phases. Another AI model reviews each phase before it counts as done.</p></article>
+          <article class="piece"><span class="tag">06 / MAC MINI</span><h3>The night shift</h3><p>A second Mac that runs the agents. It gets the board through file sync and sends back reports and screenshots, never edits to the board itself.</p></article>
+        </div>
+        <div class="flow" aria-label="The loop: I talk, a card is created, an agent works, I review, messages go out.">
+          <div><i>01</i><b>I talk</b>A call, a voice note, a thought mid-session.</div>
+          <div><i>02</i><b>Card</b>Claude captures it with steps, priority and links.</div>
+          <div><i>03</i><b>Agent</b>Work that needs no judgment goes to the Mac mini.</div>
+          <div><i>04</i><b>Review</b>I approve, refuse or ask for more.</div>
+          <div><i>05</i><b>Out</b>Messages, ClickUp tasks and drafts leave from the card.</div>
+        </div>
+      </section>
+    </div>
+
+    <section class="dark" id="day"><div class="wrap">
+      <div class="section-heading"><div><p class="eyebrow">02 / How I work</p><h2>Deep work first, small stuff in one batch</h2></div><p>My attention is the scarce resource. The whole setup exists to protect long, focused blocks and to keep the small things from leaking into them.</p></div>
+      <div class="cols2">
+        <article class="block"><span class="tag">VOICE</span><h3>I dictate, Claude cleans up</h3><p>I speak to Claude rather than type. Dictation garbles words and names ("my iOS" for "my Life OS"), so Claude reads by sound and context and fixes names from my sources. It only asks when two readings would lead to different actions.</p></article>
+        <article class="block"><span class="tag">CAPTURE</span><h3>Tasks appear wherever they come up</h3><p>A global rule tells Claude: when an action for me clearly emerges in any session (someone waits for my reply, a commitment from a call), add a card to the inbox. It checks the board for duplicates first and tells me the card's title in one line.</p></article>
+        <article class="block"><span class="tag">CARDS</span><h3>One card per big piece of work</h3><ul><li>A short title, two to five words, just the action.</li><li>Steps as bullets, grouped under <code>## Person</code> or <code>## Project</code> headings, with sub-steps indented.</li><li>Finished steps become <code>✓</code>, shown as checkboxes in the app.</li><li>A priority from 1 to 4 with a one-sentence reason: 1 earns money or engages a client this week, 4 is "when there's time".</li></ul></article>
+        <article class="block"><span class="tag">BATCH</span><h3>"Petites actions groupées"</h3><p>All the tedious bits (a reply, a follow-up, an API key to find, a quick deploy) go into one batch card. I clear it at the start of the day or while a long agent run is going, never in the middle of deep work.</p></article>
+        <article class="block"><span class="tag">WAITING</span><h3>Blocked cards say what they wait for</h3><p>A card can be blocked by a person, a dated event or another card. The app lists these under "En attente" (waiting), grouped by who or what. A card blocker lifts itself when that card is done; a dated one lifts on its date.</p></article>
+        <article class="block"><span class="tag">VIEWS</span><h3>Three ways to look at the board</h3><p>The board itself, an overview grouped by priority, and "À valider" (to review), where agent results wait for me. The app is installable as a phone-style app from Chrome and starts on its own at login.</p></article>
+      </div>
+    </div></section>
+
+    <div class="wrap">
+      <section id="card">
+        <div class="section-heading"><div><p class="eyebrow">03 / The workflow</p><h2>The life of one card</h2></div><p>From a sentence in a call to approved work. Here's who does what at each step.</p></div>
+        <ol class="journey">
+          <li><div class="step-meta"><span class="num">01</span><span class="role">Me + Claude</span></div><h3>Capture</h3><p>After a call, Claude writes a debrief into the vault and proposes tasks. Once I agree, each becomes a card with the debrief attached as a linked document, so the context travels with the task.</p></li>
+          <li><div class="step-meta"><span class="num">02</span><span class="role">Claude</span></div><h3>Shape</h3><p>Claude finds the big card the action belongs to and adds a step there rather than a new card. It sets the priority, the partner, the product group and the repository the work happens in.</p></li>
+          <li><div class="step-meta"><span class="num">03</span><span class="role">Me</span></div><h3>Hand off</h3><p>If a card, or one section of it, needs no decision from me, I give it to an agent with "Confier à Claude": which repo, how much thinking effort, and a note on what to leave alone.</p></li>
+          <li><div class="step-meta"><span class="num">04</span><span class="role">Agent on the Mac mini</span></div><h3>Work</h3><p>At 7 a.m. a scheduled task launches every ready agent, or I click "Lancer l'agent". Each gets its own thread and its own copy of the repo on a separate branch, and commits locally only.</p></li>
+          <li><div class="step-meta"><span class="num">05</span><span class="role">Agent</span></div><h3>Report</h3><p>It checks its work in a browser, then reports back: two or three sentences "to check", up to three screenshots, what it couldn't test, and any messages it drafted for other people.</p></li>
+          <li><div class="step-meta"><span class="num">06</span><span class="role">Me</span></div><h3>Approve</h3><p>Approve ticks the finished steps. Refuse sends it back with a word of feedback. "Ask the agent" gives it more to do without throwing away its work. If it stopped on a question, I answer and relaunch.</p></li>
+        </ol>
+        <div class="note"><strong>Why agents don't just finish the job.</strong> Pushing code, deploying and messaging people stay with me. Deploys from agent work land in my batch card, and drafted messages wait on the card until I send them.</div>
+      </section>
+    </div>
+
+    <section class="dark" id="routing"><div class="wrap">
+      <div class="section-heading"><div><p class="eyebrow">04 / Finding the project</p><h2>How Claude knows where to go</h2></div><p>Claude doesn't guess. Every request passes through the same three-way split, then a chain of index files that point to the right folder.</p></div>
+      <div class="lane">
+        <div><span class="who">STEP 1</span><b>Sort the request</b>Software work loads the dev workflow and the repo's own instructions. Personal or business requests go to the vault. A neutral question loads nothing private.</div>
+        <div><span class="who">STEP 2</span><b>Read the index</b>The "second-brain" skill reads the vault's root index, then only the one area that fits: business, projects, people, journal…</div>
+        <div><span class="who">STEP 3</span><b>Follow the links</b>The area index points to the real owner, for example a project folder or a partner's call notes. Names match loosely ("Tackle Box" finds TackleBox).</div>
+        <div><span class="who">STEP 4</span><b>Or ask</b>If no owner fits, Claude asks one targeted question or drops the note in the vault's inbox. It never invents a place.</div>
+      </div>
+      <div class="cols2" style="margin-top:3rem">
+        <article class="block"><span class="tag">CARD → REPO</span><h3>Each card knows its repository</h3><p>A card stores the absolute path of the repository it's about. When an agent launches, it checks that path is a git repo on the Mac mini, branches from its current branch and works in a separate copy (a git worktree), so the original stays untouched.</p></article>
+        <article class="block"><span class="tag">CARD → CONTEXT</span><h3>Each card carries its sources</h3><p>Cards link to documents: the call debrief, the plan, the synthesis it came from. The app opens them in a reader or in Obsidian, and the agent can read them for context.</p></article>
+        <article class="block"><span class="tag">REPO → RULES</span><h3>Each project brings its own instructions</h3><p>Every repo has an instruction file for agents (<code>CLAUDE.md</code> or <code>AGENTS.md</code>) and sometimes a short "critical context" file that loads automatically when a session starts inside it. So the same agent behaves differently in a client app and in my vault.</p></article>
+        <article class="block"><span class="tag">SKILLS → SCOPE</span><h3>Skills appear only where they belong</h3><p>The skill registry lists a few global helpers (vault routing, dictation cleanup, delegation…) and attaches the others to one folder. The task-capture rule is global, which is why a card can be added from any repo.</p></article>
+      </div>
+    </div></section>
+
+    <div class="wrap">
+      <section id="riff">
+        <div class="section-heading"><div><p class="eyebrow">05 / RIFF</p><h2>Building software in checked phases</h2></div><p>RIFF is the framework I built for solo development with agents. The kanban can hand a ready RIFF phase straight to an agent.</p></div>
+        <div class="cols2">
+          <article class="block"><span class="tag">PLAN</span><h3>Brief, roadmap, phases</h3><p><code>/riff:start</code> interviews me about a new product and writes <code>PROJECT.md</code> (the brief) and <code>ROADMAP.yaml</code> (phases with priorities and prerequisites). <code>/riff:onboard</code> maps an existing app, and <code>/riff:evolve</code> plans a change.</p></article>
+          <article class="block"><span class="tag">BUILD</span><h3>Waves</h3><p><code>/riff:wave</code> picks the next ready phases, builds them, runs the checks, gets a review, commits and closes each phase. It can run independent phases in parallel, each in its own copy of the repo.</p></article>
+          <article class="block"><span class="tag">VERIFY</span><h3>A second model reviews</h3><p>The agent that builds never grades itself. A model from another provider reviews each phase, and only high or critical findings block. Evidence must match the committed code, and a short plain-language explanation is written after each phase.</p></article>
+          <article class="block"><span class="tag">STOP</span><h3>Human checkpoints</h3><p>In loop mode it keeps going until it hits something only I can do: credentials or access, a check on a third-party service, a destructive target, or a failing validation. Publishing, merging and deploying always need my explicit go.</p></article>
+        </div>
+        <div class="note"><strong>Kanban meets RIFF.</strong> A card can be handed off as a RIFF task with a phase name. The agent then runs that phase with RIFF in autonomous loop mode, inside the card's repository, until it's closed. If RIFF parks, blocks or waits for a decision, the agent reports "stopped" and the card turns into a question for me.</div>
+      </section>
+    </div>
+
+    <section class="dark" id="outbox"><div class="wrap">
+      <div class="section-heading"><div><p class="eyebrow">06 / Messages out</p><h2>Every card has an outbox</h2></div><p>Agents often need to tell someone something. They don't send it; they draft it on the card, routed by role, with any useful file attached.</p></div>
+      <div class="lane">
+        <div><span class="who">BUSINESS PARTNER</span><b>Slack + ClickUp</b>What's done goes in a Slack message. Marketing and business questions are grouped into one ClickUp task.</div>
+        <div><span class="who">INFRASTRUCTURE</span><b>Slack</b>DNS, hosting and Cloudflare questions go to the person who manages our infrastructure.</div>
+        <div><span class="who">CONSULTING CLIENT</span><b>Email draft</b>Written as a Gmail draft. I can also send it straight away from the card.</div>
+        <div><span class="who">ME</span><b>Batch card</b>Deploys and code steps join my small-actions card when I approve.</div>
+      </div>
+      <div class="cols2" style="margin-top:3rem">
+        <article class="block"><span class="tag">EDIT</span><h3>I stay the editor</h3><p>I can edit any message by hand, or give an instruction ("shorter, and ask about the deadline") and a model rewrites it. Only the messages I tick go out when I approve.</p></article>
+        <article class="block"><span class="tag">CLICKUP</span><h3>A shared list, kept in sync</h3><p>My business partner works in ClickUp. Every 20 seconds a background script syncs our shared list with the board, both ways. Steps I tick get ticked there, and progress that isn't on ClickUp yet is added to the closest existing task, without duplicates. A card only goes to ClickUp if there's something for my partner to do.</p></article>
+      </div>
+    </div></section>
+
+    <div class="wrap">
+      <section id="machines">
+        <div class="section-heading"><div><p class="eyebrow">07 / Machines &amp; sync</p><h2>Two Macs, one board</h2></div><p>The laptop is where I work. The Mac mini is where agents run. Plain file sync connects them.</p></div>
+        <div class="cols2">
+          <article class="block"><span class="tag">MACBOOK</span><h3>Where the board lives</h3><ul><li>The web app runs at login and restarts if it crashes.</li><li>The board file sits in my vault, which commits itself to git after each session.</li><li>Agents that need to control the screen (computer use) wait for my click and run here.</li></ul></article>
+          <article class="block"><span class="tag">MAC MINI</span><h3>Where agents run</h3><ul><li>Gets the board through Syncthing, one or two minutes behind.</li><li>Never writes the board. It only writes report folders with screenshots and files, which sync back.</li><li>Launching from the laptop goes over SSH to the mini.</li></ul></article>
+          <article class="block"><span class="tag">MODELS</span><h3>Right model for the job</h3><p>Agents run on Claude Opus with an effort level per task: low for a bounded change, medium for a sizeable job, high for a hard diagnosis. Small jobs (rewriting a message, matching a step) go to cheaper, faster models. RIFF picks its own.</p></article>
+          <article class="block"><span class="tag">THREADS</span><h3>One thread per task</h3><p>Each agent gets its own T3 Code thread, so I can open it and read exactly what it did. A morning thread recaps what launched. If a thread ends without a report, the app notices within two minutes and shows its last answer.</p></article>
+        </div>
+      </section>
+
+      <section id="guardrails" style="padding-top:0">
+        <div class="section-heading"><div><p class="eyebrow">08 / Guardrails</p><h2>What the agents may not do</h2></div><p>These rules are in every agent's instructions, not just in my head.</p></div>
+        <ul class="rules">
+          <li><b>No push, merge or deploy</b>Commits stay local on the agent's branch until I've looked.</li>
+          <li><b>No messages sent</b>Slack, email and ClickUp drafts wait on the card.</li>
+          <li><b>No board edits from the mini</b>Only the laptop writes the board, so two machines never fight over one file.</li>
+          <li><b>No decisions for me</b>Anything that needs my judgment, an account or access is left out in the hand-off note, or becomes a blocker addressed to me.</li>
+          <li><b>No self-grading in RIFF</b>A different model reviews before a phase counts as done.</li>
+          <li><b>No guessing where things go</b>An unknown owner gets a question or the inbox, never a made-up folder.</li>
+        </ul>
+      </section>
+
+      <section class="faq" id="questions" style="padding-top:0"><div class="faq-grid">
+        <div><p class="eyebrow">09 / Frequently asked</p><h2>Common questions</h2></div>
+        <div>
+          <details><summary>Why a homemade kanban instead of Todoist or Trello?</summary><p>Because Claude needs to read and write it as easily as I do. It's one JSON file and one command-line tool, with fields that matter to agents: the repository, linked documents, blockers, the agent hand-off and the outbox.</p></details>
+          <details><summary>How does Claude avoid creating duplicate cards?</summary><p>It lists the board before adding anything and checks the steps, not just the titles. If a meeting-agenda card already holds the questions for someone, other cards point to it instead of repeating them.</p></details>
+          <details><summary>What does an agent actually get when it starts?</summary><p>A prompt built from the card: the steps it should do, the hand-off note, the linked documents and the repository. It also gets the rules: work alone in its own copy, commit locally, check in a browser, report with screenshots, and stop and report if it needs me.</p></details>
+          <details><summary>What if an agent is wrong?</summary><p>I refuse with a short reason and it tries again in the same thread, with all its context. Nothing it did has left its branch, so a wrong result costs a review, not a cleanup.</p></details>
+          <details><summary>How much do I still do myself?</summary><p>Decisions, reviews, deploys and anything involving a relationship. The agents take the fixes, checks, tests and first drafts. I see their work as a queue to review, not as a pile of open threads.</p></details>
+          <details><summary>Could someone else use this?</summary><p>There's an open source version of the kanban, Claude Code Kanban, also on this site. The routing, vault and partner rules are personal and stay private.</p></details>
+        </div>
+      </div></section>
+
+      <div class="closing"><div><p class="eyebrow">The short version</p><h2>Talk. Capture. Delegate. Review.</h2><p>Everything I say becomes a card in the right place, the boring parts happen overnight, and nothing leaves without my approval.</p></div><a class="button primary" href="#card">Revisit the workflow ↑</a></div>
+    </div>
+  </main>
+  <footer><p>Guide · October 2026 · Written from the system's own instructions and code. This page contains no client data, credentials or personal records. <a href="#main">Back to top ↑</a></p></footer>
+</body>
+</html>
