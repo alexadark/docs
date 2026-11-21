@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Reliant: where things stand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Linear-style dark document: one reading column, square corners, mono caps labels, colour only as accent. */
+:root {
+  --bg: #0B0B0D; --surface: #131316; --fg: #EDEDF0; --muted: #8A8F98; --line: #2C2D30;
+  --accent: #7C8CFF; --warn: #FFB224; --ok: #3DD68C; --alert: #FF4D4F; --info: #22D3EE;
+  --code-bg: #18181C;
+  --font-body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+    --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+    --code-bg: #F0F0F3; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+  --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+  --code-bg: #F0F0F3; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; padding: 48px 16px 96px; }
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.45rem; font-weight: 650; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+header, section { display: flex; flex-direction: column; gap: 16px; }
+.eyebrow, .caps { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.eyebrow { color: var(--muted); }
+.lede { font-size: 1.15rem; color: var(--muted); }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); padding: 0.1em 0.35em; }
+pre { font-family: var(--font-mono); font-size: 0.82rem; background: var(--code-bg); border: 1px solid var(--line); padding: 16px; margin: 0; overflow-x: auto; }
+ul, ol { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 65ch; }
+.note { border-left: 3px solid var(--info); background: var(--surface); padding: 14px 16px; }
+.note.warn { border-left-color: var(--warn); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { border: 1px solid var(--line); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.stat .n { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.stat p { font-size: 0.85rem; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 18px; }
+.steps > li { counter-increment: s; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; }
+.steps > li > h3::before { content: "Step " counter(s) " · "; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
+.c-accent { color: var(--accent); } .c-warn { color: var(--warn); } .c-ok { color: var(--ok); } .c-alert { color: var(--alert); } .c-info { color: var(--info); }
+footer { color: var(--muted); font-size: 0.88rem; border-top: 1px solid var(--line); padding-top: 20px; }
+
+.badge { align-self: flex-start; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border: 1px solid currentColor; }
+.badge.live { color: var(--ok); } .badge.built { color: var(--warn); } .badge.blocked { color: var(--alert); }
+.item { border-top: 1px solid var(--line); padding-top: 28px; gap: 12px; }
+.links { list-style: none; padding: 0; font-size: 0.92rem; }
+figure { margin: 0; border: 1px solid var(--line); }
+figure img { display: block; width: 100%; height: auto; }
+a.back { font-size: 0.9rem; }
+
+.badge.ready { color: var(--info); } .badge.idea { color: var(--muted); } .badge.progress { color: var(--accent); }
+.rows { list-style: none; padding: 0; gap: 0; max-width: none; border: 1px solid var(--line); }
+.rows li { display: grid; grid-template-columns: 150px 1fr; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--line); background: var(--surface); }
+.rows li:last-child { border-bottom: 0; }
+.rows .badge { font-size: 0.64rem; }
+.rows small { color: var(--muted); display: block; }
+.flow { list-style: none; padding: 0; gap: 8px; font-size: 0.92rem; }
+.flow b { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; }
+@media (max-width: 560px) { .rows li { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="eyebrow">Reliant Fund Services · Nov 21, 2026</span>
+  <h1>Where things stand</h1>
+  <p class="lede">Everything we're working on for Reliant, one line each, with its status. Nothing here needs action from you yet.</p>
+</header>
+<section class="stats">
+  <div class="stat"><span class="n c-ok">2</span><p>done</p></div>
+  <div class="stat"><span class="n c-info">4</span><p>ready, sent once Ian has reviewed</p></div>
+  <div class="stat"><span class="n c-accent">2</span><p>in progress</p></div>
+  <div class="stat"><span class="n">5</span><p>planned next</p></div>
+</section>
+<section><h2>Done</h2>
+<ul class="rows">
+  <li><span class="badge live">Done</span><span>Strategy session with Ian<small>Oct 15. Your market, emerging managers, formation attorneys.</small></span></li>
+  <li><span class="badge live">Done</span><span>Team working session<small>Nov 3, with you and Torunn. How clients reach Reliant today.</small></span></li>
+</ul>
+</section>
+<section><h2>Ready for review</h2>
+<p>These come to you by email as soon as Ian has looked at them.</p>
+<ul class="rows">
+  <li><span class="badge ready">Ready</span><span>Session debrief<small>A short written summary of the Nov 3 session.</small></span></li>
+  <li><span class="badge ready">Ready</span><span>Map: how you get clients today<small>Who does what from first contact to signed client, and where each step is recorded.</small></span></li>
+  <li><span class="badge ready">Ready</span><span>Short AI plan<small>The plan promised on Oct 28: where AI can save time or bring in clients first, and what each step takes.</small></span></li>
+  <li><span class="badge ready">Ready</span><span>A few written questions<small>Short questions that let us finish the numbers without taking more of your live time.</small></span></li>
+</ul>
+</section>
+<section><h2>In progress</h2>
+<ul class="rows">
+  <li><span class="badge progress">In progress</span><span>Next phase with Ian<small>Ian is setting the scope and the numbers to track with you.</small></span></li>
+  <li><span class="badge progress">In progress</span><span>Screen work audit<small>Records how a working day flows on screen, so we can see what to hand off. Simple to run, data kept private.</small></span></li>
+</ul>
+</section>
+<section><h2>Planned next</h2>
+<p>The order from the AI plan: fix the flow before adding channels.</p>
+<ul class="rows">
+  <li><span class="badge idea">Planned</span><span>Referral partners, both ways<small>One list of partners, who sent whom, and a steady rhythm of useful material back to them.</small></span></li>
+  <li><span class="badge idea">Planned</span><span>One pipeline view<small>Every open opportunity and its next step in one place, without asking you.</small></span></li>
+  <li><span class="badge idea">Planned</span><span>Routine sales steps off your plate<small>Scheduling, call prep and follow-ups each get a named owner. You keep discovery, partners and proposals.</small></span></li>
+  <li><span class="badge idea">Later</span><span>Monthly marketing and sales view<small>LinkedIn, calls booked, website, newsletters and referral sources side by side.</small></span></li>
+  <li><span class="badge idea">Later</span><span>Put existing assets to work<small>The back office builder, the printed guide and the podcast, in front of the people who refer you.</small></span></li>
+</ul>
+</section>
+<section><h2>How the pieces connect</h2>
+<ul class="flow">
+  <li><b>Referrers → Eric</b> · bankers, auditors, tax advisers and clients bring every new client.</li>
+  <li><b>Torunn → LinkedIn</b> · posts, articles and outreach from the weekly interview, up to the booked call.</li>
+  <li><b>Agency → brand channels</b> · website, company page, newsletters, email sequences, ads, podcast editing.</li>
+  <li><b>Greg → Eric</b> · meetings set, then discovery call, pricing questions and proposal.</li>
+  <li><b>Ian and Alexandra → Reliant</b> · Ian leads the relationship and the next phase; Alexandra runs the analysis and builds the tools.</li>
+</ul>
+<p class="note">Where it waits today: no shared record of who referred whom, booking status rebuilt by hand, follow-ups that rarely happen, marketing numbers never in one place.</p>
+<ul class="links"><li><a href="https://www.reliantfundservices.com/">reliantfundservices.com</a></li></ul>
+</section>
+<footer>Prepared by Alexandra Spalato · Nov 21, 2026</footer>
+</div>
+</body>
+</html>
