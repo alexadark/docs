@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Maclynn: what we built</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Linear-style dark document: one reading column, square corners, mono caps labels, colour only as accent. */
+:root {
+  --bg: #0B0B0D; --surface: #131316; --fg: #EDEDF0; --muted: #8A8F98; --line: #2C2D30;
+  --accent: #7C8CFF; --warn: #FFB224; --ok: #3DD68C; --alert: #FF4D4F; --info: #22D3EE;
+  --code-bg: #18181C;
+  --font-body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+    --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+    --code-bg: #F0F0F3; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+  --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+  --code-bg: #F0F0F3; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; padding: 48px 16px 96px; }
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.45rem; font-weight: 650; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+header, section { display: flex; flex-direction: column; gap: 16px; }
+.eyebrow, .caps { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.eyebrow { color: var(--muted); }
+.lede { font-size: 1.15rem; color: var(--muted); }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); padding: 0.1em 0.35em; }
+pre { font-family: var(--font-mono); font-size: 0.82rem; background: var(--code-bg); border: 1px solid var(--line); padding: 16px; margin: 0; overflow-x: auto; }
+ul, ol { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 65ch; }
+.note { border-left: 3px solid var(--info); background: var(--surface); padding: 14px 16px; }
+.note.warn { border-left-color: var(--warn); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { border: 1px solid var(--line); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.stat .n { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.stat p { font-size: 0.85rem; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 18px; }
+.steps > li { counter-increment: s; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; }
+.steps > li > h3::before { content: "Step " counter(s) " · "; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
+.c-accent { color: var(--accent); } .c-warn { color: var(--warn); } .c-ok { color: var(--ok); } .c-alert { color: var(--alert); } .c-info { color: var(--info); }
+footer { color: var(--muted); font-size: 0.88rem; border-top: 1px solid var(--line); padding-top: 20px; }
+
+.badge { align-self: flex-start; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border: 1px solid currentColor; }
+.badge.live { color: var(--ok); } .badge.built { color: var(--warn); } .badge.blocked { color: var(--alert); }
+.item { border-top: 1px solid var(--line); padding-top: 28px; gap: 12px; }
+.links { list-style: none; padding: 0; font-size: 0.92rem; }
+figure { margin: 0; border: 1px solid var(--line); }
+figure img { display: block; width: 100%; height: auto; }
+a.back { font-size: 0.9rem; }
+
+.badge.progress { color: var(--info); } .badge.paused { color: var(--muted); }
+.diagram { border: 1px solid var(--line); background: var(--surface); padding: 12px; }
+.diagram svg { display: block; width: 100%; height: auto; }
+.diagram text { font-family: var(--font-body); fill: var(--fg); }
+.diagram .sub { fill: var(--muted); font-size: 11px; }
+.diagram .box { fill: var(--bg); stroke: var(--line); }
+.diagram .box.hi { stroke: var(--accent); }
+.diagram .box.ext { stroke-dasharray: 4 3; }
+.diagram .arrow { stroke: var(--accent); stroke-width: 1.5; fill: none; marker-end: url(#ah); }
+.legend { font-size: 0.9rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="back" href="../index.html">← All documents</a>
+  <span class="eyebrow">Maclynn International · Nov 21, 2026</span>
+  <h1>What we built</h1>
+  <p class="lede">Where each piece of the sales work stands today: what's live, what's built, what's in progress and what's paused.</p>
+</header>
+<section>
+  <h2>How the pieces connect</h2>
+  <div class="diagram"><svg viewBox="0 0 720 560" role="img" aria-labelledby="dt dd">
+<title id="dt">How the pieces connect</title>
+<desc id="dd">The Maclynn team works in Claude. Claude uses the sales plugin, the brand voice skill and the template publisher. Through the Maclynn connector on Cloudflare, Claude reaches GoHighLevel, BoldSign, Monday and Granola. SmartMatch, PandaDoc and Mailchimp are existing tools this work doesn't connect to.</desc>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7C8CFF"/></marker></defs>
+<rect class="box" x="200" y="10" width="320" height="56"/>
+<text x="360" y="34" text-anchor="middle" font-weight="600">Maclynn team</text>
+<text class="sub" x="360" y="54" text-anchor="middle">Rachel · Tory · Alexa · Mia and the sales team</text>
+<path class="arrow" d="M360 66 V100"/>
+<rect class="box hi" x="20" y="104" width="680" height="128"/>
+<text x="36" y="126" font-weight="600">Maclynn's Claude organization</text>
+<rect class="box" x="36" y="138" width="208" height="80"/>
+<text x="140" y="164" text-anchor="middle" font-weight="600">maclynn-sales plugin</text>
+<text class="sub" x="140" y="184" text-anchor="middle">meeting notes, proposal,</text>
+<text class="sub" x="140" y="200" text-anchor="middle">agreement, call coaching</text>
+<rect class="box" x="256" y="138" width="208" height="80"/>
+<text x="360" y="164" text-anchor="middle" font-weight="600">Brand voice skill</text>
+<text class="sub" x="360" y="184" text-anchor="middle">Rachel's tone of voice</text>
+<text class="sub" x="360" y="200" text-anchor="middle">and brand guidelines</text>
+<rect class="box" x="476" y="138" width="208" height="80"/>
+<text x="580" y="164" text-anchor="middle" font-weight="600">Template publisher</text>
+<text class="sub" x="580" y="184" text-anchor="middle">Rachel updates the</text>
+<text class="sub" x="580" y="200" text-anchor="middle">proposal template herself</text>
+<path class="arrow" d="M360 232 V266"/>
+<rect class="box hi" x="160" y="270" width="400" height="60"/>
+<text x="360" y="296" text-anchor="middle" font-weight="600">Maclynn connector (Cloudflare)</text>
+<text class="sub" x="360" y="316" text-anchor="middle">Maclynn's own account · signature, approvals, leads, calls</text>
+<path class="arrow" d="M240 330 L100 380"/>
+<path class="arrow" d="M310 330 L273 380"/>
+<path class="arrow" d="M410 330 L447 380"/>
+<path class="arrow" d="M480 330 L620 380"/>
+<rect class="box" x="20" y="384" width="160" height="64"/>
+<text x="100" y="410" text-anchor="middle" font-weight="600">GoHighLevel</text>
+<text class="sub" x="100" y="430" text-anchor="middle">contacts, pipeline, tasks</text>
+<rect class="box" x="193" y="384" width="160" height="64"/>
+<text x="273" y="410" text-anchor="middle" font-weight="600">BoldSign</text>
+<text class="sub" x="273" y="430" text-anchor="middle">agreements, signatures</text>
+<rect class="box" x="367" y="384" width="160" height="64"/>
+<text x="447" y="410" text-anchor="middle" font-weight="600">Monday</text>
+<text class="sub" x="447" y="430" text-anchor="middle">new leads, read only</text>
+<rect class="box" x="540" y="384" width="160" height="64"/>
+<text x="620" y="410" text-anchor="middle" font-weight="600">Granola</text>
+<text class="sub" x="620" y="430" text-anchor="middle">sales calls, read only</text>
+<rect class="box ext" x="20" y="476" width="680" height="72"/>
+<text x="36" y="498" font-weight="600">Existing tools, not connected by this work</text>
+<text class="sub" x="36" y="520">SmartMatch: Maclynn's member and matchmaking system, left as it is</text>
+<text class="sub" x="36" y="538">PandaDoc: being replaced by BoldSign · Mailchimp: newsletters</text>
+</svg></div>
+  <p class="legend">The team works in Claude. Claude reaches GoHighLevel, BoldSign, Monday and Granola only through the Maclynn connector, which runs on Maclynn's own Cloudflare account. SmartMatch, PandaDoc and Mailchimp aren't connected by this work.</p>
+</section>
+<section>
+  <h2>At a glance</h2>
+  <div class="table-wrap"><table>
+  <thead><tr><th>Piece</th><th>Status</th></tr></thead>
+  <tbody>
+<tr><td>Sales toolkit in Claude</td><td><span class="c-ok">Live</span></td></tr>
+<tr><td>Signature with BoldSign</td><td><span class="c-ok">Live</span></td></tr>
+<tr><td>Approvals in GoHighLevel</td><td><span class="c-ok">Live</span></td></tr>
+<tr><td>Agreement follow-up in Claude</td><td><span class="c-ok">Live</span></td></tr>
+<tr><td>Payment moves the deal to Won</td><td><span class="c-ok">Live</span></td></tr>
+<tr><td>Sales calls from Granola</td><td><span class="c-ok">Live</span></td></tr>
+<tr><td>Notes and proposals on the client's record</td><td><span class="c-ok">Live</span></td></tr>
+<tr><td>Monday leads into GoHighLevel</td><td><span class="c-ok">Live</span></td></tr>
+<tr><td>Template publisher for Rachel</td><td><span class="c-warn">Ready, setup pending</span></td></tr>
+<tr><td>Alexa's sales pipeline</td><td><span class="c-info">In progress</span></td></tr>
+<tr><td>Moving from Monday to GoHighLevel</td><td><span class="c-info">In progress</span></td></tr>
+<tr><td>Sales call coaching</td><td><span style="color:var(--muted)">Paused</span></td></tr>
+  </tbody></table></div>
+</section>
+<section class="item">
+  <span class="badge live">Live</span>
+  <h2>Sales toolkit in Claude</h2>
+  <p>The maclynn-sales plugin turns a sales call into meeting notes in Tory and Alexa's template, then a proposal on Rachel's six-page template, then the agreement with the Terms and Conditions copied word for word and checked before sending. Version 0.1.31 on Nov 21.</p>
+  <ul class="links"><li><a href="https://github.com/maclynn-international/maclynn-sales">Plugin on GitHub (Maclynn's account)</a></li></ul>
+</section>
+<section class="item">
+  <span class="badge live">Live</span>
+  <h2>Signature with BoldSign</h2>
+  <p>Agreements go out through BoldSign: the client signs, then the salesperson who held the meeting countersigns, and GoHighLevel is updated with the signed PDF and a note. The first real client agreements went out on Nov 12 and 13.</p>
+</section>
+<section class="item">
+  <span class="badge live">Live</span>
+  <h2>Approvals in GoHighLevel</h2>
+  <p>Tory approves UK proposals and agreements and Sarah Powell approves US ones by ticking a task in GoHighLevel, with Rachel as backup. Since Nov 21, Tory's and Sarah's own agreements no longer go to Rachel, as Rachel asked on Nov 20.</p>
+</section>
+<section class="item">
+  <span class="badge live">Live</span>
+  <h2>Agreement follow-up in Claude</h2>
+  <p>Tory can ask Claude whether a client opened the agreement, get a fresh signing link to resend on WhatsApp, and revoke an agreement to send a corrected one.</p>
+</section>
+<section class="item">
+  <span class="badge live">Live</span>
+  <h2>Payment moves the deal to Won</h2>
+  <p>When the salesperson tells Claude a client has paid, the opportunity moves to Won and the matchmaker gets a single Start matchmaking task. A client who pays before signing is handled too.</p>
+</section>
+<section class="item">
+  <span class="badge live">Live</span>
+  <h2>Sales calls from Granola</h2>
+  <p>Claude reads the sales team's Granola calls through the connector, read only, to write the meeting notes.</p>
+</section>
+<section class="item">
+  <span class="badge live">Live</span>
+  <h2>Notes and proposals on the client's record</h2>
+  <p>Confirmed meeting notes and each approved proposal PDF are filed on the client's GoHighLevel contact, one note per version, so the whole team can see them.</p>
+</section>
+<section class="item">
+  <span class="badge live">Live</span>
+  <h2>Monday leads into GoHighLevel</h2>
+  <p>New website and campaign leads from Monday's Inbound Forms board reach GoHighLevel automatically since Nov 9, as a New Enquiry opportunity, with UK leads owned by Miranda. Leads marked Spam or Duplicate in Monday are tagged in GoHighLevel.</p>
+</section>
+<section class="item">
+  <span class="badge built">Ready, setup pending</span>
+  <h2>Template publisher for Rachel</h2>
+  <p>Lets Rachel publish a new proposal template from Claude without help. The publisher is running; Rachel receives her private access link securely, then adds it in Claude in three steps.</p>
+</section>
+<section class="item">
+  <span class="badge progress">In progress</span>
+  <h2>Alexa's sales pipeline</h2>
+  <p>Alexa's Sales Pipeline in GoHighLevel gets a Contract Signed stage: a signed contract lands there, and only a confirmed payment moves the deal to Won. The connector side is tested; the stage itself is added in GoHighLevel by Alexa.</p>
+</section>
+<section class="item">
+  <span class="badge progress">In progress</span>
+  <h2>Moving from Monday to GoHighLevel</h2>
+  <p>A step-by-step plan for Miranda and for leaving Monday, with milestones rather than a fixed date, as Alexa asked on Nov 19.</p>
+</section>
+<section class="item">
+  <span class="badge paused">Paused</span>
+  <h2>Sales call coaching</h2>
+  <p>A skill that scores a consultation against Maclynn's draft sales framework. Paused until January at Rachel's request (Nov 19); Tory's answers to the framework are kept for then.</p>
+</section>
+<footer>Prepared by Alexandra Spalato · Nov 21, 2026</footer>
+</div>
+</body>
+</html>
