@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>The TAMOS ecosystem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Linear-style dark document: square corners, mono caps labels, colour only for status. */
+:root {
+  --bg: #0B0B0D; --surface: #131316; --fg: #EDEDF0; --muted: #8A8F98; --line: #2C2D30;
+  --accent: #7C8CFF; --live: #3DD68C; --wip: #7C8CFF; --decided: #22D3EE; --idea: #FFB224;
+  --parked: #6B6F78; --dropped: #FF4D4F;
+  --font-body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+    --accent: #4F5BD5; --live: #1F9D5C; --wip: #4F5BD5; --decided: #0E8FA8; --idea: #C27C00;
+    --parked: #8A8F98; --dropped: #D63B3D; color-scheme: light;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; padding: 48px 16px 96px; }
+.wrap { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 48px; }
+.narrow { max-width: 760px; }
+h1, h2, h3 { line-height: 1.2; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.45rem; font-weight: 650; letter-spacing: -0.01em; }
+p { margin: 0; max-width: 70ch; }
+header, section { display: flex; flex-direction: column; gap: 16px; }
+.caps { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.1rem; color: var(--muted); }
+.muted { color: var(--muted); }
+a { color: var(--accent); }
+a.back { font-size: 0.9rem; }
+
+/* Flow diagram */
+.flow { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0; align-items: stretch; }
+.stage { position: relative; border: 1px solid var(--line); background: var(--surface); padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 6px; margin-right: 22px; }
+.stage:last-child { margin-right: 0; }
+.stage:not(:last-child)::after { content: "→"; position: absolute; right: -20px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 1.1rem; }
+.stage .n { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); font-weight: 600; letter-spacing: 0.08em; }
+.stage h3 { font-size: 1rem; font-weight: 650; }
+.stage p { font-size: 0.82rem; color: var(--muted); }
+.stage .tools { font-size: 0.82rem; margin-top: auto; padding-top: 6px; border-top: 1px dashed var(--line); }
+.layer { border: 1px dashed var(--line); padding: 12px 14px; display: flex; gap: 10px 24px; flex-wrap: wrap; font-size: 0.88rem; }
+.layer b { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.loop { font-size: 0.88rem; color: var(--muted); border-left: 3px solid var(--accent); padding: 4px 12px; }
+@media (max-width: 900px) {
+  .flow { grid-template-columns: 1fr; gap: 22px; }
+  .stage { margin-right: 0; }
+  .stage:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -22px; transform: translateX(-50%); }
+}
+
+/* Status legend and filters */
+.legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.legend button { font: inherit; font-size: 0.85rem; color: var(--fg); background: var(--surface); border: 1px solid var(--line); padding: 6px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.legend button[aria-pressed="true"] { border-color: var(--accent); }
+.legend button .c { font-family: var(--font-mono); color: var(--muted); font-size: 0.78rem; }
+.dot { width: 9px; height: 9px; border-radius: 50%; flex: none; display: inline-block; }
+.s-live { --c: var(--live); } .s-wip { --c: var(--wip); } .s-decided { --c: var(--decided); }
+.s-idea { --c: var(--idea); } .s-parked { --c: var(--parked); } .s-dropped { --c: var(--dropped); }
+.dot { background: var(--c); }
+
+/* Map of every item */
+.map { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 14px; align-items: start; }
+.zone { border: 1px solid var(--line); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.zone header { gap: 2px; }
+.zone h3 { font-size: 1.02rem; font-weight: 650; display: flex; justify-content: space-between; gap: 8px; }
+.zone h3 span { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+.zone header p { font-size: 0.82rem; color: var(--muted); }
+.items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.items li { border-top: 1px solid var(--line); }
+.items details summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 7px 0; font-size: 0.9rem; }
+.items details summary::-webkit-details-marker { display: none; }
+.items details summary .st { margin-left: auto; font-family: var(--font-mono); font-size: 0.68rem; color: var(--c); letter-spacing: 0.04em; text-transform: uppercase; white-space: nowrap; }
+.items details p { font-size: 0.84rem; color: var(--muted); padding: 0 0 10px 17px; }
+.items li.s-dropped summary .name, .items li.s-parked summary .name { color: var(--muted); }
+.items li.s-dropped summary .name { text-decoration: line-through; }
+.hidden { display: none !important; }
+footer { font-size: 0.85rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="./">← Ian Garlic docs</a>
+
+<header class="narrow">
+<span class="caps">TAMOS · Nov 21, 2026</span>
+<h1>The TAMOS ecosystem</h1>
+<p class="lede">Everything we're building together, on one page: how the pieces connect, and where each of the <span id="total">98</span> pieces stands today.</p>
+</header>
+
+<section>
+<h2>How it fits together</h2>
+<p class="muted">One path for a client, from first contact to being the expert AI recommends. Every app below plugs into one of these six steps.</p>
+<div class="flow" role="list">
+  <div class="stage" role="listitem"><span class="n">01</span><h3>Attract</h3><p>Workshops, ads, books and CLE bring people in. Directory listings give outbound a reason to reach out.</p><div class="tools">Workshops · CLE · Directory outbound · Black Friday bundle</div></div>
+  <div class="stage" role="listitem"><span class="n">02</span><h3>Find the niche</h3><p>The client answers a guided questionnaire and leaves with a niche, angles and who to interview.</p><div class="tools">GPS · GHL access codes</div></div>
+  <div class="stage" role="listitem"><span class="n">03</span><h3>Plan the stories</h3><p>The TackleBox picks the angles, hooks, videos and questions that matter for that client.</p><div class="tools">TackleBox · Hook finder · Storyboarder</div></div>
+  <div class="stage" role="listitem"><span class="n">04</span><h3>Collect</h3><p>An AI interviewer records short video stories with the client's customers and team.</p><div class="tools">StoryCollector · Reviews · FAQ mode</div></div>
+  <div class="stage" role="listitem"><span class="n">05</span><h3>Certify and publish</h3><p>Stories get certified and published where people and AI look: directories, client sites, YouTube.</p><div class="tools">Authentic.video · Badges · Directories · WordPress plugin · YouTube-driven sites</div></div>
+  <div class="stage" role="listitem"><span class="n">06</span><h3>Get recommended</h3><p>AI matches the client's stories to the problem a buyer describes, and sales reuses the best ones.</p><div class="tools">Context matching · YouTube Optimizer · Sales-story finder</div></div>
+</div>
+<p class="loop">The loop: published stories feed the TackleBox again, which tells the client what's still missing and what to record next.</p>
+<div class="layer"><b>Underneath</b> <span>Agents and automations for Ian and the team</span> <span>Offers and pricing</span> <span>Internal tools: spend tracking, ClickUp, shared skills</span></div>
+</section>
+
+<section>
+<h2>Every piece, and where it stands</h2>
+<p class="muted">Click a status to filter. Click a piece to read what it is. "Parked" means it came up in a call but was never decided either way.</p>
+<div class="legend" id="legend"></div>
+<div class="map" id="map"></div>
+</section>
+
+<footer class="narrow">Built from our calls from January to November 2026, the shared boards and ClickUp. Status as of Nov 21, 2026. Projects for Ian's own clients are listed without client names.</footer>
+</div>
+
+<script>
+const STATUS = {
+  live: "Live", wip: "In progress", decided: "Decided", idea: "Idea", parked: "Parked", dropped: "Dropped"
+};
+const ZONES = [
+  { name: "StoryCollector", desc: "The AI interviewer and everything around it.", items: [
+    ["StoryCollector (AI interviewer)", "live", "An AI interviewer records a short video interview through a link, on phone or computer. Clients manage interviewees, question templates, recordings and reviews."],
+    ["Automated onboarding", "wip", "An agent reads the client's strategy from their docs or the GPS, fills in their profile and questions, then emails only the questions still missing."],
+    ["Voice onboarding agent", "dropped", "A voice agent that interviews the client about their business to set up the account. Pushed back until after launch."],
+    ["Custom questions and industry templates", "live", "A question skeleton per industry, adapted to each client automatically and checked by the team. Admins can upload their own."],
+    ["Public interview links by type", "live", "Several reusable interview links per client, one per service, ready to copy, with an intake form."],
+    ["Reminders and weekly email to interviewees", "live", "Automatic follow-ups for unfinished interviews, plus a weekly \"question of the week\" email."],
+    ["SMS to interviewees", "wip", "Interview requests and reminders by text. The code is ready; the phone number still needs approval."],
+    ["Google review generator", "live", "Turns the interview into a review draft the interviewee edits and posts on Google, with a status board. First version, to test."],
+    ["Team alert when an interview ends", "live", "Email and Slack alert when an interview is done, with videos filed by client."],
+    ["Anonymous interviews", "decided", "Voice-only option without video or name, and a way for the client to exclude them."],
+    ["FAQ mode and weekly FAQ suggestions", "live", "An interview type where the expert answers frequent questions. Weekly suggestions are still an idea."],
+    ["Team interviews, bios and stage check-ins", "idea", "Interview the client's own team, write bios, and run check-ins at each step of the customer journey."],
+    ["Thank-you page and upsell", "wip", "After the interview, the interviewee is offered the free workshop, then StoryCollector for their own business."],
+    ["Payments and extra minutes", "decided", "Subscription billing and buying more minutes or interviews, through GHL first."],
+    ["Metrics dashboards", "idea", "Interviews requested, accepted, done, published and certified, for the team and per client."],
+    ["Onboarding and send tracking", "idea", "Know which client received, opened and sent their link, with alerts and follow-ups."],
+    ["Outreach on the client's behalf", "idea", "Send interview requests to each client's customers in their name, with deliverability tracking."],
+    ["Small StoryCollector upgrades", "idea", "Google sign-in, deleting test videos, rating clips on approval, bug tracking in ClickUp."],
+    ["Help videos and Ian's voice", "idea", "Help and onboarding videos, demo and VSL, using Ian's voice or avatar, and a choice of interviewer voice."],
+    ["Podcast pre-interview", "idea", "A mode that pre-interviews podcast guests, and tells clients which podcasts to go on and which story to tell."],
+    ["Bug and request form", "live", "In-app widget to report a bug or ask for a feature, with a screenshot, sent to GitHub."],
+    ["Consent and release in the flow", "parked", "Consent and recording release built into the interviewee's journey."],
+    ["Admin back office", "parked", "Interviews per client, access to client accounts, partner and cost consoles."],
+    ["Gifting and referrals", "parked", "Gifts for interviewees (mic, light, tripod) and rewarded referrals."],
+    ["Interview scheduler", "parked", "Book interviews from a calendar."],
+    ["ID check and human interviewer", "parked", "Verify who the interviewee is, and let them ask for a real person."]
+  ]},
+  { name: "GPS and TackleBox", desc: "Finding the niche, then planning which stories and videos to make.", items: [
+    ["GPS / Million-Dollar Niche Finder", "live", "Guided questionnaire: the client finds their niche and leaves with goals, positioning, angles, who to interview and the questions to ask. Live since Nov 18."],
+    ["GPS automations in GHL", "live", "Any tagged contact gets a GPS access code; buyers get it automatically, with a 48-hour reminder and a benefits email series. Tested end to end Nov 20."],
+    ["TackleBox Builder and handoff to StoryCollector", "wip", "When the client says yes, their profile and questions land in StoryCollector. The handoff went live Nov 21."],
+    ["TackleBox (analysis)", "wip", "Sits before and after StoryCollector: picks angles, videos and questions, receives the interviews, says which to use where and what's left to make."],
+    ["Hook finder", "wip", "Finds cold and warm hooks from the client's videos and interviews. Built Nov 21, not published yet."],
+    ["Video list", "idea", "Every video the client has and still needs, with recommended hooks."],
+    ["Storyboarder", "idea", "Storyboards for About Us, Process and Why Us videos, one scene per step of the customer journey, with stories to place."],
+    ["YouTube Optimizer", "wip", "Optimizes the client's YouTube titles, links between videos and posts. Started, untouched since October."],
+    ["Sales-story finder", "idea", "Finds the best stories and videos for a given prospect and drafts the message to send."],
+    ["Fish in the Barrel", "idea", "Lead magnet: enter a website, get an AI visibility score, the revenue at stake and where case stories are missing. Parked for later."],
+    ["Seven Figure Case Story Finder", "wip", "Ian's tool to find your stories, as a lead magnet toward the workshop and the software."],
+    ["Context matching", "decided", "The core idea: get AI to recommend the client by matching their stories to the context of the buyer's problem."],
+    ["Team story nominations form", "wip", "The client's team nominates customers or colleagues per service; names flow into StoryCollector."]
+  ]},
+  { name: "Directories and Authentic.video", desc: "Where certified stories and experts get found.", items: [
+    ["Reusable directory base", "live", "Shared foundation for every directory: listings, claims, badges, SEO."],
+    ["BackTax directory (TaxReliefNearMe)", "live", "Tax relief experts, with claimable and featured listings, and email and Slack alerts on claims. Live since Nov 11."],
+    ["StoryCrews directory", "live", "Video agencies by category, with badges and claimable listings. Live since Nov 11."],
+    ["Authentic.video", "live", "Certified video case stories with transcripts, expert profiles, \"find a story like yours\" and an application form."],
+    ["Badges and certification", "wip", "A badge proving a story comes from a real person, placed on the client's site and linked to Authentic.video."],
+    ["Directory dashboards and SEO", "wip", "Traffic, keywords, clicked listings and pages read by AI bots. The StoryCrews traffic dashboard is live."],
+    ["Slack alerts and claim approval", "live", "Claim notifications in Slack and received, approved or rejected emails."],
+    ["More vertical directories", "idea", "Same base for dentists, criminal defense, HVAC, Medicaid consultants, videographers, real estate, shows and podcasts."],
+    ["Chatbot on listings", "idea", "Ask Authentic.video in plain words to find the right provider from listings and stories."],
+    ["Editorial voice and roundup articles", "parked", "One editorial voice per directory and articles quoting several experts."]
+  ]},
+  { name: "Websites and plugins", desc: "Putting the stories on the client's own site.", items: [
+    ["WordPress plugin", "wip", "Free plugin that publishes the client's stories and FAQs on WordPress, with FAQ schema. V1 ready to test; restart not decided."],
+    ["YouTube-driven websites", "decided", "Sites where every page is carried by the client's YouTube videos. Fourth priority since Nov 17."],
+    ["Site rebuilder for firms", "live", "Finds firms with outdated sites from a list, rebuilds a better version and uses it as a mockup in outreach."],
+    ["Lovable sites for Ian's 150 domains", "idea", "Move Ian's domains to Lovable so the team can edit them and they rank."],
+    ["Guardian project", "parked", "A YouTube-driven WordPress site from Ian's wireframes."]
+  ]},
+  { name: "Content and video", desc: "Turning interviews into more content.", items: [
+    ["Newsletter generator", "idea", "Interviews the client each month and writes their newsletter in their voice. Parked for later."],
+    ["Podcast generator", "idea", "A podcast built from the interviews, the last piece of the suite."],
+    ["Automatic editing and clips", "dropped", "Editing and clips from interviews. Decided: no editing inside the product."],
+    ["AI-animated case stories", "idea", "The client tells the story, AI illustrates it as a short film with animated b-roll."],
+    ["Ian's daily content", "wip", "One video a day: Ian's content machine, a Canva creator for slides, an editing workflow."],
+    ["Concept-to-Drawing", "wip", "Ian's skill that turns a concept into a drawing in Canva."],
+    ["Nested-thread content tool", "parked", "A content tool organized as nested conversations."]
+  ]},
+  { name: "Agents and automations", desc: "Taking work off Ian and the team.", items: [
+    ["Team automations", "live", "Eight automations approved Nov 20: call briefs to ClickUp, YouTube titles, thumbnails, subtitles, client sheet, one decision slot for Ian."],
+    ["Footage watcher (SSD to Vimeo)", "wip", "When Ian plugs in his SSD, clips go to Vimeo and the team is told in Slack and ClickUp. Dry-run tested, not installed yet."],
+    ["AI team plan", "wip", "Audit of Ian's team from three interviews, and a plan for AI tools."],
+    ["Garlic Cockpit", "wip", "Ian's weekly cockpit: one sales campaign a day, referral follow-ups, time blocks. Built by Ian."],
+    ["Ian's assistant and second brain", "decided", "An AI with Ian's knowledge that answers the team and only asks Ian when needed. Later."],
+    ["Directory and StoryCollector outbound", "wip", "Automatic outreach to listed experts to claim their listing, then StoryCollector sales. Tools bought, waiting on access."],
+    ["Agent follow-ups for Ian", "idea", "Agents research a contact, pick the right video or story and follow up every day or two."],
+    ["YouTube and Meta ads agents", "wip", "Agents that build and tune ads and landing pages with Ian's methods, with a human decision. Exploring."],
+    ["Daily Slack summary", "live", "A daily summary of the Slack channels."],
+    ["Lawyer agents", "idea", "Claude agent demos by trade, starting with lawyers, and a beginner Claude Code workshop."],
+    ["AI customer support", "parked", "A support pop-up built by Ian."],
+    ["Networking group agents", "parked", "Agents for BNI and associations."],
+    ["Automatic lead replies", "parked", "Instant replies to leads from a partner page."],
+    ["Hiring and onboarding automation", "idea", "Automate hiring and onboarding for Ian's team."]
+  ]},
+  { name: "Work for Ian's clients", desc: "Projects for clients Ian brings in.", items: [
+    ["Email outreach for a tax firm", "wip", "Two-step campaign from the client's own GHL to about 200 contacts, with an agent summarizing replies. Workflow in draft."],
+    ["Reliant suite", "wip", "After a client's AI audit: a small dashboard, video and podcast pipeline, ads and follow-ups. Scoping."],
+    ["Screen audit", "wip", "A client records their screen all day and gets an audit of how they work."]
+  ]},
+  { name: "Offers and workshops", desc: "How the pieces are packaged and sold.", items: [
+    ["TAMOS suite", "wip", "The overall offer: a directory per vertical, workshops with ads, then small connected apps."],
+    ["Workshops and ad funnel", "wip", "Four workshops by year end; ads to the workshop, then the book, then GPS or TackleBox."],
+    ["Black Friday bundle", "wip", "StoryCollector, GPS and one certified case story, with the GPS code sent automatically. Drafts ready, decisions with Ian."],
+    ["Partner offer", "live", "StoryCollector, TackleBox, YouTube Optimizer, plugin, certification and 90 days with Ian. Presented at the Oct 7 workshop."],
+    ["Partner program in GHL", "decided", "Track partners, sub-partners and end clients in GHL."],
+    ["HVAC and home services offer", "idea", "A TAMOS offer for HVAC companies and other home services."],
+    ["CLE for lawyers", "live", "Ian's continuing legal education course, with StoryCollector and YouTube sites sold behind it. Awaiting re-approval."],
+    ["Ian's books and courses", "wip", "Ian's books as a funnel toward the interviewer, mini-books and video courses."],
+    ["Custom offer for a law client", "wip", "Strategy, law stories and a week of management in place of YouTube ads."],
+    ["Offer Creator skill", "idea", "A marketing analysis skill built on Alex Hormozi's content, with an offer creator."],
+    ["Ship the Audit", "wip", "The AI audit as a playbook: research, interviews, ROI, opportunity matrix, prototype."]
+  ]},
+  { name: "Internal tools", desc: "How we run and track all of this.", items: [
+    ["Spend tracking", "live", "Costs of 14 apps in one view, with a low-balance alert."],
+    ["What we built page", "live", "The page listing what's live and built for TAMOS. Sent Nov 20."],
+    ["Unit12 for Ian", "wip", "Alexandra's agent system set up for Ian, with every agent question for him grouped in ClickUp."],
+    ["StoryCollector ClickUp space", "decided", "A separate ClickUp space with resources and onboarding status per client."],
+    ["Shared Obsidian vault", "decided", "A shared TAMOS vault for documents and skills. Not done yet."],
+    ["Shared skills", "wip", "Consulting questions, book distillation, autosuggest research and YouTube ads skills, in GitHub."],
+    ["Domains and DNS API", "idea", "Manage domains and DNS from one API."],
+    ["Business map", "live", "A map of the whole TAMOS business."],
+    ["Shared roadmap", "dropped", "A shared roadmap in GitHub, replaced by ClickUp on Sep 4."]
+  ]}
+];
+
+const all = ZONES.flatMap(z => z.items);
+document.getElementById("total").textContent = all.length;
+const counts = Object.fromEntries(Object.keys(STATUS).map(k => [k, all.filter(i => i[1] === k).length]));
+
+const esc = s => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const order = Object.keys(STATUS);
+document.getElementById("map").innerHTML = ZONES.map(z => `
+  <article class="zone">
+    <header><h3>${esc(z.name)} <span>${z.items.length}</span></h3><p>${esc(z.desc)}</p></header>
+    <ul class="items">${[...z.items].sort((a, b) => order.indexOf(a[1]) - order.indexOf(b[1])).map(([n, s, d]) => `
+      <li class="s-${s}" data-s="${s}"><details><summary><span class="dot"></span><span class="name">${esc(n)}</span><span class="st">${STATUS[s]}</span></summary><p>${esc(d)}</p></details></li>`).join("")}
+    </ul>
+  </article>`).join("");
+
+const legend = document.getElementById("legend");
+legend.innerHTML = `<button type="button" data-f="all" aria-pressed="true">All <span class="c">${all.length}</span></button>` +
+  order.map(k => `<button type="button" class="s-${k}" data-f="${k}" aria-pressed="false"><span class="dot"></span>${STATUS[k]} <span class="c">${counts[k]}</span></button>`).join("");
+legend.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const f = b.dataset.f;
+  legend.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  document.querySelectorAll(".items li").forEach(li => li.classList.toggle("hidden", f !== "all" && li.dataset.s !== f));
+  document.querySelectorAll(".zone").forEach(z => z.classList.toggle("hidden", !z.querySelector("li:not(.hidden)")));
+});
+</script>
+</body>
+</html>
