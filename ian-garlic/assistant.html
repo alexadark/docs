@@ -58,6 +58,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pms .pm { border: 1px solid var(--line); background: var(--raised); padding: 10px 8px; text-align: center; font-size: 0.86rem; font-weight: 600; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
 .pm i { font-style: normal; font-weight: 400; font-size: 0.74rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; }
 .backup { border: 1px solid var(--live); padding: 10px 14px; text-align: center; font-size: 0.92rem; }
+.mailapp { margin-top: 12px; }
 .tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; border-top: 1px solid var(--line); margin-top: 18px; padding-top: 16px; }
 .tools span { border: 1px solid var(--line); padding: 4px 10px; font-size: 0.86rem; }
 .tools .caps { border: 0; padding: 6px 4px; }
@@ -121,6 +122,35 @@ button.card { border-color: var(--idea) !important; }
 .list li + li { border-top: 1px solid var(--line); }
 .list li { padding: 8px 0; }
 
+.mbar { display: flex; flex-wrap: wrap; gap: 6px; }
+.mbar button { background: none; border: 1px solid var(--line); padding: 5px 9px; font-size: 0.82rem; min-height: 34px; }
+.mbar button[aria-pressed="true"] { border-color: var(--accent); font-weight: 600; }
+.mail { background: none; border: 1px solid var(--line); width: 100%; text-align: left; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+.mail:hover { border-color: var(--accent); }
+.mail .sub { overflow-wrap: anywhere; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags .tag.todo { color: var(--idea); } .tags .tag.sent { color: var(--live); }
+.reply { width: 100%; min-height: 150px; resize: vertical; line-height: 1.55; font-size: 0.92rem; }
+.file { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--muted); }
+.file select { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); padding: 5px 8px; }
+
+/* Page tabs and setup questions */
+.pages { display: flex; border-bottom: 1px solid var(--line); margin-bottom: -24px; }
+.pages button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 11px 16px; min-height: 44px; color: var(--muted); font-weight: 500; }
+.pages button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); font-weight: 600; }
+.page { display: flex; flex-direction: column; gap: 64px; }
+.page[hidden] { display: none; }
+#page-q { gap: 24px; max-width: 760px; }
+.qs { display: flex; flex-direction: column; gap: 16px; }
+.qcard { border: 1px solid var(--line); background: var(--surface); padding: 22px; display: flex; flex-direction: column; gap: 12px; }
+.qcard h3 { font-size: 1.25rem; font-weight: 650; }
+.qcard .sug { border-left: 3px solid var(--accent); padding-left: 12px; color: var(--muted); }
+.qnav { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.qnav .btn { min-height: 44px; min-width: 88px; }
+.qnav .all { margin-left: auto; }
+.qall .qcard { padding: 16px 18px; }
+.qall .qcard h3 { font-size: 1.05rem; }
+
 /* Lists below the mock-up */
 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .cell { border: 1px solid var(--line); background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
@@ -180,6 +210,12 @@ footer { font-size: 0.85rem; color: var(--muted); }
 <div class="wrap">
 <a class="back" href="./">← Ian Garlic docs</a>
 
+<div class="pages" role="tablist" aria-label="Page">
+  <button type="button" role="tab" id="pt-main" aria-controls="page-main" aria-selected="true">How it works</button>
+  <button type="button" role="tab" id="pt-q" aria-controls="page-q" aria-selected="false" tabindex="-1">Questions</button>
+</div>
+
+<div class="page" id="page-main" role="tabpanel" aria-labelledby="pt-main">
 <header class="narrow">
 <span class="caps">Proposal · how it will work</span>
 <h1>One chat that runs your day, and nothing goes out without your yes</h1>
@@ -209,6 +245,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
   </div>
   <div class="down" aria-hidden="true">↓</div>
   <div class="backup"><b>Drafts come back to you.</b> You approve, edit or reject. Only then is anything sent or published.</div>
+  <div class="node mailapp"><b>Mail app</b><span>Your email, sorted: what needs you on top, the noise out of the way, reply drafts waiting for you</span></div>
   <div class="tools"><span class="caps">Your tools</span><span>Email</span><span>ClickUp</span><span>Slack</span><span>Google Docs</span><span>Obsidian</span></div>
   <p class="runs">The chats run in Orca, with Claude or Codex.</p>
 </div>
@@ -216,7 +253,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
 
 <section aria-labelledby="t-mock">
 <h2 id="t-mock">Try the screen</h2>
-<p class="muted">Click anything: open a piece of work, answer or skip a question, approve a draft, run a process. Everything in it is sample data, and nothing is connected or sent.</p>
+<p class="muted">Click anything: open a piece of work, go through the mail, answer or skip a question, approve a draft, run a process. Everything in it is sample data, and nothing is connected or sent.</p>
 <div class="app" id="app" data-side="panel">
   <div class="appbar"><strong>Your assistant</strong><span class="tag sample">Sample data</span><button type="button" class="reset" id="reset">Start over</button></div>
   <div class="switch"><button type="button" data-side="chat" aria-pressed="false">Chat</button><button type="button" data-side="panel" aria-pressed="true">Work</button></div>
@@ -260,11 +297,24 @@ footer { font-size: 0.85rem; color: var(--muted); }
 <ol class="ex" id="ex"></ol>
 </section>
 
+<section aria-labelledby="t-mail">
+<h2 id="t-mail">Your mail, without the noise</h2>
+<p class="muted">We'll set up a mail app inside your assistant, on your own account. It's the one Alexandra uses, with the same features. You can try it in the Mail tab of the screen above.</p>
+<div class="grid three">
+  <div class="cell"><h3>Sorted for you</h3><p>Each email is filed by project with a one-line summary. Newsletters, promotions and cold outreach go to Filtered. Move an email and it proposes a rule for that sender.</p></div>
+  <div class="cell"><h3>What needs an answer</h3><p>A To do list holds only the threads waiting on you. Your phone can alert you for those.</p></div>
+  <div class="cell"><h3>The whole story</h3><p>A short summary of the thread, with the related tasks and notes next to it.</p></div>
+  <div class="cell"><h3>Drafts ready</h3><p>Replies are drafted from that context, in the language of the thread. Ask for a change or write it yourself. A missing fact stays marked, and the reply can't go until it's filled in.</p></div>
+  <div class="cell"><h3>You press Send</h3><p>The agents can't send email. Everything you sent is in one list and, if you turn it on, you see when it was opened.</p></div>
+  <div class="cell"><h3>The rest, in its place</h3><p>Meeting bookings, travel and finance each get their own view. Archive or delete several at once, keep your contacts, use several accounts.</p></div>
+</div>
+</section>
+
 <section aria-labelledby="t-conn">
 <h2 id="t-conn">What connects, and what for</h2>
 <p class="muted">With your own accounts. It reads and drafts; sending and publishing wait for you.</p>
 <div class="conn">
-  <div><b>Email</b><span>Finds what needs you and drafts the reply.</span><span class="muted">You send.</span></div>
+  <div><b>Email</b><span>Feeds the mail app: finds what needs you and drafts the reply.</span><span class="muted">You send.</span></div>
   <div><b>ClickUp</b><span>Shows tasks, decisions and who you're waiting on.</span><span class="muted">Your team keeps working in ClickUp.</span></div>
   <div><b>Slack</b><span>Gathers the questions for you and drafts the replies.</span><span class="muted">You approve each one.</span></div>
   <div><b>Google Docs</b><span>Finds the right document and opens it.</span><span class="muted">No more searching for where it is.</span></div>
@@ -280,10 +330,21 @@ footer { font-size: 0.85rem; color: var(--muted); }
   <div class="cell"><h3>Garlic Press</h3><p>Your workflow as you use it today, how you want to approve, and where pieces get published.</p></div>
   <div class="cell"><h3>Ads</h3><p>How a campaign goes from idea to result, where the material lives, and what always stays your call.</p></div>
   <div class="cell"><h3>Your other processes</h3><p>Content, YouTube and the rest: list them, then pick the ones to run from one button.</p></div>
-  <div class="cell"><h3>Connections</h3><p>Which accounts come first, and which vault to share in Obsidian.</p></div>
+  <div class="cell"><h3>Connections</h3><p>Which accounts come first, what counts as noise in your mail, and which vault to share in Obsidian.</p></div>
   <div class="cell"><h3>Rules</h3><p>What it can do alone, when it asks, what stays private, and how we help when something breaks.</p></div>
 </div>
 </section>
+
+</div>
+
+<div class="page" id="page-q" role="tabpanel" aria-labelledby="pt-q" hidden>
+<header>
+<h1>Setup questions</h1>
+<p class="lede">One question at a time, skip any of them. Where there's a suggested answer, a yes is enough. Start with the first block: it's enough to configure a first version. Nothing to fill in here, we go through them together.</p>
+</header>
+<div class="qs" id="qs" aria-live="polite"></div>
+<div class="qnav"><button type="button" class="btn" id="q-prev">Back</button><button type="button" class="btn go" id="q-next">Next</button><button type="button" class="btn all" id="q-all" aria-pressed="false">Show all</button></div>
+</div>
 
 <footer>Proposal for discussion. The screen above is a mock-up with sample data.</footer>
 </div>
@@ -305,7 +366,7 @@ const el = (tag, props = {}, ...kids) => {
 const btn = (text, on, go, extra = {}) => el("button", { type: "button", cls: "btn" + (go ? " go" : ""), textContent: text, on, ...extra });
 const p = (text, cls) => el("p", { textContent: text, cls: cls || "" });
 
-const TABS = [["today", "Today"], ["press", "Garlic Press"], ["ads", "Ads"], ["proc", "Processes"], ["ok", "To approve"], ["wait", "Waiting on others"]];
+const TABS = [["today", "Today"], ["mail", "Mail"], ["press", "Garlic Press"], ["ads", "Ads"], ["proc", "Processes"], ["ok", "To approve"], ["wait", "Waiting on others"]];
 const STAGES = ["Source", "Draft", "Your review", "Approved", "Published"];
 const POST = "# One story beats ten claims\n\nAnyone can say they care about clients.\n\nA client telling you what changed is different. You hear the doubt, the decision and the result.\n\nAsk one question this week: \"What were you worried about before we started?\"\n";
 
@@ -320,7 +381,7 @@ const fresh = () => ({
   answered: 0, total: 3, saved: "",
   drafts: [
     { id: "d1", kind: "Post", title: "One story beats ten claims", text: POST, press: "p3" },
-    { id: "d2", kind: "Email", title: "Reply about the workshop replay", text: "Hi,\n\nThanks for asking. The replay is on its way, and I'll send you the link as soon as it's ready.\n\nIan\n" },
+    { id: "d2", kind: "Email", title: "Reply about the workshop replay", mail: "m1", text: "Hi,\n\nThanks for asking. The replay is on its way, and I'll send you the link as soon as it's ready.\n\nIan\n" },
     { id: "d3", kind: "Slack reply", title: "Answer to the editor", text: "Use the second headline. Keep the opening line as it is.\n" },
   ],
   press: [
@@ -337,6 +398,19 @@ const fresh = () => ({
       out: { kind: "Email", title: "Weekly email", text: "Subject: The question that starts a good story\n\nHi,\n\nHere's one question to try this week.\n\nIan\n" } },
     { id: "r3", t: "Follow up after a workshop", last: "not run yet", st: "Ready", at: -1, steps: ["List who attended", "Sort by next step", "Draft the follow-ups", "Bring the drafts to you"],
       out: { kind: "Email", title: "Workshop follow-up", text: "Hi,\n\nThanks for joining the workshop. What's the first story you want to collect?\n\nIan\n" } },
+  ],
+  mv: "inbox", mid: null,
+  mail: [
+    { id: "m1", who: "Workshop attendee", t: "Is there a replay?", proj: "GPS and workshops", sum: "Asks for the workshop replay.", body: "Hi Ian,\n\nI missed the end of the workshop. Is there a replay?\n\nThanks!", reply: true, unread: true },
+    { id: "m2", who: "Podcast host", t: "Coming on the show", proj: "Partners", sum: "Invites you on the show and asks which topic you'd pick.", body: "Hi Ian,\n\nWe'd love to have you on. Which topic would you pick?", reply: true, unread: true,
+      draft: "Hi,\n\nThanks for the invitation. I'd talk about asking clients for their story.\n\nBest,\nIan\n", short: "Hi,\n\nI'd pick asking clients for their story. Thanks!\n\nIan\n" },
+    { id: "m3", who: "Video editor", t: "Clip exported", proj: "Garlic Press", sum: "The clip is in the shared folder. No answer needed.", body: "The clip is in the shared folder." },
+    { id: "m4", who: "Booking page", t: "New meeting booked", proj: "Agency clients", cat: "booking", sum: "A prospect booked an intro call.", body: "A new intro call is on your calendar." },
+    { id: "m5", who: "Airline", t: "Your trip is confirmed", proj: "", cat: "travel", sum: "Flight confirmed.", body: "Your booking is confirmed." },
+    { id: "m6", who: "Payment service", t: "Receipt", proj: "", cat: "finance", sum: "Receipt for a software subscription.", body: "Here's your receipt." },
+    { id: "m7", who: "Marketing newsletter", t: "Ten tips for this week", proj: "noise", sum: "Newsletter.", why: "Newsletter" },
+    { id: "m8", who: "Unknown agency", t: "Quick question", proj: "noise", sum: "Cold outreach selling a service.", why: "Cold outreach" },
+    { id: "m9", who: "Software vendor", t: "Your trial is ending", proj: "noise", sum: "Pushes a paid plan.", why: "Promotion" },
   ],
   waits: [
     { id: "w1", who: "Video editor", what: "Captions on the workshop clip" },
@@ -359,12 +433,13 @@ function side(s) {
   $("app").dataset.side = s;
   document.querySelectorAll(".switch button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.side === s)));
 }
-function go(tab, open = null) { S.tab = tab; S.open = open; render(); $("view").scrollTop = 0; }
+function go(tab, open = null) { S.tab = tab; S.open = open; S.mid = null; render(); $("view").scrollTop = 0; }
 function openDraft(id) { go("ok", { draft: id }); side("panel"); }
 
 function decide(d, yes) {
   S.drafts = S.drafts.filter(x => x !== d); S.open = null;
   if (d.press) { const it = S.press.find(x => x.id === d.press); it.s = yes ? 3 : 1; }
+  if (d.mail && yes) { const m = S.mail.find(x => x.id === d.mail); m.sent = true; m.unread = false; }
   if (yes && d.id === "d1" && !S.done.includes("t1")) S.done.push("t1");
   for (const r of S.procs) if (r.draft === d.id) { r.st = yes ? "Done" : "Sent back"; r.at = yes ? r.steps.length : r.at; r.draft = null; r.last = "just now"; }
   say(yes ? `Approved: "${d.title}". This is where it would be sent or scheduled. In this mock-up, nothing goes out.` : `Rejected: "${d.title}". Tell me what to change and I'll bring back a new draft.`, "Chief of staff");
@@ -386,6 +461,55 @@ function run(r) {
 function answer(text) {
   const q = S.questions.shift(); S.answered++; S.saved = `Saved: ${text}`;
   say(text); say(S.questions.length ? "Saved. Next question is up." : "Saved. That was the last one.", "Chief of staff"); render();
+}
+
+const VIEWS = [["inbox", "Inbox"], ["todo", "To do"], ["drafts", "Drafts"], ["booking", "Booking"], ["travel", "Travel"], ["finance", "Finance"], ["sent", "Sent"], ["noise", "Filtered"]];
+const PROJECTS = ["GPS and workshops", "Garlic Press", "Agency clients", "Partners"];
+const mailDraft = m => S.drafts.find(d => d.mail === m.id);
+const mailTodo = m => m.proj !== "noise" && !m.gone && !m.sent && (m.reply || mailDraft(m));
+const IN = {
+  inbox: m => m.proj !== "noise" && !m.gone, todo: mailTodo, drafts: m => !!mailDraft(m), sent: m => m.sent,
+  noise: m => m.proj === "noise" && !m.gone && !mailDraft(m),
+};
+const inView = k => S.mail.filter(m => IN[k] ? IN[k](m) : m.cat === k && m.proj !== "noise" && !m.gone);
+function mailTags(m) {
+  const t = (text, cls = "") => el("span", { cls: "tag " + cls, textContent: text });
+  return el("div", { cls: "tags" }, mailTodo(m) ? t("To answer", "todo") : null, mailDraft(m) ? t("Draft") : null, m.sent ? t("Sent (sample)", "sent") : null,
+    m.cat && m.proj !== "noise" ? t(m.cat) : null, m.proj === "noise" ? t(m.why || "Moved by you") : m.proj ? t(m.proj) : null);
+}
+function mailList() {
+  const rows = inView(S.mv);
+  return [el("div", { cls: "mbar", role: "group", ariaLabel: "Mail views" }, ...VIEWS.map(([k, label]) => {
+      const n = ["todo", "drafts", "noise"].includes(k) ? inView(k).length : 0;
+      return el("button", { type: "button", id: "mv-" + k, "aria-pressed": String(S.mv === k), textContent: label + (n ? ` ${n}` : ""), on: () => { S.mv = k; render(); $("mv-" + k).focus(); } });
+    })),
+    ...(rows.length ? rows.map(m => el("button", { type: "button", cls: "mail", on: () => { S.mid = m.id; m.unread = false; render(); $("view").scrollTop = 0; $("view").focus(); } },
+      el("span", { cls: "sub", textContent: m.who }), el("b", { textContent: m.t, style: `font-weight:${m.unread ? 700 : 500}` }), el("span", { cls: "sub", textContent: m.sum }), mailTags(m))) : [p("Nothing here.", "muted")])];
+}
+function mailThread(m) {
+  const d = mailDraft(m), back = () => { S.mid = null; render(); };
+  const out = [el("div", { cls: "line" }, el("div", {}, el("h3", { textContent: m.t }), p(m.who, "sub")), btn("Back", back)), mailTags(m),
+    el("div", { cls: "box" }, el("span", { cls: "caps", textContent: "Summary" }), p(m.sum))];
+  if (m.body && m.proj !== "noise") out.push(el("div", { cls: "box" }, el("p", { textContent: m.body, style: "white-space:pre-line" })));
+  if (d) {
+    const area = el("textarea", { cls: "reply", value: d.text, ariaLabel: "Reply", spellcheck: false });
+    area.addEventListener("input", () => { d.text = area.value; });
+    out.push(el("div", { cls: "box q" }, el("span", { cls: "caps", textContent: "Draft, waiting for you" }), area,
+      el("div", { cls: "acts" }, btn("Send", () => { S.mid = null; decide(d, true); }, true),
+        btn("Make it shorter", () => { d.text = m.short || "Hi,\n\nThe replay is on its way. I'll send you the link.\n\nIan\n"; render(); }), btn("Discard", () => decide(d, false))),
+      p("In this mock-up, nothing is sent.", "sub")));
+  }
+  out.push(el("div", { cls: "acts" },
+    !d && m.reply && !m.sent ? btn("Draft a reply", () => { S.drafts.push({ id: "n" + S.next++, kind: "Email", title: "Reply: " + m.t, mail: m.id, text: m.draft || "Hi,\n\nThanks for asking. I'll send you the link as soon as it's ready.\n\nIan\n" }); say("I drafted the reply. It's in the thread and in To approve.", "Chief of staff"); render(); }, true) : null,
+    btn("Archive", () => { m.gone = true; back(); }), m.proj !== "noise" ? btn("Not useful", () => move("noise")) : null));
+  const pick = el("select", { ariaLabel: "Project" }, ...[...PROJECTS, ["", "Unsorted"], ["noise", "Filtered"]].map(x => Array.isArray(x) ? el("option", { value: x[0], textContent: x[1] }) : el("option", { value: x, textContent: x })));
+  pick.value = m.proj; pick.addEventListener("change", () => move(pick.value));
+  function move(to) {
+    m.proj = to; m.why = "Moved by you";
+    say(`Moved to ${to === "noise" ? "Filtered" : to || "Unsorted"}. Should emails from this sender always go there?`, "Chief of staff"); render();
+  }
+  out.push(el("label", { cls: "file" }, "Filed in", pick));
+  return out;
 }
 
 const V = {
@@ -414,6 +538,10 @@ const V = {
         const d = S.drafts.find(y => y.press === x.id);
         return d ? el("button", { type: "button", cls: "card", on: () => go("press", { draft: d.id }) }, x.t, el("i", { textContent: "Review the markdown" })) : el("div", { cls: "card", textContent: x.t });
       })))), p("Click the piece in Your review to read it, edit it and approve it.", "sub")];
+  },
+  mail() {
+    const m = S.mid && S.mail.find(x => x.id === S.mid);
+    return m ? mailThread(m) : mailList();
   },
   ads() {
     const sec = (title, rows) => el("div", { cls: "box" }, el("h4", { textContent: title }), el("ul", { cls: "list" }, ...rows.map(r => el("li", { cls: "line" }, el("div", {}, p(r[0]), r[1] ? p(r[1], "sub") : null), r[2] || null))));
@@ -453,7 +581,8 @@ function editor(o) {
 function render() {
   const focusTab = document.activeElement && document.activeElement.getAttribute && document.activeElement.getAttribute("role") === "tab";
   $("tabs").replaceChildren(...TABS.map(([k, label]) => el("button", { type: "button", id: "tab-" + k, role: "tab", "aria-selected": String(S.tab === k), "aria-controls": "view", tabIndex: S.tab === k ? 0 : -1, on: () => go(k) },
-    label, k === "ok" && S.drafts.length ? el("span", { cls: "n", textContent: S.drafts.length }) : null)));
+    label, k === "ok" && S.drafts.length ? el("span", { cls: "n", textContent: S.drafts.length }) : null,
+    k === "mail" && inView("todo").length ? el("span", { cls: "n", textContent: inView("todo").length }) : null)));
   $("view").setAttribute("aria-labelledby", "tab-" + S.tab);
   $("view").replaceChildren(...(S.open ? editor(S.open) : V[S.tab]()));
   if (focusTab) $("tab-" + S.tab).focus();
@@ -463,7 +592,7 @@ $("tabs").addEventListener("keydown", e => {
   if (step) { e.preventDefault(); go(TABS[(i + step + TABS.length) % TABS.length][0]); }
 });
 
-const CHIPS = ["What's on today?", "Turn my last talk into posts", "Make the post shorter", "What am I waiting on?"];
+const CHIPS = ["What's on today?", "Which emails need me?", "Turn my last talk into posts", "Make the post shorter", "What am I waiting on?"];
 function hear(text) {
   say(text);
   const t = text.toLowerCase();
@@ -474,6 +603,7 @@ function hear(text) {
     if (d) { d.text = "# One story beats ten claims\n\nAnyone can say they care about clients. A client telling you what changed is different.\n\nWhat were they worried about before you started?\n"; go("ok", { draft: "d1" }); say("Here's a shorter version, open next to the chat. Edit it or approve it.", "Garlic Press"); }
     else say("That post is already decided. Want me to draft another one?", "Garlic Press");
   }
+  else if (/mail|inbox/.test(t)) { S.mv = "todo"; go("mail"); const n = inView("todo").length; say(n ? `${n === 1 ? "One email is" : n + " emails are"} waiting for an answer. The rest is filed, and the noise is in Filtered.` : "No email is waiting for an answer.", "Chief of staff"); }
   else if (/today|morning|day/.test(t)) { go("today"); say("Three things today, and one question at a time when you're ready.", "Chief of staff"); }
   else if (/\bad\b|\bads\b|campaign/.test(t)) { go("ads"); say("Here's where the ads stand. The script is ready to record.", "Ads"); }
   else if (/approve|draft/.test(t)) { go("ok"); say("These drafts are waiting for your yes.", "Chief of staff"); }
@@ -507,6 +637,178 @@ const EX = [
 ];
 $("ex").append(...EX.map(([t, who, what, eg], i) => el("li", {}, el("span", { cls: "n", textContent: String(i + 1).padStart(2, "0") }),
   el("div", {}, el("b", { textContent: t }), el("span", { cls: "who" + (who.startsWith("You") ? " you" : ""), textContent: who })), p(what), p(eg, "eg"))));
+
+// Setup questions: read-only. [title, question, suggestion, new?, rest of the question] by block.
+const BLOCKS = [
+ [
+  "The frame",
+  [
+   [
+    "Projects",
+    "One chat with a chief of staff, and one project manager behind each area.",
+    "Suggested: GPS and workshops, Garlic Press (content), Ads, StoryCollector and TackleBox, directories, agency clients, partners.",
+     0,
+     "Which ones do we keep, merge or drop to start?"
+   ],
+   [
+    "Friday",
+    "You already have Friday in your own setup. Should it become the chief of staff here, keep running next to it, or stop?",
+    "No suggestion: your call."
+   ],
+   [
+    "The cockpit",
+    "Can you share the Garlic Cockpit and Garlic Timer? What do you open in it every day, and what don't you use?",
+    ""
+   ],
+   [
+    "Three things a day",
+    "Who picks them?",
+    "Suggested: the assistant proposes them each morning, you change them in one sentence."
+   ],
+   [
+    "Your day",
+    "You described a focused morning (content, outbound, ads), a sales briefing at midday and an end-of-day review. Is that still right?",
+    ""
+   ],
+   [
+    "First result",
+    "What should it finish for you in the first week?",
+    "Suggested: one piece of content, from transcript to ready to publish."
+   ]
+  ]
+ ],
+ [
+  "Garlic Press",
+  [
+   [
+    "Workflow",
+    "Is the workflow you emailed the one you use today? Which steps slow you down or don't work?",
+    ""
+   ],
+   [
+    "Approval",
+    "You review one markdown file next to the chat, then approve. One approval per piece, or a batch at a fixed time?",
+    "Suggested: a batch each morning."
+   ],
+   [
+    "Publishing",
+    "Which channels first, how many posts a day to start, and what must always wait for your yes?",
+    "Suggested: everything waits for your yes at first."
+   ]
+  ]
+ ],
+ [
+  "Ads",
+  [
+   [
+    "Process",
+    "Walk us through your last campaign: who wrote it, who made the video, where you read the results, what decided the next test.",
+    ""
+   ],
+   [
+    "Material",
+    "Where are the past ad material, the past ads and the results? Which account is the one to read?",
+    ""
+   ],
+   [
+    "Budget",
+    "It never changes spend or launches a campaign on its own. Right?",
+    ""
+   ]
+  ]
+ ],
+ [
+  "Your other processes",
+  [
+   [
+    "List",
+    "What do you do every day, week and month (content, YouTube, ads, outreach, client calls, partner follow-up, invoices)? Talk it through, we write it down.",
+    ""
+   ],
+   [
+    "One click",
+    "Which three would you most want to run from one button?",
+    ""
+   ],
+   [
+    "Agents",
+    "On the call you described five agents working on one campaign for an hour while you answer their questions. Which campaign would you try first?",
+    ""
+   ]
+  ]
+ ],
+ [
+  "Connections and rules",
+  [
+   [
+    "Accounts",
+    "Which email, ClickUp, Slack workspace and Google account should it read?",
+    "Suggested: read and draft only, nothing sent without you."
+   ],
+   [
+    "Obsidian",
+    "A new shared vault, or a folder of the current one? What stays private?",
+    ""
+   ],
+   [
+    "AI account",
+    "Your own Codex and Claude plans?",
+    "Suggested: yes, yours."
+   ],
+   [
+    "Alone or ask",
+    "What can it do without asking?",
+    "Suggested: read, sort, draft, prepare. It asks before sending, publishing, paying, deleting or touching a domain."
+   ],
+   [
+    "Help",
+    "It runs on the Mac mini at your place and Alex can fix things remotely. What should she see, and what shouldn't she?",
+    ""
+   ],
+   [
+    "Team",
+    "Should it answer your team's routine questions later?",
+    "Suggested: drafts you approve first, starting with one topic."
+   ],
+   [
+    "",
+    "What would make you stop using it?",
+    ""
+   ],
+   [
+    "Mail",
+    "In your mail, what should always reach you, and what is always noise?",
+    "Suggested: newsletters, promotions and cold outreach are noise, and anyone you've replied to always gets through.",
+    1
+   ]
+  ]
+ ]
+];
+const QS = BLOCKS.flatMap(([name, list], b) => list.map(q => ({ block: `Block ${b + 1}: ${name}`, q })));
+let qi = 0, qAll = false;
+const qCard = (x, i) => el("article", { cls: "qcard" }, el("span", { cls: "caps", textContent: x.block }), el("span", { cls: "stat", textContent: `Question ${i + 1} of ${QS.length}` }),
+  x.q[3] ? el("span", { cls: "tag sample", textContent: "New" }) : null, x.q[0] ? el("h3", { textContent: x.q[0] }) : null, el(x.q[0] ? "p" : "h3", { textContent: x.q[1] }), x.q[2] ? p(x.q[2], "sug") : null, x.q[4] ? p(x.q[4]) : null);
+function drawQ() {
+  $("qs").classList.toggle("qall", qAll);
+  $("qs").replaceChildren(...(qAll ? QS.map(qCard) : [qCard(QS[qi], qi)]));
+  $("q-prev").hidden = $("q-next").hidden = qAll;
+  $("q-prev").disabled = qi === 0; $("q-next").disabled = qi === QS.length - 1;
+  $("q-all").textContent = qAll ? "One at a time" : "Show all"; $("q-all").setAttribute("aria-pressed", String(qAll));
+}
+$("q-prev").addEventListener("click", () => { qi--; drawQ(); });
+$("q-next").addEventListener("click", () => { qi++; drawQ(); });
+$("q-all").addEventListener("click", () => { qAll = !qAll; drawQ(); });
+drawQ();
+
+function page(k) {
+  for (const x of ["main", "q"]) { $("page-" + x).hidden = x !== k; $("pt-" + x).setAttribute("aria-selected", String(x === k)); $("pt-" + x).tabIndex = x === k ? 0 : -1; }
+}
+const fromHash = () => page(location.hash === "#questions" ? "q" : "main");
+for (const x of ["main", "q"]) {
+  $("pt-" + x).addEventListener("click", () => { history.replaceState(null, "", x === "q" ? "#questions" : location.pathname + location.search); page(x); });
+  $("pt-" + x).addEventListener("keydown", e => { if (e.key === "ArrowLeft" || e.key === "ArrowRight") { const o = $("pt-" + (x === "q" ? "main" : "q")); o.click(); o.focus(); } });
+}
+addEventListener("hashchange", fromHash); fromHash();
 </script>
 </body>
 </html>
