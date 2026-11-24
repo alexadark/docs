@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="description" content="A visual guide to Unit12: the chief of staff, the project managers, the card agents and how work gets merged.">
+<title>How Unit12 works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Linear-style dark document: one reading column, square corners, mono caps labels, colour only as accent. */
+:root {
+  --bg: #0B0B0D; --surface: #131316; --fg: #EDEDF0; --muted: #8A8F98; --line: #2C2D30;
+  --accent: #7C8CFF; --warn: #FFB224; --ok: #3DD68C; --alert: #FF4D4F; --info: #22D3EE;
+  --code-bg: #18181C;
+  --font-body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+    --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+    --code-bg: #F0F0F3; color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #F7F7F8; --surface: #FFFFFF; --fg: #111114; --muted: #5E6068; --line: #E1E2E6;
+  --accent: #4F5BD5; --warn: #C27C00; --ok: #1F9D5C; --alert: #D63B3D; --info: #0E8FA8;
+  --code-bg: #F0F0F3; color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; padding: 48px 16px 96px; }
+.wrap { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.8rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.45rem; font-weight: 650; letter-spacing: -0.01em; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0; max-width: 65ch; }
+header, section { display: flex; flex-direction: column; gap: 16px; }
+.eyebrow, .caps { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+.eyebrow { color: var(--muted); }
+.lede { font-size: 1.15rem; color: var(--muted); }
+a { color: var(--accent); }
+code { font-family: var(--font-mono); font-size: 0.86em; background: var(--code-bg); padding: 0.1em 0.35em; }
+pre { font-family: var(--font-mono); font-size: 0.82rem; background: var(--code-bg); border: 1px solid var(--line); padding: 16px; margin: 0; overflow-x: auto; }
+ul, ol { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; max-width: 65ch; }
+.note { border-left: 3px solid var(--info); background: var(--surface); padding: 14px 16px; }
+.note.warn { border-left-color: var(--warn); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.stat { border: 1px solid var(--line); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 4px; }
+.stat .n { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+.stat p { font-size: 0.85rem; color: var(--muted); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+.steps { counter-reset: s; list-style: none; padding: 0; gap: 18px; }
+.steps > li { counter-increment: s; display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); background: var(--surface); padding: 14px 16px; }
+.steps > li > h3::before { content: "Step " counter(s) " · "; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; color: var(--muted); text-transform: uppercase; }
+.c-accent { color: var(--accent); } .c-warn { color: var(--warn); } .c-ok { color: var(--ok); } .c-alert { color: var(--alert); } .c-info { color: var(--info); }
+footer { color: var(--muted); font-size: 0.88rem; border-top: 1px solid var(--line); padding-top: 20px; }
+
+.wrap { max-width: 860px; }
+:root { --you: var(--warn); --shade: var(--accent); --pm: var(--info); --agent: var(--ok); }
+figure { margin: 0; border: 1px solid var(--line); background: var(--surface); padding: 20px 16px 14px; display: flex; flex-direction: column; gap: 12px; }
+figure svg { display: block; width: 100%; height: auto; margin: 0 auto; color: var(--fg); }
+figcaption { color: var(--muted); font-size: 0.88rem; }
+svg text { font-family: var(--font-body); fill: currentColor; font-size: 16px; }
+svg .t { font-weight: 650; }
+svg .s { font-size: 14px; fill: var(--muted); }
+svg .box { fill: var(--bg); stroke-width: 1.5; }
+svg .ln { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+svg .s-you { stroke: var(--you); } svg .s-shade { stroke: var(--shade); } svg .s-pm { stroke: var(--pm); } svg .s-agent { stroke: var(--agent); } svg .s-n { stroke: var(--line); }
+.who { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.who > div { border: 1px solid var(--line); border-top: 3px solid var(--c); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
+.who p { font-size: 0.92rem; } .who .caps { color: var(--c); }
+.who .m { color: var(--muted); font-size: 0.85rem; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; align-items: start; }
+.two > div { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.mock { border: 1px solid var(--line); background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 10px; font-size: 0.92rem; }
+.mock .top { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); }
+.mock ul { list-style: none; padding: 0; } .mock .done { color: var(--muted); }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.btns span { border: 1px solid var(--line); padding: 4px 12px; font-size: 0.88rem; } .btns .main { background: var(--fg); border-color: var(--fg); color: var(--bg); font-weight: 600; }
+.lanes { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.9rem; }
+.lanes span { border: 1px solid var(--line); background: var(--surface); padding: 5px 12px; } .lanes i { color: var(--muted); font-style: normal; } .lanes .dim { color: var(--muted); border-style: dashed; }
+.log { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.5; border: 1px solid var(--line); background: var(--code-bg); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.log b { font-weight: 600; } .b-shade { color: var(--shade); } .b-pm { color: var(--pm); } .b-agent { color: var(--agent); } .b-you { color: var(--you); }
+@media (max-width: 560px) { figure { padding: 14px 8px 12px; } figcaption { padding: 0 6px; } svg text { font-size: 19px; } svg .s { font-size: 17px; } }
+.tablet td:first-child { white-space: nowrap; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <span class="eyebrow">Unit12 · The mental model</span>
+  <h1>How Unit12 works</h1>
+  <p class="lede">Think of a small company with one owner: you. Agents hold every other job, and you run it from one screen.</p>
+</header>
+
+<section>
+  <h2>The whole thing in one picture</h2>
+  <figure>
+    <svg viewBox="0 0 520 560" style="max-width:560px" role="img" aria-label="You talk to Shade. Shade dispatches to project managers. Each project manager launches card agents, which report back to it. Everyone writes to the hive.">
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="currentColor" opacity=".6"/></marker></defs>
+      <rect class="box s-you" x="170" y="10" width="180" height="60"/><text class="t" x="260" y="36" text-anchor="middle">You</text><text class="s" x="260" y="57" text-anchor="middle">ask and decide</text>
+      <path class="ln" d="M260 70V128" marker-end="url(#a)"/><text class="s" x="272" y="104">talk</text>
+      <rect class="box s-shade" x="170" y="130" width="180" height="60"/><text class="t" x="260" y="156" text-anchor="middle">Shade</text><text class="s" x="260" y="177" text-anchor="middle">chief of staff</text>
+      <path class="ln" d="M260 190V220H125V258" marker-end="url(#a)"/><path class="ln" d="M260 220H395V258" marker-end="url(#a)"/><text class="s" x="272" y="210">dispatches</text>
+      <rect class="box s-pm" x="40" y="260" width="170" height="60"/><text class="t" x="125" y="286" text-anchor="middle">PM</text><text class="s" x="125" y="307" text-anchor="middle">project A</text>
+      <rect class="box s-pm" x="310" y="260" width="170" height="60"/><text class="t" x="395" y="286" text-anchor="middle">PM</text><text class="s" x="395" y="307" text-anchor="middle">project B</text>
+      <path class="ln" d="M70 320V388" marker-end="url(#a)"/><path class="ln" d="M180 390V322" marker-end="url(#a)"/>
+      <path class="ln" d="M395 320V388" marker-end="url(#a)"/>
+      <text class="s" x="80" y="346">launches</text><text class="s" x="172" y="374" text-anchor="end">reports</text><text class="s" x="405" y="360">launches</text>
+      <rect class="box s-agent" x="20" y="390" width="100" height="60"/><text class="t" x="70" y="416" text-anchor="middle">Agent</text><text class="s" x="70" y="437" text-anchor="middle">one card</text>
+      <rect class="box s-agent" x="130" y="390" width="100" height="60"/><text class="t" x="180" y="416" text-anchor="middle">Agent</text><text class="s" x="180" y="437" text-anchor="middle">one card</text>
+      <rect class="box s-agent" x="345" y="390" width="100" height="60"/><text class="t" x="395" y="416" text-anchor="middle">Agent</text><text class="s" x="395" y="437" text-anchor="middle">one card</text>
+      <path class="ln" d="M70 450V488M180 450V488M395 450V488" stroke-dasharray="5 4"/>
+      <rect class="box s-n" x="20" y="490" width="480" height="54" stroke-dasharray="5 4"/><text class="t" x="260" y="514" text-anchor="middle">The hive</text><text class="s" x="260" y="534" text-anchor="middle">one shared log, everyone writes</text>
+    </svg>
+    <figcaption>Work goes down, reports come back up. You normally talk to Shade, and you can open any PM directly.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Who does what</h2>
+  <div class="who">
+    <div style="--c:var(--you)"><span class="caps">You</span><p>Say what you want. Answer the few questions that are really yours.</p><p class="m">Only you send, pay and publish.</p></div>
+    <div style="--c:var(--shade)"><span class="caps">Shade</span><p>Reads everything, composes your day, hands each request to the right PM.</p><p class="m">One chat per day.</p></div>
+    <div style="--c:var(--pm)"><span class="caps">Project manager</span><p>Owns one project: its cards, its memory, its agents. Reviews what they deliver.</p><p class="m">One per project. Never reads another project's memory.</p></div>
+    <div style="--c:var(--agent)"><span class="caps">Card agent</span><p>Takes one card, works alone on its own git branch, comes back with proof.</p><p class="m">Reports to its PM. Agents never call each other.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>A card is the unit of work</h2>
+  <div class="two">
+    <div>
+      <div class="mock">
+        <div class="top"><span class="caps">Website</span><span class="caps c-ok">Doing</span></div>
+        <h3>Contact form</h3>
+        <ul><li class="done">✓ Build the form</li><li>○ Save each message</li><li>○ Show a thank you page</li></ul>
+        <p><strong>Done when:</strong> a test message shows up in the list.</p>
+      </div>
+      <p class="m" style="color:var(--muted);font-size:.85rem">Example card</p>
+    </div>
+    <div>
+      <p>A short title, a few steps and one <strong>Done when</strong> line. That line matters most: it's what the agent has to prove and what gets tested.</p>
+      <div class="lanes"><span>Inbox</span><i>→</i><span>To do</span><i>→</i><span>Doing</span><i>→</i><span>Done</span></div>
+      <div class="lanes"><span class="dim">Later</span><span class="dim">Idea</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Nothing new, nothing runs</h2>
+  <figure>
+    <svg viewBox="0 0 520 250" style="max-width:600px" role="img" aria-label="An event is stored, the project manager wakes, acts, writes back and stops until next time.">
+      <rect class="box s-n" x="10" y="20" width="150" height="70"/><text class="t" x="85" y="50" text-anchor="middle">New event</text><text class="s" x="85" y="72" text-anchor="middle">card, ask, report</text>
+      <path class="ln" d="M160 55H183" marker-end="url(#a)"/>
+      <rect class="box s-pm" x="185" y="20" width="150" height="70"/><text class="t" x="260" y="50" text-anchor="middle">PM wakes</text><text class="s" x="260" y="72" text-anchor="middle">reads its events</text>
+      <path class="ln" d="M335 55H358" marker-end="url(#a)"/>
+      <rect class="box s-pm" x="360" y="20" width="150" height="70"/><text class="t" x="435" y="50" text-anchor="middle">PM acts</text><text class="s" x="435" y="72" text-anchor="middle">launch, ask</text>
+      <path class="ln" d="M435 90V158" marker-end="url(#a)"/><text class="s" x="425" y="130" text-anchor="end">writes to the hive</text>
+      <rect class="box s-n" x="360" y="160" width="150" height="70"/><text class="t" x="435" y="190" text-anchor="middle">PM stops</text><text class="s" x="435" y="212" text-anchor="middle">until next time</text>
+      <path class="ln" d="M360 195H85V92" stroke-dasharray="5 4" marker-end="url(#a)"/><text class="s" x="97" y="185">waits</text>
+    </svg>
+    <figcaption>Agents wake for a reason, do one thing, write it down and stop. A check every 10 minutes picks up anything still waiting.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>From a card to a merge</h2>
+  <figure>
+    <svg viewBox="0 0 520 620" style="max-width:560px" role="img" aria-label="The agent builds and reports with proof, a blind QA agent tests, the PM reviews intent. Small internal changes merge automatically, anything else becomes a decision for you.">
+      <rect class="box s-agent" x="130" y="10" width="260" height="60"/><text class="t" x="260" y="36" text-anchor="middle">1. Build</text><text class="s" x="260" y="57" text-anchor="middle">card agent, own branch</text>
+      <path class="ln" d="M260 70V108" marker-end="url(#a)"/>
+      <rect class="box s-agent" x="130" y="110" width="260" height="60"/><text class="t" x="260" y="136" text-anchor="middle">2. Report</text><text class="s" x="260" y="157" text-anchor="middle">refused without proof</text>
+      <path class="ln" d="M260 170V208" marker-end="url(#a)"/>
+      <rect class="box s-agent" x="130" y="210" width="260" height="60"/><text class="t" x="260" y="236" text-anchor="middle">3. Blind QA</text><text class="s" x="260" y="257" text-anchor="middle">app only, no code</text>
+      <path class="ln" d="M260 270V308" marker-end="url(#a)"/>
+      <rect class="box s-pm" x="130" y="310" width="260" height="60"/><text class="t" x="260" y="336" text-anchor="middle">4. PM review</text><text class="s" x="260" y="357" text-anchor="middle">is it what was asked?</text>
+      <path class="ln" d="M260 370V395H120V428" marker-end="url(#a)"/><path class="ln" d="M260 395H400V428" marker-end="url(#a)"/>
+      <rect class="box s-pm" x="10" y="430" width="220" height="60"/><text class="t" x="120" y="456" text-anchor="middle">Merges by itself</text><text class="s" x="120" y="477" text-anchor="middle">small and internal</text>
+      <rect class="box s-you" x="290" y="430" width="220" height="60"/><text class="t" x="400" y="456" text-anchor="middle">Asks you</text><text class="s" x="400" y="477" text-anchor="middle">everything else</text>
+      <path class="ln" d="M120 490V525H230V548" marker-end="url(#a)"/><path class="ln" d="M400 490V525H290V548" marker-end="url(#a)"/><text class="s" x="410" y="514">you approve</text>
+      <rect class="box s-n" x="130" y="550" width="260" height="56"/><text class="t" x="260" y="575" text-anchor="middle">5. Merged</text><text class="s" x="260" y="595" text-anchor="middle">you can revert it</text>
+    </svg>
+    <figcaption>Three different looks before a merge: the agent's proof, a tester who can't read the code, and the PM.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Decisions: the only queue that needs you</h2>
+  <div class="two">
+    <div>
+      <div class="mock">
+        <div class="top"><span class="caps">Decision</span><span class="caps c-warn">Waiting on you</span></div>
+        <h3>Merge the contact form?</h3>
+        <p>The form works and the test message shows up in the list.</p>
+        <p class="c-ok">✓ Done when: passed</p>
+        <div class="btns"><span class="main">Merge</span><span>Refuse</span><span>Ask</span></div>
+      </div>
+      <p style="color:var(--muted);font-size:.85rem">Example decision</p>
+    </div>
+    <div>
+      <p>One question, its proof, and buttons. Your answer wakes the agent that asked.</p>
+      <div class="table-wrap"><table class="tablet"><tbody>
+        <tr><td class="c-ok">Agents do it</td><td>Build, test, sort, draft, update cards</td></tr>
+        <tr><td class="c-warn">You decide</td><td>Send, pay, publish, deploy, larger merges</td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>The hive: how everyone stays in sync</h2>
+  <p>Each action leaves one line in a shared log. Card agents don't chat with each other: what matters is in the log, where you can read it too.</p>
+  <div class="log" role="img" aria-label="Example hive log">
+    <span><b class="b-shade">Shade</b> · dispatched “add a contact form” to the website PM</span>
+    <span><b class="b-pm">PM website</b> · launched an agent on Contact form</span>
+    <span><b class="b-agent">Agent</b> · reported Contact form, 1 screenshot</span>
+    <span><b class="b-you">You</b> · approved the merge</span>
+  </div>
+  <p style="color:var(--muted);font-size:.85rem">Example lines</p>
+</section>
+
+<section>
+  <h2>Where it all runs</h2>
+  <figure>
+    <svg viewBox="0 0 520 330" style="max-width:580px" role="img" aria-label="An always-on Mac runs Unit12, its database and the agents in Orca. Phone and laptop reach it over a private network.">
+      <rect class="box s-n" x="10" y="20" width="120" height="60"/><text class="t" x="70" y="55" text-anchor="middle">Phone</text>
+      <rect class="box s-n" x="10" y="110" width="120" height="60"/><text class="t" x="70" y="145" text-anchor="middle">Laptop</text>
+      <path class="ln" d="M130 50H160V95" /><path class="ln" d="M130 140H160V95H208" marker-end="url(#a)"/>
+      <text class="s" x="10" y="200">private network</text>
+      <rect class="box s-n" x="190" y="10" width="320" height="310" stroke-dasharray="5 4" style="fill:none"/><text class="s" x="350" y="34" text-anchor="middle">one Mac that stays on</text>
+      <rect class="box s-shade" x="210" y="60" width="280" height="70"/><text class="t" x="350" y="90" text-anchor="middle">Unit12 server</text><text class="s" x="350" y="112" text-anchor="middle">screen and rules</text>
+      <path class="ln" d="M280 132V188" marker-start="url(#a)" marker-end="url(#a)"/><path class="ln" d="M420 132V188" marker-start="url(#a)" marker-end="url(#a)"/>
+      <text class="s" x="290" y="165">stores</text><text class="s" x="410" y="165" text-anchor="end">starts</text>
+      <rect class="box s-n" x="210" y="190" width="130" height="100"/><text class="t" x="275" y="232" text-anchor="middle">Database</text><text class="s" x="275" y="254" text-anchor="middle">cards, hive</text>
+      <rect class="box s-agent" x="360" y="190" width="130" height="100"/><text class="t" x="425" y="232" text-anchor="middle">Orca</text><text class="s" x="425" y="254" text-anchor="middle">agent chats</text>
+    </svg>
+    <figcaption>Every agent is a chat in Orca, a desktop app, running Claude Code or Codex. You can open any of them and watch.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Try it in three steps</h2>
+  <ol class="steps">
+    <li><h3>See the board</h3><p>Follow Quick start in the README. You get the board on your Mac, with example projects and no agents.</p></li>
+    <li><h3>Connect Orca</h3><p>Follow <code>docs/install.md</code> from step 5. You need macOS, Orca, and Claude Code or Codex signed in.</p></li>
+    <li><h3>Write one card</h3><p>Pick something small, give it a clear Done when, and let a PM take it through the chain above.</p></li>
+  </ol>
+  <div class="note warn"><p>Unit12 runs one person's work every day and isn't a packaged product yet. Read section 9 of the install guide before you give agents access to real accounts.</p></div>
+</section>
+
+<footer>Prepared by Alexandra Spalato · November 24, 2026</footer>
+
+</div>
+</body>
+</html>
