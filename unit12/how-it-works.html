@@ -76,6 +76,7 @@ svg .box { fill: var(--bg); stroke-width: 1.5; }
 svg .ln { stroke: var(--muted); stroke-width: 1.5; fill: none; }
 svg .s-you { stroke: var(--you); } svg .s-shade { stroke: var(--shade); } svg .s-pm { stroke: var(--pm); } svg .s-agent { stroke: var(--agent); } svg .s-n { stroke: var(--line); }
 .who { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.who.three { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); } .who.wide { grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }
 .who > div { border: 1px solid var(--line); border-top: 3px solid var(--c); background: var(--surface); padding: 14px; display: flex; flex-direction: column; gap: 8px; }
 .who p { font-size: 0.92rem; } .who .caps { color: var(--c); }
 .who .m { color: var(--muted); font-size: 0.85rem; }
@@ -131,9 +132,26 @@ svg .s-you { stroke: var(--you); } svg .s-shade { stroke: var(--shade); } svg .s
   <div class="who">
     <div style="--c:var(--you)"><span class="caps">You</span><p>Say what you want. Answer the few questions that are really yours.</p><p class="m">Only you send, pay and publish.</p></div>
     <div style="--c:var(--shade)"><span class="caps">Shade</span><p>Reads everything, composes your day, hands each request to the right PM.</p><p class="m">One chat per day.</p></div>
-    <div style="--c:var(--pm)"><span class="caps">Project manager</span><p>Owns one project: its cards, its memory, its agents. Reviews what they deliver.</p><p class="m">One per project. Never reads another project's memory.</p></div>
+    <div style="--c:var(--pm)"><span class="caps">Project manager</span><p>Owns one project: its cards, its memory, its agents. Reviews what they deliver.</p><p class="m">One per project today. Never reads another project's memory.</p></div>
     <div style="--c:var(--agent)"><span class="caps">Card agent</span><p>Takes one card, works alone on its own git branch, comes back with proof.</p><p class="m">Reports to its PM. Agents never call each other.</p></div>
+    <div style="--c:var(--line);border-style:dashed;grid-column:1/-1"><span class="caps" style="color:var(--muted)">Lead, coming next</span><p>Will own one big project end to end, under the PM of its account.</p><p class="m">Not built yet.</p></div>
   </div>
+</section>
+
+<section>
+  <h2>Coming next: leads under the PM</h2>
+  <figure>
+    <svg viewBox="0 0 520 330" style="max-width:560px" role="img" aria-label="Planned design: an account PM hands big projects over to leads, and each lead runs its own agents. You and Shade can talk to a lead directly.">
+      <rect class="box s-pm" x="170" y="10" width="180" height="60"/><text class="t" x="260" y="36" text-anchor="middle">Account PM</text><text class="s" x="260" y="57" text-anchor="middle">sorts and prioritizes</text>
+      <path class="ln" d="M260 70V100H125V138" marker-end="url(#a)"/><path class="ln" d="M260 100H395V138" marker-end="url(#a)"/><text class="s" x="272" y="92">hands over</text>
+      <rect class="box s-pm" x="30" y="140" width="190" height="60" stroke-dasharray="5 4"/><text class="t" x="125" y="166" text-anchor="middle">Lead</text><text class="s" x="125" y="187" text-anchor="middle">a product, permanent</text>
+      <rect class="box s-pm" x="300" y="140" width="190" height="60" stroke-dasharray="5 4"/><text class="t" x="395" y="166" text-anchor="middle">Lead</text><text class="s" x="395" y="187" text-anchor="middle">a project, temporary</text>
+      <path class="ln" d="M125 200V258" marker-end="url(#a)"/><path class="ln" d="M395 200V258" marker-end="url(#a)"/><text class="s" x="135" y="234">launches</text><text class="s" x="405" y="234">launches</text>
+      <rect class="box s-agent" x="65" y="260" width="120" height="56"/><text class="t" x="125" y="294" text-anchor="middle">Agents</text>
+      <rect class="box s-agent" x="335" y="260" width="120" height="56"/><text class="t" x="395" y="294" text-anchor="middle">Agents</text>
+    </svg>
+    <figcaption>Designed, not built yet. One PM per account keeps the inbox, the priorities and the small cards. Each big project gets a lead that owns it end to end, and you can talk to it directly. A temporary lead hands its memory and open cards back when its project ends.</figcaption>
+  </figure>
 </section>
 
 <section>
@@ -169,7 +187,7 @@ svg .s-you { stroke: var(--you); } svg .s-shade { stroke: var(--shade); } svg .s
       <rect class="box s-n" x="360" y="160" width="150" height="70"/><text class="t" x="435" y="190" text-anchor="middle">PM stops</text><text class="s" x="435" y="212" text-anchor="middle">until next time</text>
       <path class="ln" d="M360 195H85V92" stroke-dasharray="5 4" marker-end="url(#a)"/><text class="s" x="97" y="185">waits</text>
     </svg>
-    <figcaption>Agents wake for a reason, do one thing, write it down and stop. A check every 10 minutes picks up anything still waiting.</figcaption>
+    <figcaption>Agents wake for a reason, do one thing, write it down and stop. A check every 10 minutes delivers events still waiting, and what's due goes in Shade's morning sweep.</figcaption>
   </figure>
 </section>
 
@@ -203,12 +221,12 @@ svg .s-you { stroke: var(--you); } svg .s-shade { stroke: var(--shade); } svg .s
         <h3>Merge the contact form?</h3>
         <p>The form works and the test message shows up in the list.</p>
         <p class="c-ok">✓ Done when: passed</p>
-        <div class="btns"><span class="main">Merge</span><span>Refuse</span><span>Ask</span></div>
+        <div class="btns"><span>Merge</span><span>Refuse</span><span>Ask</span></div>
       </div>
       <p style="color:var(--muted);font-size:.85rem">Example decision</p>
     </div>
     <div>
-      <p>One question, its proof, and buttons. Your answer wakes the agent that asked.</p>
+      <p>One question at a time, its proof, and buttons. Agents recommend an answer, except for money, sends and merges. Your answer wakes the agent that asked.</p>
       <div class="table-wrap"><table class="tablet"><tbody>
         <tr><td class="c-ok">Agents do it</td><td>Build, test, sort, draft, update cards</td></tr>
         <tr><td class="c-warn">You decide</td><td>Send, pay, publish, deploy, larger merges</td></tr>
@@ -246,6 +264,29 @@ svg .s-you { stroke: var(--you); } svg .s-shade { stroke: var(--shade); } svg .s
     </svg>
     <figcaption>Every agent is a chat in Orca, a desktop app, running Claude Code or Codex. You can open any of them and watch.</figcaption>
   </figure>
+</section>
+
+<section>
+  <h2>New on November 23 and 24</h2>
+  <p>All of these are in the code today.</p>
+  <div class="who three">
+    <div style="--c:var(--agent)"><span class="caps">Card guardrails</span><p>A topic that already has an open card gets a comment there, whatever source it came from. An agent can't start in a folder outside its project.</p></div>
+    <div style="--c:var(--agent)"><span class="caps">Follow-ups</span><p>A failed merge or test, a reply to a mail it drafted, a web task report or a failed send goes back to the agent that did the work.</p></div>
+    <div style="--c:var(--shade)"><span class="caps">Would have done</span><p>A rule an agent proposes, or a new automation, first only notes what it would have done. It acts once it's turned on. Your own rules apply at once.</p></div>
+    <div style="--c:var(--you)"><span class="caps">Short answers</span><p>Chat replies stay within 100 words, with one question at a time.</p></div>
+    <div style="--c:var(--pm)"><span class="caps">Event wakes only</span><p>A due reminder or a recurring card wakes no PM. Shade's morning sweep lists both.</p></div>
+    <div style="--c:var(--pm)"><span class="caps">Honest WhatsApp light</span><p>Only a run that really read the messages counts. A refused one shows red, on its own row.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Still in progress</h2>
+  <div class="who wide">
+    <div style="--c:var(--you)"><span class="caps">Default decisions</span><p>A reversible question is settled with a stated default you can undo.</p><p class="m">Built, not merged.</p></div>
+    <div style="--c:var(--you)"><span class="caps">Reliable merge</span><p>An approved merge lands at once and is retried if it fails. Agents keep the RIFF state (RIFF is the build framework).</p><p class="m">Built, not merged.</p></div>
+    <div style="--c:var(--you)"><span class="caps">WhatsApp on the always-on Mac</span><p>WhatsApp is read without the laptop.</p><p class="m">First read worked, test with the laptop closed to do.</p></div>
+    <div style="--c:var(--you)"><span class="caps">Leads</span><p>One lead per big project under the account PM.</p><p class="m">Designed, not built.</p></div>
+  </div>
 </section>
 
 <section>
