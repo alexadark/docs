@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Ian's assistant: how it will work</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+/* Same visual system as ecosystem.html: square corners, mono caps labels, colour only for status. */
+:root {
+  --bg: #0B0B0D; --surface: #131316; --raised: #1A1A1E; --fg: #EDEDF0; --muted: #9A9FA8; --line: #2C2D30;
+  --accent: #7C8CFF; --on-accent: #0B0B0D; --live: #3DD68C; --idea: #FFB224; --stop: #FF6B6D;
+  --font-body: "Geist", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #F7F7F8; --surface: #FFFFFF; --raised: #F0F0F3; --fg: #111114; --muted: #5E6068; --line: #DCDDE2;
+    --accent: #4F5BD5; --on-accent: #FFFFFF; --live: #177A48; --idea: #8F5B00; --stop: #C22F31; color-scheme: light;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.6; padding: 48px 16px 96px; }
+.wrap { max-width: 1160px; margin: 0 auto; display: flex; flex-direction: column; gap: 64px; }
+.narrow { max-width: 760px; }
+h1, h2, h3, h4 { line-height: 1.25; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2rem, 5vw, 2.9rem); font-weight: 700; letter-spacing: -0.02em; }
+h2 { font-size: 1.5rem; font-weight: 650; letter-spacing: -0.01em; }
+p { margin: 0; max-width: 70ch; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+header, section { display: flex; flex-direction: column; gap: 16px; }
+.caps { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 1.12rem; color: var(--muted); }
+.muted { color: var(--muted); }
+a { color: var(--accent); }
+a.back { font-size: 0.9rem; align-self: flex-start; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tag { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; border: 1px solid currentColor; padding: 1px 6px; white-space: nowrap; color: var(--muted); align-self: flex-start; }
+.tag.sample { color: var(--idea); }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* General diagram */
+.map { border: 1px solid var(--line); background: var(--surface); padding: 24px; display: flex; flex-direction: column; align-items: stretch; }
+.node { border: 1px solid var(--line); background: var(--raised); padding: 12px 16px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.node b { font-weight: 650; }
+.node span { font-size: 0.86rem; color: var(--muted); }
+.node.one { width: min(340px, 100%); align-self: center; }
+.node.main { border-color: var(--accent); }
+.down { text-align: center; color: var(--muted); font-size: 0.82rem; padding: 6px 0; }
+.pms { border: 1px dashed var(--line); padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.pms .head { display: flex; flex-wrap: wrap; gap: 6px 12px; justify-content: space-between; align-items: center; }
+.pms .row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+.pms .pm { border: 1px solid var(--line); background: var(--raised); padding: 10px 8px; text-align: center; font-size: 0.86rem; font-weight: 600; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; }
+.pm i { font-style: normal; font-weight: 400; font-size: 0.74rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; }
+.backup { border: 1px solid var(--live); padding: 10px 14px; text-align: center; font-size: 0.92rem; }
+.tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; border-top: 1px solid var(--line); margin-top: 18px; padding-top: 16px; }
+.tools span { border: 1px solid var(--line); padding: 4px 10px; font-size: 0.86rem; }
+.tools .caps { border: 0; padding: 6px 4px; }
+.runs { font-size: 0.78rem; color: var(--muted); text-align: right; padding-top: 10px; max-width: none; }
+
+/* Mock-up */
+.app { border: 1px solid var(--line); background: var(--surface); display: grid; grid-template-columns: 340px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); height: 720px; }
+.appbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); padding: 10px 14px; }
+.appbar strong { font-weight: 650; }
+.appbar .tag { align-self: center; }
+.appbar .reset { margin-left: auto; background: none; border: 0; color: var(--muted); font-size: 0.86rem; text-decoration: underline; padding: 6px; }
+.switch { display: none; }
+.chat { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+.log { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.msg { max-width: 92%; padding: 9px 12px; font-size: 0.92rem; line-height: 1.5; border: 1px solid var(--line); background: var(--raised); align-self: flex-start; overflow-wrap: anywhere; }
+.msg.me { align-self: flex-end; background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.msg small { display: block; font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); margin-bottom: 3px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; }
+.chips button { background: none; border: 1px solid var(--line); font-size: 0.82rem; padding: 5px 9px; text-align: left; }
+.chips button:hover { border-color: var(--accent); }
+.say { display: flex; gap: 8px; border-top: 1px solid var(--line); padding: 12px 14px; }
+.say input { flex: 1; min-width: 0; }
+input, textarea { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); padding: 8px 10px; }
+input::placeholder { color: var(--muted); opacity: 1; }
+.btn { background: var(--raised); border: 1px solid var(--line); padding: 7px 12px; font-size: 0.88rem; font-weight: 500; min-height: 38px; }
+.btn:hover { border-color: var(--accent); }
+.btn.go { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 600; }
+.btn:disabled { opacity: 0.55; cursor: default; }
+.panel { display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+.tabs { display: flex; overflow-x: auto; border-bottom: 1px solid var(--line); flex: none; }
+.tabs button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 11px 13px; font-size: 0.9rem; white-space: nowrap; color: var(--muted); }
+.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); font-weight: 600; }
+.tabs .n { font-family: var(--font-mono); font-size: 0.74rem; color: var(--idea); margin-left: 5px; }
+.view { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+.view h3 { font-size: 1.05rem; font-weight: 650; }
+.box { border: 1px solid var(--line); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+.box.q { border-color: var(--idea); }
+.box.line { flex-direction: row; gap: 12px; }
+.line { display: flex; align-items: center; gap: 12px; }
+.line > div { flex: 1; min-width: 0; }
+.line h4, .box h4 { font-size: 0.97rem; font-weight: 600; }
+.sub { font-size: 0.85rem; color: var(--muted); }
+.acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.resume { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: space-between; border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; }
+.ok { color: var(--live); font-size: 0.86rem; }
+.pipe { display: grid; grid-template-columns: repeat(5, minmax(112px, 1fr)); gap: 8px; overflow-x: auto; }
+.col { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.col .card { border: 1px solid var(--line); background: var(--raised); padding: 8px 9px; font-size: 0.84rem; line-height: 1.4; text-align: left; display: block; width: 100%; }
+button.card:hover { border-color: var(--accent); }
+button.card { border-color: var(--idea) !important; }
+.card i { font-style: normal; display: block; color: var(--muted); font-size: 0.75rem; }
+.editor { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.editor textarea { width: 100%; min-height: 240px; flex: 1; resize: vertical; font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.6; }
+.steps { display: flex; flex-direction: column; gap: 4px; font-size: 0.88rem; }
+.steps li { display: flex; gap: 8px; color: var(--muted); }
+.steps li::before { content: "○"; font-family: var(--font-mono); }
+.steps li.done { color: var(--fg); } .steps li.done::before { content: "✓"; color: var(--live); }
+.steps li.now { color: var(--fg); font-weight: 600; } .steps li.now::before { content: "●"; color: var(--accent); }
+.stat { font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted); }
+.stat.run { color: var(--accent); } .stat.wait { color: var(--idea); } .stat.done { color: var(--live); }
+.list li + li { border-top: 1px solid var(--line); }
+.list li { padding: 8px 0; }
+
+/* Lists below the mock-up */
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.cell { border: 1px solid var(--line); background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.cell h3 { font-size: 1.02rem; font-weight: 650; }
+.cell p { font-size: 0.92rem; color: var(--muted); }
+.flow { display: grid; grid-template-columns: repeat(5, 1fr); }
+.flow .cell { position: relative; margin-right: 24px; }
+.flow .cell:last-child { margin-right: 0; }
+.flow .cell:not(:last-child)::after { content: "→"; position: absolute; right: -21px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+.flow .cell.you { border-color: var(--live); }
+.ex { border-top: 1px solid var(--line); }
+.ex li { display: grid; grid-template-columns: 34px 170px 1fr 1fr; gap: 6px 18px; border-bottom: 1px solid var(--line); padding: 14px 0; align-items: start; }
+.ex .n { font-family: var(--font-mono); color: var(--accent); font-size: 0.82rem; padding-top: 2px; }
+.ex b { font-weight: 600; }
+.ex .who { font-size: 0.78rem; color: var(--muted); display: block; font-family: var(--font-mono); }
+.ex .who.you { color: var(--live); }
+.ex p { font-size: 0.92rem; }
+.ex .eg { color: var(--muted); border-left: 2px solid var(--line); padding-left: 10px; }
+.conn { border-top: 1px solid var(--line); }
+.conn div { display: grid; grid-template-columns: 150px 1fr 1fr; gap: 4px 18px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 0.94rem; }
+.conn b { font-weight: 600; } .conn .muted { font-size: 0.92rem; }
+.grid.three { grid-template-columns: repeat(3, 1fr); }
+footer { font-size: 0.85rem; color: var(--muted); }
+
+@media (max-width: 960px) {
+  .pms .row { grid-template-columns: repeat(2, 1fr); }
+  .grid, .grid.three { grid-template-columns: repeat(2, 1fr); }
+  .flow { grid-template-columns: 1fr; gap: 26px; }
+  .flow .cell { margin-right: 0; }
+  .flow .cell:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -26px; transform: translateX(-50%); }
+  .ex li { grid-template-columns: 30px 1fr; }
+  .ex li > p { grid-column: 2; }
+}
+@media (max-width: 820px) {
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); height: min(760px, 92vh); height: min(760px, 92svh); }
+  .switch { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--line); }
+  .switch button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 11px; color: var(--muted); }
+  .switch button[aria-pressed="true"] { color: var(--fg); border-bottom-color: var(--accent); font-weight: 600; }
+  .chat { border-right: 0; }
+  .app[data-side="chat"] .panel, .app[data-side="panel"] .chat { display: none; }
+  .tabs { flex-wrap: wrap; overflow: visible; }
+  .tabs button { padding: 8px 10px; font-size: 0.86rem; }
+  .line.stack { flex-wrap: wrap; }
+  .line.stack > div { flex-basis: 100%; }
+}
+@media (max-width: 560px) {
+  body { padding-top: 28px; }
+  .wrap { gap: 52px; }
+  .map { padding: 14px; }
+  .grid, .grid.three, .conn div { grid-template-columns: 1fr; }
+  .pipe { grid-template-columns: 1fr; overflow: visible; }
+  .view { padding: 14px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<a class="back" href="./">← Ian Garlic docs</a>
+
+<header class="narrow">
+<span class="caps">Proposal · how it will work</span>
+<h1>One chat that runs your day, and nothing goes out without your yes</h1>
+<p class="lede">You talk or type in one place. Your assistant finds the work, gets it done, and brings it back to you to approve.</p>
+</header>
+
+<section aria-labelledby="t-map">
+<h2 id="t-map">The whole system on one page</h2>
+<div class="map">
+  <div class="node one"><b>You</b><span>Talk or type, laptop or phone</span></div>
+  <div class="down" aria-hidden="true">↓</div>
+  <div class="node one main"><b>One chat</b><span>You never hunt for a past chat</span></div>
+  <div class="down" aria-hidden="true">↓</div>
+  <div class="node one main"><b>Chief of staff</b><span>Knows every project, sends the work to the right one, reports back</span></div>
+  <div class="down" aria-hidden="true">↓</div>
+  <div class="pms">
+    <div class="head"><span class="caps">Project managers, each with its own agents</span><span class="tag sample">Proposed, we set them with you</span></div>
+    <div class="row" role="list">
+      <div class="pm" role="listitem">GPS and workshops<i>agents</i></div>
+      <div class="pm" role="listitem">Garlic Press<i>agents</i></div>
+      <div class="pm" role="listitem">Ads<i>agents</i></div>
+      <div class="pm" role="listitem">StoryCollector and TackleBox<i>agents</i></div>
+      <div class="pm" role="listitem">Directories<i>agents</i></div>
+      <div class="pm" role="listitem">Agency clients<i>agents</i></div>
+      <div class="pm" role="listitem">Partners<i>agents</i></div>
+    </div>
+  </div>
+  <div class="down" aria-hidden="true">↓</div>
+  <div class="backup"><b>Drafts come back to you.</b> You approve, edit or reject. Only then is anything sent or published.</div>
+  <div class="tools"><span class="caps">Your tools</span><span>Email</span><span>ClickUp</span><span>Slack</span><span>Google Docs</span><span>Obsidian</span></div>
+  <p class="runs">The chats run in Orca, with Claude or Codex.</p>
+</div>
+</section>
+
+<section aria-labelledby="t-mock">
+<h2 id="t-mock">Try the screen</h2>
+<p class="muted">Click anything: open a piece of work, answer or skip a question, approve a draft, run a process. Everything in it is sample data, and nothing is connected or sent.</p>
+<div class="app" id="app" data-side="panel">
+  <div class="appbar"><strong>Your assistant</strong><span class="tag sample">Sample data</span><button type="button" class="reset" id="reset">Start over</button></div>
+  <div class="switch"><button type="button" data-side="chat" aria-pressed="false">Chat</button><button type="button" data-side="panel" aria-pressed="true">Work</button></div>
+  <div class="chat">
+    <div class="log" id="log" role="log" aria-label="Sample chat" tabindex="0"></div>
+    <div class="chips" id="chips"></div>
+    <form class="say" id="say"><label class="vh" for="in">Message</label><input id="in" autocomplete="off" placeholder="Talk or type"><button type="button" class="btn" id="mic">Talk</button><button class="btn go">Send</button></form>
+  </div>
+  <div class="panel">
+    <div class="tabs" id="tabs" role="tablist" aria-label="Work"></div>
+    <div class="view" id="view" role="tabpanel" aria-labelledby="tab-today" tabindex="0"></div>
+  </div>
+</div>
+</section>
+
+<section aria-labelledby="t-day">
+<h2 id="t-day">A day with it</h2>
+<div class="grid">
+  <div class="cell"><span class="caps">Morning</span><h3>Three things</h3><p>You see three things, no more. Each one opens straight onto the file, the chat or the task. One line takes you back to where you stopped.</p></div>
+  <div class="cell"><span class="caps">Working block</span><h3>One thing at a time</h3><p>You say what you're working on. The agents on that project do their part while you record, edit or decide.</p></div>
+  <div class="cell"><span class="caps">Questions</span><h3>One by one</h3><p>Each question has a suggested answer. Say yes, change it, or skip it. Every answer is saved as you give it, so nothing is lost if you stop.</p></div>
+  <div class="cell"><span class="caps">End of day</span><h3>Approve and close</h3><p>You go through the drafts, see what's done and what waits on others, and leave a starting point for tomorrow.</p></div>
+</div>
+</section>
+
+<section aria-labelledby="t-flow">
+<h2 id="t-flow">How a piece of work moves</h2>
+<div class="flow" role="list">
+  <div class="cell" role="listitem"><h3>Your tools</h3><p>Email, ClickUp, Slack, Google Docs, Obsidian: what came in and what's already there.</p></div>
+  <div class="cell" role="listitem"><h3>Your assistant</h3><p>Sorts it, picks the project, and keeps the thread so you don't have to.</p></div>
+  <div class="cell" role="listitem"><h3>Agents do the work</h3><p>Claude or Codex drafts, prepares and checks behind the scenes.</p></div>
+  <div class="cell you" role="listitem"><h3>You approve</h3><p>Read it next to the chat, change a line, say yes or no.</p></div>
+  <div class="cell" role="listitem"><h3>Published or sent</h3><p>Only what you approved goes out, and the result comes back to you.</p></div>
+</div>
+</section>
+
+<section aria-labelledby="t-ex">
+<h2 id="t-ex">One example: from a talk to a post</h2>
+<p class="muted">These follow the steps in your Garlic Press workflow. The talk and the post are made up.</p>
+<span class="tag sample">Sample data</span>
+<ol class="ex" id="ex"></ol>
+</section>
+
+<section aria-labelledby="t-conn">
+<h2 id="t-conn">What connects, and what for</h2>
+<p class="muted">With your own accounts. It reads and drafts; sending and publishing wait for you.</p>
+<div class="conn">
+  <div><b>Email</b><span>Finds what needs you and drafts the reply.</span><span class="muted">You send.</span></div>
+  <div><b>ClickUp</b><span>Shows tasks, decisions and who you're waiting on.</span><span class="muted">Your team keeps working in ClickUp.</span></div>
+  <div><b>Slack</b><span>Gathers the questions for you and drafts the replies.</span><span class="muted">You approve each one.</span></div>
+  <div><b>Google Docs</b><span>Finds the right document and opens it.</span><span class="muted">No more searching for where it is.</span></div>
+  <div><b>Obsidian</b><span>A shared vault for notes, sources and drafts in markdown.</span><span class="muted">What stays private isn't in it.</span></div>
+</div>
+<p class="muted">It will run on the Mac mini at your place, so Alexandra can help and fix things remotely. You use it from your laptop or your phone. It's much simpler than the system Alexandra uses for her own work.</p>
+</section>
+
+<section aria-labelledby="t-set">
+<h2 id="t-set">What we'll set up together</h2>
+<div class="grid three">
+  <div class="cell"><h3>The frame</h3><p>Which projects to start with, how your day runs, the cockpit you already have, and the first result to aim for. And a question for you: what should happen with Friday?</p></div>
+  <div class="cell"><h3>Garlic Press</h3><p>Your workflow as you use it today, how you want to approve, and where pieces get published.</p></div>
+  <div class="cell"><h3>Ads</h3><p>How a campaign goes from idea to result, where the material lives, and what always stays your call.</p></div>
+  <div class="cell"><h3>Your other processes</h3><p>Content, YouTube and the rest: list them, then pick the ones to run from one button.</p></div>
+  <div class="cell"><h3>Connections</h3><p>Which accounts come first, and which vault to share in Obsidian.</p></div>
+  <div class="cell"><h3>Rules</h3><p>What it can do alone, when it asks, what stays private, and how we help when something breaks.</p></div>
+</div>
+</section>
+
+<footer>Proposal for discussion. The screen above is a mock-up with sample data.</footer>
+</div>
+
+<script>
+// Mock-up only: everything lives in memory, nothing is stored, connected or sent.
+const $ = id => document.getElementById(id);
+const el = (tag, props = {}, ...kids) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(props)) {
+    if (k === "on") n.addEventListener("click", v);
+    else if (k === "cls") n.className = v;
+    else if (k in n && k !== "list") n[k] = v;
+    else n.setAttribute(k, v);
+  }
+  n.append(...kids.filter(k => k != null && k !== false));
+  return n;
+};
+const btn = (text, on, go, extra = {}) => el("button", { type: "button", cls: "btn" + (go ? " go" : ""), textContent: text, on, ...extra });
+const p = (text, cls) => el("p", { textContent: text, cls: cls || "" });
+
+const TABS = [["today", "Today"], ["press", "Garlic Press"], ["ads", "Ads"], ["proc", "Processes"], ["ok", "To approve"], ["wait", "Waiting on others"]];
+const STAGES = ["Source", "Draft", "Your review", "Approved", "Published"];
+const POST = "# One story beats ten claims\n\nAnyone can say they care about clients.\n\nA client telling you what changed is different. You hear the doubt, the decision and the result.\n\nAsk one question this week: \"What were you worried about before we started?\"\n";
+
+let S, timer = null;
+const fresh = () => ({
+  tab: "today", open: null, done: [], next: 1,
+  questions: [
+    { q: "Which talk should become posts first?", a: "The latest workshop" },
+    { q: "Should the post end with a question or a link?", a: "A question" },
+    { q: "Who reviews the video before it comes to you?", a: "The video editor" },
+  ],
+  answered: 0, total: 3, saved: "",
+  drafts: [
+    { id: "d1", kind: "Post", title: "One story beats ten claims", text: POST, press: "p3" },
+    { id: "d2", kind: "Email", title: "Reply about the workshop replay", text: "Hi,\n\nThanks for asking. The replay is on its way, and I'll send you the link as soon as it's ready.\n\nIan\n" },
+    { id: "d3", kind: "Slack reply", title: "Answer to the editor", text: "Use the second headline. Keep the opening line as it is.\n" },
+  ],
+  press: [
+    { id: "p1", t: "Voice note on first questions", s: 0 },
+    { id: "p2", t: "Clip outline from the workshop", s: 1 },
+    { id: "p3", t: "One story beats ten claims", s: 2 },
+    { id: "p4", t: "What to ask a happy client", s: 3 },
+    { id: "p5", t: "Why proof comes first", s: 4 },
+  ],
+  procs: [
+    { id: "r1", t: "Turn a talk into posts", last: "yesterday", st: "Ready", at: -1, steps: ["Link the source and keep it unchanged", "Pull out the strongest lines", "Draft the posts in your words", "Run the checks", "Bring the draft to you"],
+      out: { kind: "Post", title: "Three questions worth asking", text: "# Three questions worth asking\n\nWhat was going on before?\n\nWhat made you decide?\n\nWhat's different now?\n" } },
+    { id: "r2", t: "Prepare the weekly email", last: "last week", st: "Ready", at: -1, steps: ["Pick an approved piece", "Draft the email", "Check the links", "Bring the draft to you"],
+      out: { kind: "Email", title: "Weekly email", text: "Subject: The question that starts a good story\n\nHi,\n\nHere's one question to try this week.\n\nIan\n" } },
+    { id: "r3", t: "Follow up after a workshop", last: "not run yet", st: "Ready", at: -1, steps: ["List who attended", "Sort by next step", "Draft the follow-ups", "Bring the drafts to you"],
+      out: { kind: "Email", title: "Workshop follow-up", text: "Hi,\n\nThanks for joining the workshop. What's the first story you want to collect?\n\nIan\n" } },
+  ],
+  waits: [
+    { id: "w1", who: "Video editor", what: "Captions on the workshop clip" },
+    { id: "w2", who: "Designer", what: "Cover for the next post" },
+    { id: "w3", who: "Ad partner", what: "Two new headline ideas" },
+  ],
+});
+
+const THREE = [
+  { id: "t1", t: "Review the workshop post", why: "Opens the file", go: () => openDraft("d1") },
+  { id: "t2", t: "Record the ad video", why: "Opens the script", go: () => { S.open = { doc: "Script: short ad video", text: "# Script\n\nOpen with the question your client asked you.\n\nTell the story in three sentences.\n\nEnd with what they can do next.\n", task: "t2" }; render(); } },
+  { id: "t3", t: "Choose the next process to set up", why: "Opens the chat", go: () => { say("Let's choose the next process. I'd suggest \"Turn a talk into posts\": want to see it run?", "Chief of staff"); side("chat"); } },
+];
+
+function say(text, from) {
+  const m = el("div", { cls: "msg" + (from ? "" : " me") }, from ? el("small", { textContent: from }) : null, document.createTextNode(text));
+  $("log").append(m); $("log").scrollTop = $("log").scrollHeight;
+}
+function side(s) {
+  $("app").dataset.side = s;
+  document.querySelectorAll(".switch button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.side === s)));
+}
+function go(tab, open = null) { S.tab = tab; S.open = open; render(); $("view").scrollTop = 0; }
+function openDraft(id) { go("ok", { draft: id }); side("panel"); }
+
+function decide(d, yes) {
+  S.drafts = S.drafts.filter(x => x !== d); S.open = null;
+  if (d.press) { const it = S.press.find(x => x.id === d.press); it.s = yes ? 3 : 1; }
+  if (yes && d.id === "d1" && !S.done.includes("t1")) S.done.push("t1");
+  for (const r of S.procs) if (r.draft === d.id) { r.st = yes ? "Done" : "Sent back"; r.at = yes ? r.steps.length : r.at; r.draft = null; r.last = "just now"; }
+  say(yes ? `Approved: "${d.title}". This is where it would be sent or scheduled. In this mock-up, nothing goes out.` : `Rejected: "${d.title}". Tell me what to change and I'll bring back a new draft.`, "Chief of staff");
+  render();
+}
+function run(r) {
+  if (timer || r.draft) return;
+  r.at = 0; r.st = "Running"; say(`Running "${r.t}".`, "Chief of staff"); render();
+  timer = setInterval(() => {
+    r.at++;
+    if (r.at >= r.steps.length - 1) {
+      clearInterval(timer); timer = null;
+      r.draft = "n" + S.next++; r.st = "Waiting for you"; S.drafts.push({ id: r.draft, ...r.out });
+      say(`"${r.out.title}" is ready. It's in To approve.`, "Chief of staff");
+    }
+    render();
+  }, 1100);
+}
+function answer(text) {
+  const q = S.questions.shift(); S.answered++; S.saved = `Saved: ${text}`;
+  say(text); say(S.questions.length ? "Saved. Next question is up." : "Saved. That was the last one.", "Chief of staff"); render();
+}
+
+const V = {
+  today() {
+    const out = [el("div", { cls: "resume" }, el("div", {}, p("Pick up where you left off: the workshop post, second paragraph", "")), btn("Resume", () => S.drafts.some(d => d.id === "d1") ? openDraft("d1") : say("That post is already decided. Next up: the ad video.", "Chief of staff")))];
+    out.push(el("h3", { textContent: "Three things today" }));
+    for (const t of THREE) {
+      const done = S.done.includes(t.id) || (t.id === "t1" && !S.drafts.some(d => d.id === "d1"));
+      out.push(el("div", { cls: "box line" }, el("div", {}, el("h4", { textContent: t.t }), p(done ? "Done" : t.why, done ? "ok" : "sub")), done ? null : btn("Open", t.go, true, { ariaLabel: `Open: ${t.t}` })));
+    }
+    const q = S.questions[0];
+    if (q) {
+      const input = el("input", { placeholder: "Or your own answer", ariaLabel: "Your own answer", style: "flex:1;min-width:150px" });
+      const form = el("form", { cls: "acts" }, input, el("button", { cls: "btn", textContent: "Save" }));
+      form.addEventListener("submit", e => { e.preventDefault(); if (input.value.trim()) answer(input.value.trim()); });
+      out.push(el("div", { cls: "box q" }, el("span", { cls: "caps", textContent: `Question ${S.answered + 1} of ${S.total}` }), el("h4", { textContent: q.q }),
+        el("div", { cls: "acts" }, btn(`Yes: ${q.a.toLowerCase()}`, () => answer(q.a), true),
+          btn("Skip", () => { S.questions.push(S.questions.shift()); S.saved = "Skipped. It comes back later."; render(); })),
+        form, p(S.saved || "Saved as soon as you answer", S.saved ? "ok" : "sub")));
+    } else out.push(el("div", { cls: "box" }, el("h4", { textContent: "No more questions" }), p(S.saved, "ok")));
+    return out;
+  },
+  press() {
+    return [el("h3", { textContent: "From source to published" }), el("div", { cls: "pipe" }, ...STAGES.map((s, i) => el("div", { cls: "col" }, el("span", { cls: "caps", textContent: s }),
+      ...S.press.filter(x => x.s === i).map(x => {
+        const d = S.drafts.find(y => y.press === x.id);
+        return d ? el("button", { type: "button", cls: "card", on: () => go("press", { draft: d.id }) }, x.t, el("i", { textContent: "Review the markdown" })) : el("div", { cls: "card", textContent: x.t });
+      })))), p("Click the piece in Your review to read it, edit it and approve it.", "sub")];
+  },
+  ads() {
+    const sec = (title, rows) => el("div", { cls: "box" }, el("h4", { textContent: title }), el("ul", { cls: "list" }, ...rows.map(r => el("li", { cls: "line" }, el("div", {}, p(r[0]), r[1] ? p(r[1], "sub") : null), r[2] || null))));
+    return [sec("Campaigns to make", [["Workshop invitation", "Brief ready"], ["Book offer", "Needs an angle"]]),
+      sec("Scripts and videos to record", [["Short ad video", "Script ready, waiting for you to record", btn("Open script", () => THREE[1].go())]]),
+      sec("Tests", [["Headline A against headline B", "Running"]]),
+      sec("Results", [["Last test", "Your numbers show here, with a suggested next test"]]),
+      p("It never launches a campaign or changes spend without your yes.", "sub")];
+  },
+  proc() {
+    return [el("h3", { textContent: "Your processes, in one place" }), ...S.procs.map(r => el("div", { cls: "box" },
+      el("div", { cls: "line stack" }, el("div", {}, el("h4", { textContent: r.t }), p("Last run: " + r.last, "sub")),
+        el("span", { cls: "stat " + ({ Running: "run", "Waiting for you": "wait", Done: "done" }[r.st] || ""), textContent: r.st }),
+        r.draft ? btn("Review", () => openDraft(r.draft), true) : btn("Run", () => run(r), true, { disabled: !!timer, ariaLabel: `Run: ${r.t}` })),
+      el("ol", { cls: "steps" }, ...r.steps.map((s, i) => el("li", { textContent: s, cls: i < r.at ? "done" : i === r.at ? "now" : "" })))))];
+  },
+  ok() {
+    if (!S.drafts.length) return [el("h3", { textContent: "Nothing to approve" }), p("New drafts land here. Run a process to see one arrive.", "muted")];
+    return [el("h3", { textContent: "Nothing goes out without your yes" }), ...S.drafts.map(d => el("div", { cls: "box" },
+      el("span", { cls: "caps", textContent: d.kind }), el("h4", { textContent: d.title }), p(d.text.replace(/^#.*\n+/, "").split("\n").filter(Boolean).slice(0, 2).join(" "), "sub"),
+      el("div", { cls: "acts" }, btn("Approve", () => decide(d, true), true), btn("Edit", () => go("ok", { draft: d.id })), btn("Reject", () => decide(d, false)))))];
+  },
+  wait() {
+    return [el("h3", { textContent: "What you're waiting for" }), ...S.waits.map(w => el("div", { cls: "box line" }, el("div", {}, el("h4", { textContent: w.what }), p(w.who, "sub")),
+      w.asked ? p("Reminder in To approve", "ok") : btn("Draft a reminder", () => { w.asked = true; S.drafts.push({ id: "n" + S.next++, kind: "Slack reply", title: `Reminder: ${w.what.toLowerCase()}`, text: `Hi, where are we with this: ${w.what.toLowerCase()}? Tell me if you need anything from me.\n` }); say("I drafted a reminder. It's in To approve.", "Chief of staff"); render(); })))];
+  },
+};
+function editor(o) {
+  const d = o.draft && S.drafts.find(x => x.id === o.draft);
+  const back = btn("Back", () => { S.open = null; render(); });
+  if (o.draft && !d) { S.open = null; return V[S.tab](); }
+  const area = el("textarea", { value: d ? d.text : o.text, ariaLabel: "Markdown", spellcheck: false });
+  area.addEventListener("input", () => { if (d) d.text = area.value; else o.text = area.value; });
+  return [el("div", { cls: "editor" }, el("div", { cls: "line" }, el("div", {}, el("h3", { textContent: d ? d.title : o.doc }), p("Edit the markdown here, or tell the chat what to change", "sub")), back), area,
+    el("div", { cls: "acts" }, ...(d ? [btn("Approve", () => decide(d, true), true), btn("Reject", () => decide(d, false))] : [btn("Mark as recorded", () => { S.done.push(o.task); S.open = null; say("Got it, marked as recorded.", "Chief of staff"); render(); }, true)])))];
+}
+function render() {
+  const focusTab = document.activeElement && document.activeElement.getAttribute && document.activeElement.getAttribute("role") === "tab";
+  $("tabs").replaceChildren(...TABS.map(([k, label]) => el("button", { type: "button", id: "tab-" + k, role: "tab", "aria-selected": String(S.tab === k), "aria-controls": "view", tabIndex: S.tab === k ? 0 : -1, on: () => go(k) },
+    label, k === "ok" && S.drafts.length ? el("span", { cls: "n", textContent: S.drafts.length }) : null)));
+  $("view").setAttribute("aria-labelledby", "tab-" + S.tab);
+  $("view").replaceChildren(...(S.open ? editor(S.open) : V[S.tab]()));
+  if (focusTab) $("tab-" + S.tab).focus();
+}
+$("tabs").addEventListener("keydown", e => {
+  const i = TABS.findIndex(t => t[0] === S.tab), step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+  if (step) { e.preventDefault(); go(TABS[(i + step + TABS.length) % TABS.length][0]); }
+});
+
+const CHIPS = ["What's on today?", "Turn my last talk into posts", "Make the post shorter", "What am I waiting on?"];
+function hear(text) {
+  say(text);
+  const t = text.toLowerCase();
+  if (/wait/.test(t)) { go("wait"); say("Three things, listed in Waiting on others. I can draft a reminder for any of them.", "Chief of staff"); }
+  else if (/talk|run|process/.test(t)) { go("proc"); if (S.procs[0].draft) say("That draft is already waiting for you in To approve.", "Chief of staff"); else if (timer) say("A process is already running. I'll start this one next.", "Chief of staff"); else { say("I'm giving this to the Garlic Press project manager.", "Chief of staff"); run(S.procs[0]); } }
+  else if (/short|change|edit/.test(t)) {
+    const d = S.drafts.find(x => x.id === "d1");
+    if (d) { d.text = "# One story beats ten claims\n\nAnyone can say they care about clients. A client telling you what changed is different.\n\nWhat were they worried about before you started?\n"; go("ok", { draft: "d1" }); say("Here's a shorter version, open next to the chat. Edit it or approve it.", "Garlic Press"); }
+    else say("That post is already decided. Want me to draft another one?", "Garlic Press");
+  }
+  else if (/today|morning|day/.test(t)) { go("today"); say("Three things today, and one question at a time when you're ready.", "Chief of staff"); }
+  else if (/\bad\b|\bads\b|campaign/.test(t)) { go("ads"); say("Here's where the ads stand. The script is ready to record.", "Ads"); }
+  else if (/approve|draft/.test(t)) { go("ok"); say("These drafts are waiting for your yes.", "Chief of staff"); }
+  else if (/press|content|post/.test(t)) { go("press"); say("Here's every piece, from source to published.", "Garlic Press"); }
+  else say("In the real assistant, I'd send this to the right project and bring the result back here. In this mock-up, try one of the suggestions below.", "Chief of staff");
+}
+$("chips").append(...CHIPS.map(c => el("button", { type: "button", textContent: c, on: () => hear(c) })));
+$("say").addEventListener("submit", e => { e.preventDefault(); const v = $("in").value.trim(); if (v) { $("in").value = ""; hear(v); } });
+$("mic").addEventListener("click", () => hear("What's on today?"));
+$("mic").title = "Plays a sample sentence, your microphone isn't used";
+document.querySelectorAll(".switch button").forEach(b => b.addEventListener("click", () => side(b.dataset.side)));
+function start() {
+  clearInterval(timer); timer = null; S = fresh(); $("log").replaceChildren();
+  say("Good morning. Three things today. The workshop post is the first one, and it's ready for you to read.", "Chief of staff");
+  side("panel"); render();
+}
+$("reset").addEventListener("click", start);
+start();
+
+// One example, following the steps of the Garlic Press workflow files.
+const EX = [
+  ["Capture", "Assistant", "Links the recording or transcript and keeps it unchanged.", "A 40-minute talk about asking clients for their story"],
+  ["Extract", "Assistant", "Builds one working packet: central ideas, strongest lines, stories, claims to check.", "\"A client telling you what changed is different.\""],
+  ["Choose", "You", "Use, hold or skip each idea. Only what you choose moves on.", "Use: one story beats ten claims"],
+  ["Draft", "Assistant", "Writes the posts from your own words. Only hooks are generated, and they're labeled.", "One post, with two hooks to pick from"],
+  ["Add media", "Assistant", "Looks for a matching image, animation or video in your library, or outlines a clip for you to record.", "A clip outline for your phone"],
+  ["Check", "Assistant", "Runs the verifier. A fail blocks publishing.", "One claim flagged: source needed"],
+  ["Approve", "You", "See the exact copy, media, accounts, schedule and call to action. Say yes or no.", "Approved with one line changed"],
+  ["Publish", "Assistant", "Schedules only what you approved. It counts as published once the live link is checked.", "Live link saved with the piece"],
+  ["Learn and reuse", "You and assistant", "Notes one learning. Other formats get made only if you choose them.", "Next: the same story as an email"],
+];
+$("ex").append(...EX.map(([t, who, what, eg], i) => el("li", {}, el("span", { cls: "n", textContent: String(i + 1).padStart(2, "0") }),
+  el("div", {}, el("b", { textContent: t }), el("span", { cls: "who" + (who.startsWith("You") ? " you" : ""), textContent: who })), p(what), p(eg, "eg"))));
+</script>
+</body>
+</html>
