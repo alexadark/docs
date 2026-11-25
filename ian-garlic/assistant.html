@@ -173,6 +173,8 @@ button.card { border-color: var(--idea) !important; }
 .conn div { display: grid; grid-template-columns: 150px 1fr 1fr; gap: 4px 18px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 0.94rem; }
 .conn b { font-weight: 600; } .conn .muted { font-size: 0.92rem; }
 .grid.three { grid-template-columns: repeat(3, 1fr); }
+.mocknotes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 820px) { .mocknotes { grid-template-columns: minmax(0, 1fr); } }
 footer { font-size: 0.85rem; color: var(--muted); }
 
 @media (max-width: 960px) {
@@ -249,6 +251,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
   <div class="tools"><span class="caps">Your tools</span><span>Email</span><span>ClickUp</span><span>Slack</span><span>Google Docs</span><span>Obsidian</span></div>
   <p class="runs">The chats run in Orca, with Claude or Codex.</p>
 </div>
+<div data-note="sec-map"></div>
 </section>
 
 <section aria-labelledby="t-mock">
@@ -267,6 +270,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
     <div class="view" id="view" role="tabpanel" aria-labelledby="tab-today" tabindex="0"></div>
   </div>
 </div>
+<div class="mocknotes"><div id="note-tab"></div><div data-note="mock-chat"></div></div>
 </section>
 
 <section aria-labelledby="t-day">
@@ -277,6 +281,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
   <div class="cell"><span class="caps">Questions</span><h3>One by one</h3><p>Each question has a suggested answer. Say yes, change it, or skip it. Every answer is saved as you give it, so nothing is lost if you stop.</p></div>
   <div class="cell"><span class="caps">End of day</span><h3>Approve and close</h3><p>You go through the drafts, see what's done and what waits on others, and leave a starting point for tomorrow.</p></div>
 </div>
+<div data-note="sec-day"></div>
 </section>
 
 <section aria-labelledby="t-flow">
@@ -288,6 +293,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
   <div class="cell you" role="listitem"><h3>You approve</h3><p>Read it next to the chat, change a line, say yes or no.</p></div>
   <div class="cell" role="listitem"><h3>Published or sent</h3><p>Only what you approved goes out, and the result comes back to you.</p></div>
 </div>
+<div data-note="sec-flow"></div>
 </section>
 
 <section aria-labelledby="t-ex">
@@ -295,6 +301,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
 <p class="muted">These follow the steps in your Garlic Press workflow. The talk and the post are made up.</p>
 <span class="tag sample">Sample data</span>
 <ol class="ex" id="ex"></ol>
+<div data-note="sec-ex"></div>
 </section>
 
 <section aria-labelledby="t-mail">
@@ -308,6 +315,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
   <div class="cell"><h3>You press Send</h3><p>The agents can't send email. Everything you sent is in one list and, if you turn it on, you see when it was opened.</p></div>
   <div class="cell"><h3>The rest, in its place</h3><p>Meeting bookings, travel and finance each get their own view. Archive or delete several at once, keep your contacts, use several accounts.</p></div>
 </div>
+<div data-note="sec-mail"></div>
 </section>
 
 <section aria-labelledby="t-conn">
@@ -321,6 +329,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
   <div><b>Obsidian</b><span>A shared vault for notes, sources and drafts in markdown.</span><span class="muted">What stays private isn't in it.</span></div>
 </div>
 <p class="muted">It will run on the Mac mini at your place, so Alexandra can help and fix things remotely. You use it from your laptop or your phone. It's much simpler than the system Alexandra uses for her own work.</p>
+<div data-note="sec-conn"></div>
 </section>
 
 <section aria-labelledby="t-set">
@@ -333,6 +342,7 @@ footer { font-size: 0.85rem; color: var(--muted); }
   <div class="cell"><h3>Connections</h3><p>Which accounts come first, what counts as noise in your mail, and which vault to share in Obsidian.</p></div>
   <div class="cell"><h3>Rules</h3><p>What it can do alone, when it asks, what stays private, and how we help when something breaks.</p></div>
 </div>
+<div data-note="sec-set"></div>
 </section>
 
 </div>
@@ -340,17 +350,20 @@ footer { font-size: 0.85rem; color: var(--muted); }
 <div class="page" id="page-q" role="tabpanel" aria-labelledby="pt-q" hidden>
 <header>
 <h1>Setup questions</h1>
-<p class="lede">One question at a time, skip any of them. Where there's a suggested answer, a yes is enough. Start with the first block: it's enough to configure a first version. Nothing to fill in here, we go through them together.</p>
+<p class="lede">One question at a time, skip any of them. Where there's a suggested answer, a yes is enough. Start with the first block: it's enough to configure a first version. Type or dictate your answer under each one. It saves in this browser as you go.</p>
+<p class="stat" data-nt-progress></p>
 </header>
-<div class="qs" id="qs" aria-live="polite"></div>
+<div class="qs" id="qs"></div>
 <div class="qnav"><button type="button" class="btn" id="q-prev">Back</button><button type="button" class="btn go" id="q-next">Next</button><button type="button" class="btn all" id="q-all" aria-pressed="false">Show all</button></div>
 </div>
 
+<div id="note-box"></div>
 <footer>Proposal for discussion. The screen on this page is a mock-up with sample data.</footer>
 </div>
 
+<script src="notes.js?v=1"></script>
 <script>
-// Mock-up only: everything lives in memory, nothing is stored, connected or sent.
+// The mock-up lives in memory and nothing in it is stored, connected or sent. Notes: see notes.js.
 const $ = id => document.getElementById(id);
 const el = (tag, props = {}, ...kids) => {
   const n = document.createElement(tag);
@@ -370,7 +383,7 @@ const TABS = [["today", "Today"], ["mail", "Mail"], ["press", "Garlic Press"], [
 const STAGES = ["Source", "Draft", "Your review", "Approved", "Published"];
 const POST = "# One story beats ten claims\n\nAnyone can say they care about clients.\n\nA client telling you what changed is different. You hear the doubt, the decision and the result.\n\nAsk one question this week: \"What were you worried about before we started?\"\n";
 
-let S, timer = null;
+let S, timer = null, noteTab = () => {};
 const fresh = () => ({
   tab: "today", open: null, done: [], next: 1,
   questions: [
@@ -585,6 +598,7 @@ function render() {
     k === "mail" && inView("todo").length ? el("span", { cls: "n", textContent: inView("todo").length }) : null)));
   $("view").setAttribute("aria-labelledby", "tab-" + S.tab);
   $("view").replaceChildren(...(S.open ? editor(S.open) : V[S.tab]()));
+  noteTab();
   if (focusTab) $("tab-" + S.tab).focus();
 }
 $("tabs").addEventListener("keydown", e => {
@@ -638,7 +652,7 @@ const EX = [
 $("ex").append(...EX.map(([t, who, what, eg], i) => el("li", {}, el("span", { cls: "n", textContent: String(i + 1).padStart(2, "0") }),
   el("div", {}, el("b", { textContent: t }), el("span", { cls: "who" + (who.startsWith("You") ? " you" : ""), textContent: who })), p(what), p(eg, "eg"))));
 
-// Setup questions: read-only. [title, question, suggestion, new?, rest of the question] by block.
+// Setup questions, with an answer field under each. [title, question, suggestion, new?, rest of the question] by block.
 const BLOCKS = [
  [
   "The frame",
@@ -785,9 +799,26 @@ const BLOCKS = [
  ]
 ];
 const QS = BLOCKS.flatMap(([name, list], b) => list.map(q => ({ block: `Block ${b + 1}: ${name}`, q })));
+// Field ids come from the words, so they survive a reordering of the questions.
+const slug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 48);
+QS.forEach(x => { x.id = "q-" + slug(x.block.replace(/^Block \d+: /, "")) + "-" + slug(x.q[0] || x.q[1]); });
+IanNotes.init({
+  page: "assistant", title: "Ian's assistant", questions: QS.map(x => x.id),
+  groups: [
+    { name: "General", fields: [{ id: "general", label: "General", prompt: "Tabs, outputs or ideas you want to add, and anything else", hint: "What's missing, what to change, what to drop. Type or dictate, it saves as you go." }] },
+    { name: "Questions", fields: QS.map((x, i) => ({ id: x.id, label: `Question ${i + 1}. ${x.block}${x.q[0] ? ", " + x.q[0] : ""}`, prompt: "Your answer", text: [x.q[1], x.q[2], x.q[4]].filter(Boolean).join(" "), hint: x.q[2] ? "Type or dictate. A yes is enough." : "Type or dictate your answer." })) },
+    { name: "Sections", fields: [["map", "The whole system on one page"], ["day", "A day with it"], ["flow", "How a piece of work moves"], ["ex", "One example: from a talk to a post"], ["mail", "Your mail, without the noise"], ["conn", "What connects, and what for"], ["set", "What we'll set up together"]].map(([k, n]) => ({ id: "sec-" + k, label: n, prompt: "Your notes on this section" })) },
+    { name: "Mock-up screens", fields: [...TABS.map(([k, n]) => ({ id: "mock-" + k, label: n, prompt: "Your notes on this screen: " + n })), { id: "mock-chat", label: "Chat", prompt: "Your notes on the chat" }] },
+  ],
+  jump: { label: () => `Questions: ${IanNotes.answered()} of ${QS.length}`, go: () => { $("pt-q").click(); $("qs").scrollIntoView(); } },
+});
+document.querySelectorAll("[data-note]").forEach(n => n.append(IanNotes.field(n.dataset.note)));
+$("note-box").append(IanNotes.box());
+noteTab = () => { if ($("note-tab").dataset.v === S.tab) return; $("note-tab").dataset.v = S.tab; $("note-tab").replaceChildren(IanNotes.field("mock-" + S.tab)); };
+noteTab();
 let qi = 0, qAll = false;
 const qCard = (x, i) => el("article", { cls: "qcard" }, el("span", { cls: "caps", textContent: x.block }), el("span", { cls: "stat", textContent: `Question ${i + 1} of ${QS.length}` }),
-  x.q[3] ? el("span", { cls: "tag sample", textContent: "New" }) : null, x.q[0] ? el("h3", { textContent: x.q[0] }) : null, el(x.q[0] ? "p" : "h3", { textContent: x.q[1] }), x.q[2] ? p(x.q[2], "sug") : null, x.q[4] ? p(x.q[4]) : null);
+  x.q[3] ? el("span", { cls: "tag sample", textContent: "New" }) : null, x.q[0] ? el("h3", { textContent: x.q[0] }) : null, el(x.q[0] ? "p" : "h3", { textContent: x.q[1] }), x.q[2] ? p(x.q[2], "sug") : null, x.q[4] ? p(x.q[4]) : null, IanNotes.field(x.id));
 function drawQ() {
   $("qs").classList.toggle("qall", qAll);
   $("qs").replaceChildren(...(qAll ? QS.map(qCard) : [qCard(QS[qi], qi)]));
