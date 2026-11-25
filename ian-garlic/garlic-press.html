@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Garlic Press: home screen and one reused block</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;600&display=swap">
+<style>
+:root{--bg:#0B0B0D;--surface:#131316;--raised:#1A1A1E;--fg:#EDEDF0;--muted:#9A9FA8;--line:#2C2D30;--accent:#7C8CFF;--on:#0B0B0D;--live:#3DD68C;--idea:#FFB224;--stop:#FF6B6D;--body:"Geist","Helvetica Neue",Arial,sans-serif;--mono:"Geist Mono",ui-monospace,Menlo,monospace;color-scheme:dark}
+@media(prefers-color-scheme:light){:root{--bg:#F7F7F8;--surface:#fff;--raised:#F0F0F3;--fg:#111114;--muted:#5E6068;--line:#DCDDE2;--accent:#4F5BD5;--on:#fff;--live:#177A48;--idea:#8F5B00;--stop:#C22F31;color-scheme:light}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 var(--body);padding:32px 16px 80px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}h1,h2,h3{line-height:1.25;margin:0}h1{font-size:clamp(1.7rem,4vw,2.4rem);letter-spacing:-.02em}h2{font-size:1.15rem}h3{font-size:1rem}p{margin:0;max-width:75ch}
+a{color:var(--accent)}.caps,.tag{font-family:var(--mono);font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.tag{border:1px solid currentColor;padding:1px 6px;white-space:nowrap}.ask{color:var(--idea)}.ok{color:var(--live)}.no{color:var(--stop)}
+.m{color:var(--muted);font-size:.9rem}button,input,textarea{font:inherit;color:inherit}button{background:var(--raised);border:1px solid var(--line);padding:8px 14px;min-height:44px;cursor:pointer}button:hover{border-color:var(--accent)}button.p{background:var(--accent);color:var(--on);border-color:var(--accent)}button[aria-pressed=true],button[aria-selected=true]{border-color:var(--accent);box-shadow:inset 0 -2px var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}input,textarea{width:100%;background:var(--raised);border:1px solid var(--line);padding:10px}
+.app{border:1px solid var(--line);background:var(--surface)}.bar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;border-bottom:1px solid var(--line);padding:10px 14px}.bar .end{margin-left:auto}
+.pane{padding:18px;display:flex;flex-direction:column;gap:22px}.pane[hidden],[hidden]{display:none!important}section{display:flex;flex-direction:column;gap:10px}
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}.c{border:1px solid var(--line);background:var(--raised);padding:12px 14px;display:flex;flex-direction:column;gap:6px;overflow-wrap:anywhere;text-align:left}
+button.c{width:100%;min-height:0}.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(178px,1fr);gap:10px;overflow-x:auto;padding-bottom:8px}.lane{display:flex;flex-direction:column;gap:8px}
+.q{border-left:3px solid var(--accent);padding-left:10px;margin:0}.hid{border-left:3px dashed var(--idea);padding-left:10px;color:var(--muted)}dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:0;font-size:.92rem}dt{color:var(--muted)}dd{margin:0}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;list-style:none;margin:0;padding:0}.steps li{border:1px solid var(--line);padding:10px;font-size:.88rem}.two{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr))}
+.draft{border:1px solid var(--line);padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--raised)}.arrow{text-align:center;color:var(--muted)}dialog{background:var(--surface);color:var(--fg);border:1px solid var(--line);width:min(560px,calc(100vw - 32px));padding:20px}dialog::backdrop{background:#0009}
+@media(max-width:600px){.bar .end{margin-left:0}}
+</style></head><body><div class="wrap">
+<header style="display:flex;flex-direction:column;gap:10px"><a href="./">← Ian Garlic docs</a><span class="caps">Mock-up · first pass</span><h1>Garlic Press: your home screen, and one block used twice</h1>
+<p class="m">Titles, lanes and quotes come from your November 24 package. Airtable refused our access, so nothing is connected or saved, and nothing here is approved or published. What the package doesn't say is marked <span class="tag ask">To confirm with Ian</span>.</p></header>
+<ol class="steps"><li><b>1. Capture</b><br><span class="m">Your exact words, kept as they are</span></li><li><b>2. Choose</b><br><span class="m">The idea and its supporting material</span></li><li><b>3. Prepare</b><br><span class="m">One version per channel</span></li><li><b>4. Review</b><br><span class="m">Use, hold or skip</span></li><li><b>5. Deliver and verify</b><br><span class="m">Record what shipped, with proof</span></li></ol>
+<div class="app"><div class="bar"><strong>Garlic Press</strong><span class="tag ask">Mock-up</span><div class="row" role="tablist"><button role="tab" data-v="home" aria-selected="true">Home</button><button role="tab" data-v="block" aria-selected="false">One block, two drafts</button></div><button id="reset" class="end">Start over</button></div>
+<div class="pane" id="home">
+<section><h2>Capture</h2><textarea id="cap" rows="2" aria-label="Capture" placeholder="Type or dictate. Your words stay untouched."></textarea><div class="row"><button id="save" class="p">Save as a source</button><span class="m">From Apple Notes automatically: <span class="ask">To confirm with Ian</span></span></div><div class="grid" id="caps"></div></section>
+<section><h2>Next up</h2><div class="grid" id="next"></div></section>
+<section><h2>Needs Ian</h2><div class="grid" id="needs"></div></section>
+<section><div class="row"><h2>Board</h2><button data-m="o" aria-pressed="true">Obsidian lanes</button><button data-m="a" aria-pressed="false">Airtable stages</button></div><p class="m">A few cards per lane. Which of the two drives the board: <span class="ask">To confirm with Ian</span></p><div class="board" id="board" tabindex="0" aria-label="Board"></div></section>
+<section><h2>Find what we've written</h2><input id="s" type="search" aria-label="Search past work" placeholder="Try: positioning, niche, referral"><div class="grid" id="r"></div></section></div>
+<div class="pane" id="block" hidden>
+<section><h2>The block</h2><div id="b02"></div></section><div class="arrow">↓ same block, two drafts, two separate reviews ↓</div><div class="two" id="drafts"></div>
+<section><h2>After review</h2><p class="m">Each draft keeps its exact block ids. Once it ships, its link or send receipt and date go on the draft, and B02 shows it under “Used in”. Where each one ships: <span class="ask">To confirm with Ian</span></p></section></div></div>
+<p class="m">Mock-up for discussion. Reload or press Start over to clear it.</p></div>
+<dialog id="dlg" aria-labelledby="dt"><h2 id="dt"></h2><dl id="dd" style="margin:14px 0"></dl><div class="row"><span class="row" id="dr"></span><button id="x">Close</button></div></dialog>
+<script>
+const C='To confirm with Ian', $=i=>document.getElementById(i), esc=t=>t.replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));
+// Blocks: text only for "Prior public use". Candidate text stays off this public page.
+const B={
+B02:['Positioning is a promise','Teaching','Prior public use','Positioning is a promise made by stories.','Book: Video Testimonials That Land the Big Fish, §12.0, PDF p. 41'],
+B14:['Think of one client','Exercise','Prior public use','I want you to think about that one client that was great for this service.','October 8 workshop, 00:08:53'],
+B15:['What changed for that client?','Exercise','Prior public use','What is the result that the client wants and what changed for them after you did that? I want you to write this down too.','October 8 workshop, 00:26:41'],
+B16:['Referrals are context matching','Teaching','Prior public use','Referrals are simply context matching.','October 8 workshop, 00:29:48'],
+B18:['The lake-house search','Story','Candidate',null,"Ian's note, November 21"],
+B19:['The lake-house story applied','Teaching','Candidate',null,"Ian's note, November 21"],
+B24:['Existing email opener','Hook','Prior public use','Have you ever had problems saying exactly what your niche is?','Email sent October 16'],
+B26:['Yellow Pages page qualifier','Hook','Prior public use','For service providers stuck in the “Yellow Pages” Niche.','Published workshop page'],
+B28:['Shared ad body','Offer','Prior public use','I’ll help you uncover your niche, pick the client stories that back it up, and write your first ask to collect that proof.','Meta ads launch record'],
+B29:['What would your best client type?','Hook','Candidate',null,'Ads copy review'],
+B31:['Pick one service','Exercise','Prior public use','Pick one service and combine your answers.','Find Your Million-Dollar Niche worksheet'],
+B32:['Write the specific problem','Exercise','Prior public use','What big problem do you solve with that service?','Find Your Million-Dollar Niche worksheet'],
+B33:['Pick the supporting story','Exercise','Prior public use','Which story backs that up?','Find Your Million-Dollar Niche worksheet']};
+// Items: title, lane, kind, source, next action, version, proof, needs Ian
+const I=[
+['Bonus Chapter: long LinkedIn newsletter','To Produce','Newsletter','Bonus Chapter, AI Interviewer Sections','Start the draft','No draft yet','None yet',0],
+['Hidden Stakeholders email','To Produce','Email','FITB series','Start the draft','No draft yet','None yet',0],
+['AI search truths email','Editing','Email','The published AI search truths post','Your edit. Its workshop timing says October 14, so the date needs a look','At Ian Edit','Not sent, not scheduled',1],
+['Three critical AI marketing trends','Sources','Packet','5 post candidates','Use, hold or skip each one','Review packet','None yet',1],
+['Targeting multiple audiences','Sources','Packet','4 post candidates','Use, hold or skip each one','Review packet','None yet',1],
+['Choose who you work with email','Drafting','Email',C,'Finish the draft','Drafting','None yet',0],
+['FITB 01: Nobody wants to need you','Editing','Post','FITB series','Polish','Draft done','None yet',0],
+['FITB 02: Background noise','Editing','Post','FITB series','Polish','Draft done','None yet',0],
+['3 reasons leads ghosting','Editing','Post',C,'Polish','Draft done','None yet',0],
+["Email: don't chase followers",'Ready','Email','FITB series',C,'In the Ready lane (approved, scheduled)','None yet',0],
+['Bonus Chapter LinkedIn posts, batch 1','Ready','3 posts','Bonus Chapter',C,'In the Ready lane (approved, scheduled)','None yet',0],
+['AI search truths post','Published','Post','AI search truths note','None','Published October 14','Live on LinkedIn and Facebook, checked on both',0]];
+let caps,dec,drafts;
+const lanes=['Sources','To Produce','Drafting','Editing','Ready','Published'], stages=['Ideas','Rough Draft','Cleaned Up','Ian Edit','Approved','Scheduled','Published'];
+let mode='o';
+function reset(){caps=[];dec={};drafts={A:{n:'Workshop segment',sub:'Opener and exercise',ids:['B24','B18','B19','B02','B31','B32','B33'],ctx:[['Workshop',C],['Date',C]],v:1,st:'Waiting for review',log:[],note:''},B:{n:'Ad draft',sub:'Hook, teaching line, body',ids:['B29','B02','B28'],ctx:[['Offer',C],['CTA',C],['Destination',C]],v:1,st:'Waiting for review',log:[],note:''}};$('cap').value='';draw()}
+const card=(x,i)=>`<button class="c" data-i="${i}"><b>${esc(x[0])}</b><span class="m">${esc(x[2])} · ${esc(x[1])}</span><span class="m">Next: ${esc(x[4])}</span>${dec[i]?`<span class="tag ${dec[i]=='Use'?'ok':dec[i]=='Skip'?'no':'ask'}">${dec[i]}</span>`:''}</button>`;
+const blk=(id,big)=>{const b=B[id];return `<div class="c"><div class="row"><b>${id} ${esc(b[0])}</b><span class="tag">${b[1]}</span><span class="tag ${b[2]=='Candidate'?'ask':'ok'}">${b[2]}</span></div>${b[3]?`<p class="q">${esc(b[3])}</p>`:`<p class="hid">Not shown here: this page is public and the text is still a candidate.</p>`}<span class="m">${esc(b[4])}</span>${big||''}</div>`};
+function draw(){
+ $('next').innerHTML=I.map((x,i)=>x[1]=='To Produce'?card(x,i):'').join('');
+ $('needs').innerHTML=I.map((x,i)=>x[7]?card(x,i):'').join('')+['A','B'].filter(k=>drafts[k].st=='Waiting for review').map(k=>`<button class="c" data-go><b>${drafts[k].n}, niche pilot</b><span class="m">Built on B02 · v${drafts[k].v}</span><span class="m">Next: review it</span></button>`).join('');
+ $('caps').innerHTML=caps.map(t=>`<div class="c"><p class="q">${esc(t)}</p><span class="m">Source, saved word for word. Analysis goes in its own field. Nothing is approved by capturing it.</span></div>`).join('');
+ $('board').innerHTML=mode=='o'?lanes.map(l=>`<div class="lane"><h3>${l}</h3>${I.map((x,i)=>x[1]==l?card(x,i):'').join('')}</div>`).join(''):stages.map(s=>`<div class="lane"><h3>${s}</h3>${s=='Ian Edit'?card(I[2],2):s=='Published'?card(I[11],11):'<p class="m">In Airtable. We can’t read it yet.</p>'}</div>`).join('');
+ const t=$('s').value.toLowerCase();
+ const hits=Object.keys(B).filter(k=>(k+B[k].join(' ')).toLowerCase().includes(t)).map(k=>blk(k)).concat(I.map((x,i)=>x.join(' ').toLowerCase().includes(t)?card(x,i):'').filter(Boolean));
+ $('r').innerHTML=hits.slice(0,t?20:6).join('')||'<p class="m">Nothing in this sample.</p>';
+ const used=['A','B'].map(k=>`<li>${drafts[k].n}, v${drafts[k].v}: <b>${drafts[k].st}</b>. Shipped: not yet.</li>`).join('');
+ $('b02').innerHTML=blk('B02',`<span class="m">Big Idea: The niche of the problem. Any new public version goes through review.</span><div><span class="caps">Used in</span><ul style="margin:4px 0 0;padding-left:18px">${used}</ul></div>`);
+ $('drafts').innerHTML=['A','B'].map(k=>{const d=drafts[k];return `<div class="draft"><div class="row"><h3>${d.n}</h3><span class="tag">v${d.v}</span><span class="tag ${d.st.startsWith('Use')?'ok':d.st.startsWith('Skip')?'no':'ask'}" data-st="${k}">${d.st}</span></div><p class="m">${d.sub}. Blocks in your reading order.</p>${d.ids.map(i=>{const b=B[i];return `<div ${i=='B02'?'style="outline:2px solid var(--accent);outline-offset:4px"':''}>${b[3]?`<p class="q">${esc(b[3])} <span class="m">${i}</span></p>`:`<p class="hid">${i} ${esc(b[0])}: candidate, text not shown on this public page</p>`}</div>`}).join('')}${k=='A'?'<div class="row"><button data-alt="A">Swap in B14 and B15 (alternate exercise)</button></div>':'<div class="row"><button data-alt="B">Test B24 in the hook slot</button></div>'}<dl>${d.ctx.map(c=>`<dt>${c[0]}</dt><dd class="ask">${c[1]}</dd>`).join('')}</dl><label class="m">Your note on this draft<input data-note="${k}" value="${esc(d.note)}" placeholder="What to change"></label><div class="row">${['Use','Hold','Skip'].map(a=>`<button data-rev="${k}" data-a="${a}" class="${a=='Use'?'p':''}">${a}</button>`).join('')}</div><p class="m">This review covers v${d.v} of this draft only. A change makes a new version and asks again.</p>${d.log.length?`<ul class="m" style="margin:0;padding-left:18px">${d.log.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>`:''}</div>`}).join('');
+}
+document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;
+ if(t.dataset.v){show(t.dataset.v)}
+ else if('go' in t.dataset){show('block')}
+ else if(t.dataset.i){const i=+t.dataset.i,x=I[i];$('dt').textContent=x[0];$('dd').innerHTML=[['Next action',x[4]],['Owner',C],['Source',x[3]],['Current version',x[5]],['Proof',x[6]],['Lane',x[1]]].map(r=>`<dt>${r[0]}</dt><dd class="${r[1]==C?'ask':''}">${esc(r[1])}</dd>`).join('');$('dr').innerHTML=x[7]?['Use','Hold','Skip'].map(a=>`<button data-dec="${i}" data-a="${a}">${a}</button>`).join(''):'';$('dlg').showModal()}
+ else if(t.dataset.dec){dec[t.dataset.dec]=t.dataset.a;$('dlg').close();draw()}
+ else if(t.dataset.rev){const d=drafts[t.dataset.rev],a=t.dataset.a;d.st=a=='Use'?`Use: v${d.v} approved`:a=='Hold'?`Hold: v${d.v}`:`Skip: v${d.v}`;d.log.push(`v${d.v}: ${a}${d.note?' · note: '+d.note:''}`);draw()}
+ else if(t.dataset.alt){const d=drafts[t.dataset.alt];d.ids=t.dataset.alt=='A'?(d.ids.includes('B14')?['B24','B18','B19','B02','B31','B32','B33']:['B24','B18','B19','B02','B14','B15']):[d.ids[0]=='B24'?'B29':'B24','B02','B28'];d.v++;d.log.push(`v${d.v}: blocks changed, back to review`);d.st='Waiting for review';draw()}
+ else if(t.id=='save'){const v=$('cap').value;if(v.trim()){caps.unshift(v);$('cap').value='';draw()}}
+ else if(t.dataset.m){mode=t.dataset.m;document.querySelectorAll('[data-m]').forEach(b=>b.setAttribute('aria-pressed',b==t));draw()}
+ else if(t.id=='reset')reset(); else if(t.id=='x')$('dlg').close()});
+document.addEventListener('input',e=>{if(e.target.id=='s')draw();if(e.target.dataset.note)drafts[e.target.dataset.note].note=e.target.value});
+function show(v){document.querySelectorAll('[data-v]').forEach(b=>b.setAttribute('aria-selected',b.dataset.v==v));$('home').hidden=v!='home';$('block').hidden=v!='block';history.replaceState(null,'',v=='block'?'#block':'#home')}
+reset();if(location.hash=='#block')show('block');
+</script></body></html>
